@@ -48,7 +48,7 @@
     - [ ] **ObjectPooler.cs**: 物件池 (優化掉落物與怪物生成)
 
     ##### 2. Inputs (輸入)
-    - [ ] **InputReader.cs**: 封裝 Input System 事件
+    - [ ] **InputReader.cs**: 封裝 Input System 事件，需修改`PlayerController.cs`
 
     ##### 3. Entities (實體)
     - [ ] **PlayerStats.cs**: 玩家數值 (血量/飢餓/體溫/口渴)
@@ -76,6 +76,14 @@
     ##### 6. World (世界)
     - [x] **MapGenerator.cs**: 地圖生成，目前固定上雪下草，未來可考慮加入更多生態域
     - [ ] **ResourceNode.cs**: 資源點 (樹/石頭) 掉落邏輯
+* ### UI
+    - [x] 物品欄
+    - [x] 狀態欄
+    - [ ] 左上角合成欄
+    - [ ] 右邊合成表按鈕及合成表
+    - [ ] 右邊日夜變化表
 * ### Other
-    ##### 1. 優化FPS
+    1. **優化FPS**
+    2. **優化生成連續資源**: 石頭和樹貼在一起之類的
+    3. **存檔功能**: 類似minecraft那樣
     ...
