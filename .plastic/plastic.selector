@@ -1,4 +1,3 @@
 repository "starve-io/starve-io@18966771367615@cloud"
   path "/"
-    br "/main"
-    co "/main"
+    smartbranch "/main/-using-InputReader"
