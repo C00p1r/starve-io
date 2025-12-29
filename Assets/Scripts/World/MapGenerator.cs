@@ -1,26 +1,26 @@
-using Unity.Cinemachine; // ¥²¶·¤Ş¥Î¡A¤~¯à±±¨î Confiner
+using Unity.Cinemachine; // å¿…é ˆå¼•ç”¨ï¼Œæ‰èƒ½æ§åˆ¶ Confiner
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class MapGenerator : MonoBehaviour
 {
-    [Header("¦a¹Ï»P¸ê·½")]
+    [Header("åœ°åœ–èˆ‡è³‡æº")]
     public Tilemap groundTilemap;
     public TileBase grassTile;
     public TileBase snowTile;
     public GameObject treePrefab;
     public GameObject rockPrefab;
 
-    [Header("¤j¤p³]©w")]
+    [Header("å¤§å°è¨­å®š")]
     public int width = 100;
     public int height = 100;
 
-    [Header("Ãä¬É¤Ş¥Î")]
-    public PolygonCollider2D mapBoundsCollider; // ©ì¤J§Aªº MapBounds ª«¥ó
-    public EdgeCollider2D physicalBoundaryCollider; // ±Mªù¾×ª±®aªº
-    public CinemachineConfiner2D confiner; // ©ì¤J§Aªº CM vcam1 (¥]§t Confiner ²Õ¥óªº¨º­Ó)
+    [Header("é‚Šç•Œå¼•ç”¨")]
+    public PolygonCollider2D mapBoundsCollider; // æ‹–å…¥ä½ çš„ MapBounds ç‰©ä»¶
+    public EdgeCollider2D physicalBoundaryCollider; // å°ˆé–€æ“‹ç©å®¶çš„
+    public CinemachineConfiner2D confiner; // æ‹–å…¥ä½ çš„ CM vcam1 (åŒ…å« Confiner çµ„ä»¶çš„é‚£å€‹)
 
-    [Header("¾÷²v")]
+    [Header("æ©Ÿç‡")]
     [Range(0, 1)] public float treeDensity = 0.05f;
     [Range(0, 1)] public float rockDensity = 0.02f;
 
@@ -34,7 +34,7 @@ public class MapGenerator : MonoBehaviour
     {
         groundTilemap.ClearAllTiles();
 
-        // 1. ¥Í¦¨¦a¹Ï»P¸ê·½
+        // 1. ç”Ÿæˆåœ°åœ–èˆ‡è³‡æº
         int midY = height / 2;
         for (int x = 0; x < width; x++)
         {
@@ -49,7 +49,7 @@ public class MapGenerator : MonoBehaviour
             }
         }
 
-        // 2. ¦Û°Ê§ó·sÃä¬É
+        // 2. è‡ªå‹•æ›´æ–°é‚Šç•Œ
         UpdateMapBounds();
     }
 
@@ -60,7 +60,7 @@ public class MapGenerator : MonoBehaviour
         float yMin = -height / 2f;
         float yMax = height / 2f;
 
-        // --- 1. §ó·sÄá¼v¾÷Ãä¬É (PolygonCollider2D) ---
+        // --- 1. æ›´æ–°æ”å½±æ©Ÿé‚Šç•Œ (PolygonCollider2D) ---
         if (mapBoundsCollider != null)
         {
             Vector2[] path = new Vector2[4];
@@ -71,23 +71,23 @@ public class MapGenerator : MonoBehaviour
 
             mapBoundsCollider.SetPath(0, path);
 
-            // ÃöÁä¡G³qª¾ Cinemachine Ãä¬É§Îª¬¤w§ïÅÜ¡A½Ğ¨ê·s½w¦s
+            // é—œéµï¼šé€šçŸ¥ Cinemachine é‚Šç•Œå½¢ç‹€å·²æ”¹è®Šï¼Œè«‹åˆ·æ–°ç·©å­˜
             if (confiner != null)
             {
                 confiner.BoundingShape2D = null;
 
-                // 2. ­«·s³]©w³»ÂI (½T«O Collider ¤w¸g§ó·s)
+                // 2. é‡æ–°è¨­å®šé ‚é» (ç¢ºä¿ Collider å·²ç¶“æ›´æ–°)
                 mapBoundsCollider.SetPath(0, path);
 
-                // 3. ­«·s±µ¦^³sµ²
+                // 3. é‡æ–°æ¥å›é€£çµ
                 confiner.BoundingShape2D = mapBoundsCollider;
 
-                // 4. ³Ì«á¸É¤@µo¨ê·s (½T«O¸UµL¤@¥¢)
+                // 4. æœ€å¾Œè£œä¸€ç™¼åˆ·æ–° (ç¢ºä¿è¬ç„¡ä¸€å¤±)
                 confiner.InvalidateBoundingShapeCache();
             }
         }
 
-        // --- 2. §ó·sª±®aª«²zÃä¬É (EdgeCollider2D) ---
+        // --- 2. æ›´æ–°ç©å®¶ç‰©ç†é‚Šç•Œ (EdgeCollider2D) ---
         if (physicalBoundaryCollider != null)
         {
             Vector2[] points = new Vector2[5];

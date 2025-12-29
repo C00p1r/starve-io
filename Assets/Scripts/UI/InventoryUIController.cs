@@ -10,28 +10,28 @@ public class InventoryUIController : MonoBehaviour
 
     private void OnEnable()
     {
-        // 2. ¦b³o¸Ì¹Á¸ÕÀò¨ú³æ¨Ò (¦pªG Awake ÁÙ¨S¶]¡A³o¸Ì·|®³¨ì null¡A§Ú­Ìµ¥¤U¦b Update ³B²z)
+        // 2. åœ¨é€™è£¡å˜—è©¦ç²å–å–®ä¾‹ (å¦‚æœ Awake é‚„æ²’è·‘ï¼Œé€™è£¡æœƒæ‹¿åˆ° nullï¼Œæˆ‘å€‘ç­‰ä¸‹åœ¨ Update è™•ç†)
         _inventoryManager = InventoryManager.Instance;
 
         _root = GetComponent<UIDocument>().rootVisualElement;
         _slotElements = _root.Query<VisualElement>("Bar1").ToList();
 
-        // 3. ­q¾\¨Æ¥ó (¥ıÀË¬d null¡A¨¾¤î³ø¿ù)
+        // 3. è¨‚é–±äº‹ä»¶ (å…ˆæª¢æŸ¥ nullï¼Œé˜²æ­¢å ±éŒ¯)
         if (_inventoryManager != null)
         {
-            // °O±o¥ı°h­q¦A­q¾\¡A¨¾¤î­«½Æ­q¾\ (³o¬O UI Toolkit ªº¦n²ßºD)
+            // è¨˜å¾—å…ˆé€€è¨‚å†è¨‚é–±ï¼Œé˜²æ­¢é‡è¤‡è¨‚é–± (é€™æ˜¯ UI Toolkit çš„å¥½ç¿’æ…£)
             _inventoryManager.OnInventoryChanged -= UpdateInventoryUI; 
             _inventoryManager.OnInventoryChanged += UpdateInventoryUI;
         }
 
-        // 4. ªì©l¤ÆÅã¥Ü
+        // 4. åˆå§‹åŒ–é¡¯ç¤º
         UpdateInventoryUI();
     }
 
     // uncomment if  ERR NULL REFERENCE occured
     //private void Start()
     //{
-    //    // 5. ¦pªG OnEnable ªº®É­Ô³æ¨ÒÁÙ¨S·Ç³Æ¦n¡AStart °õ¦æ±o¤ñ¸û±ß¡A³o¸Ì¦A°µ¤@¦¸«OÀI
+    //    // 5. å¦‚æœ OnEnable çš„æ™‚å€™å–®ä¾‹é‚„æ²’æº–å‚™å¥½ï¼ŒStart åŸ·è¡Œå¾—æ¯”è¼ƒæ™šï¼Œé€™è£¡å†åšä¸€æ¬¡ä¿éšª
     //    if (_inventoryManager == null)
     //    {
     //        _inventoryManager = InventoryManager.Instance;
@@ -58,24 +58,24 @@ public class InventoryUIController : MonoBehaviour
         {
             VisualElement currentSlot = _slotElements[i];
 
-            // ¥ı²MªÅ®æ¤l¤ºªºÂÂ¼ĞÅÒ¡]¦pªG¦³¡^
+            // å…ˆæ¸…ç©ºæ ¼å­å…§çš„èˆŠæ¨™ç±¤ï¼ˆå¦‚æœæœ‰ï¼‰
             currentSlot.Clear();
 
             if (i < slotsData.Count)
             {
                 var data = slotsData[i];
 
-                // --- ³]©w Icon ---
-                // §Ú­Ìª½±µ±N ItemData ªº icon ³]¬°®æ¤lªº­I´º¹Ï
+                // --- è¨­å®š Icon ---
+                // æˆ‘å€‘ç›´æ¥å°‡ ItemData çš„ icon è¨­ç‚ºæ ¼å­çš„èƒŒæ™¯åœ–
                 currentSlot.style.backgroundImage = new StyleBackground(data.item.icon);
-                currentSlot.style.opacity = 1.0f; // ±Ä¶°¨ìªF¦è«áÅÜ¦^§¹¥şÅã¥Ü
+                currentSlot.style.opacity = 1.0f; // æ¡é›†åˆ°æ±è¥¿å¾Œè®Šå›å®Œå…¨é¡¯ç¤º
 
-                // --- ³]©w ¼Æ¶q¼ĞÅÒ ---
+                // --- è¨­å®š æ•¸é‡æ¨™ç±¤ ---
                 if (data.count > 0)
                 {
                     Label countLabel = new Label(data.count.ToString());
 
-                    // ¥Î¥N½X³]©w¤@ÂIÂ²³æ¼Ë¦¡¡A©Î¦b USS ³]©w .count-label
+                    // ç”¨ä»£ç¢¼è¨­å®šä¸€é»ç°¡å–®æ¨£å¼ï¼Œæˆ–åœ¨ USS è¨­å®š .count-label
                     countLabel.style.position = Position.Absolute;
                     countLabel.style.right = 5;
                     countLabel.style.bottom = 5;
@@ -88,7 +88,7 @@ public class InventoryUIController : MonoBehaviour
             }
             else
             {
-                // ¦pªG®æ¤l¬OªÅªº
+                // å¦‚æœæ ¼å­æ˜¯ç©ºçš„
                 currentSlot.style.backgroundImage = null;
             }
         }

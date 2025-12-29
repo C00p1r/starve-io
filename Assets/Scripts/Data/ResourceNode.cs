@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ResourceNode : MonoBehaviour
 {
-    [SerializeField] private ResourceData data; // ©ì¤J¹ïÀ³ªº ResourceData ¸ê·½ÀÉ
+    [SerializeField] private ResourceData data; // æ‹–å…¥å°æ‡‰çš„ ResourceData è³‡æºæª”
 
     private int _currentStock;
     private float _regenTimer;
@@ -18,7 +18,7 @@ public class ResourceNode : MonoBehaviour
     {
         if (data == null)
         {
-            Debug.LogError($"{gameObject.name} ¯Ê¤Ö ResourceData¡I");
+            Debug.LogError($"{gameObject.name} ç¼ºå°‘ ResourceDataï¼");
             return;
         }
         _currentStock = data.maxStock;
@@ -26,7 +26,7 @@ public class ResourceNode : MonoBehaviour
 
     private void Update()
     {
-        // ¨Ï¥Î³]©wÀÉ¤¤ªº¼Æ­È¶i¦æ§P©w
+        // ä½¿ç”¨è¨­å®šæª”ä¸­çš„æ•¸å€¼é€²è¡Œåˆ¤å®š
         if (data.canRegenerate && _currentStock < data.maxStock)
         {
             HandleRegeneration();
@@ -40,7 +40,7 @@ public class ResourceNode : MonoBehaviour
         {
             _currentStock = Mathf.Min(_currentStock + data.regenAmount, data.maxStock);
             _regenTimer = 0;
-            Debug.Log($"{gameObject.name} «ì´_¤¤... ¥Ø«e: {_currentStock}");
+            Debug.Log($"{gameObject.name} æ¢å¾©ä¸­... ç›®å‰: {_currentStock}");
         }
     }
 
@@ -55,7 +55,7 @@ public class ResourceNode : MonoBehaviour
         int actualYield = Mathf.Min(data.yieldPerHit, _currentStock);
         _currentStock -= actualYield;
 
-        // ±Ä¶°®É­«¸m­p®É¾¹
+        // æ¡é›†æ™‚é‡ç½®è¨ˆæ™‚å™¨
         _regenTimer = 0;
 
         return actualYield;

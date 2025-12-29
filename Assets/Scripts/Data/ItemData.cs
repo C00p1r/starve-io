@@ -5,9 +5,9 @@ namespace StarveIO.Data
     [CreateAssetMenu(fileName = "NewItem", menuName = "StarveIO/Inventory/Item")]
     public class ItemData : ScriptableObject
     {
-        public string itemName;      // ª««~Åã¥Ü¦WºÙ (¨Ò¦p¡G¤ìÀY)
-        public Sprite icon;          // ª««~¦b UI Åã¥Üªº¹Ï¤ù
-        public string description;   // ª««~´y­z (¨Ò¦p¡G°òÂ¦ªº«Ø¿v§÷®Æ)
-        public int maxStack = 99;    // «ù¦³¤W­­
+        public string itemName;      // ç‰©å“é¡¯ç¤ºåç¨± (ä¾‹å¦‚ï¼šæœ¨é ­)
+        public Sprite icon;          // ç‰©å“åœ¨ UI é¡¯ç¤ºçš„åœ–ç‰‡
+        public string description;   // ç‰©å“æè¿° (ä¾‹å¦‚ï¼šåŸºç¤çš„å»ºç¯‰ææ–™)
+        public int maxStack = 99;    // æŒæœ‰ä¸Šé™
     }
 }

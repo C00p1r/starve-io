@@ -7,13 +7,13 @@ public class InventoryManager : MonoBehaviour
 {
     public static InventoryManager Instance { get; private set; }
 
-    [Header("­I¥]³]©w")]
+    [Header("èƒŒåŒ…è¨­å®š")]
     [SerializeField] private int maxSlots = 10;
     [SerializeField] private List<InventorySlot> slots = new List<InventorySlot>();
 
-    // ·í­I¥]ÅÜ°Ê®É¡A³qª¾ UI §ó·s
+    // ç•¶èƒŒåŒ…è®Šå‹•æ™‚ï¼Œé€šçŸ¥ UI æ›´æ–°
     public event Action OnInventoryChanged;
-    public event Action OnInventoryExtended; // ¦X¦¨¥X¤j­I¥]
+    public event Action OnInventoryExtended; // åˆæˆå‡ºå¤§èƒŒåŒ…
     private event Action OnInventoryFull;
     private void Awake()
     {
@@ -28,10 +28,10 @@ public class InventoryManager : MonoBehaviour
         slots.Clear();
     }
 
-    // ®Ö¤ß¥\¯à¡G¼W¥[ª««~
+    // æ ¸å¿ƒåŠŸèƒ½ï¼šå¢åŠ ç‰©å“
     public bool AddItem(ItemData item, int amount)
     {
-        // 1. ¹Á¸Õ§ä´M²{¦³ªº°ïÅ| (¥B¥¼º¡)
+        // 1. å˜—è©¦æ‰¾å°‹ç¾æœ‰çš„å †ç–Š (ä¸”æœªæ»¿)
         foreach (var slot in slots)
         {
             if (slot.item == item && slot.count < item.maxStack)
@@ -48,7 +48,7 @@ public class InventoryManager : MonoBehaviour
             }
         }
 
-        // 2. ¦pªGÁÙ¦³³Ñ¾l¼Æ¶q¡A¹Á¸Õ§ä´M·sªº®æ¤l
+        // 2. å¦‚æœé‚„æœ‰å‰©é¤˜æ•¸é‡ï¼Œå˜—è©¦æ‰¾å°‹æ–°çš„æ ¼å­
         while (amount > 0 && slots.Count < maxSlots)
         {
             int amountToAdd = Mathf.Min(amount, item.maxStack);
@@ -58,7 +58,7 @@ public class InventoryManager : MonoBehaviour
 
         OnInventoryChanged?.Invoke();
 
-        // ¦pªG amount ÁÙ¦³³Ñ¡A¥Nªí­I¥]º¡¤F©ñ¤£¤U
+        // å¦‚æœ amount é‚„æœ‰å‰©ï¼Œä»£è¡¨èƒŒåŒ…æ»¿äº†æ”¾ä¸ä¸‹
         if (amount > 0)
         {
             UIEventManager.TriggerNotify("The Inventory is Full!");

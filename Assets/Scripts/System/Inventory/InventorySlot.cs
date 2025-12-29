@@ -1,6 +1,6 @@
 using StarveIO.Data;
 
-[System.Serializable] // 讓它可以在 Inspector 顯示
+[System.Serializable] // ?????i?H?b Inspector ????
 public class InventorySlot
 {
     public ItemData item;

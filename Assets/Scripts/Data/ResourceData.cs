@@ -5,13 +5,13 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewResourceData", menuName = "StarveIO/World/Resource Data")]
 public class ResourceData : ScriptableObject
 {
-    [Header("°òÂ¦³]©w")]
-    public ItemData item;             // ²£¥Xªºª««~ (¦p¡G¤ìÀY ItemData)
-    public int maxStock = 20;         // ¸ê·½³Ì¤j®e¶q
-    public int yieldPerHit = 2;       // ¨C¦¸ºVÀ»²£¶q
+    [Header("åŸºç¤è¨­å®š")]
+    public ItemData item;             // ç”¢å‡ºçš„ç‰©å“ (å¦‚ï¼šæœ¨é ­ ItemData)
+    public int maxStock = 20;         // è³‡æºæœ€å¤§å®¹é‡
+    public int yieldPerHit = 2;       // æ¯æ¬¡æ•²æ“Šç”¢é‡
 
-    [Header("«ì´_³]©w")]
-    public bool canRegenerate = true; // ¬O§_¦Û°Ê«ì´_
-    public float regenInterval = 5f;  // «ì´_¶¡¹j (¬í)
-    public int regenAmount = 1;       // ¨C¦¸«ì´_¶q
+    [Header("æ¢å¾©è¨­å®š")]
+    public bool canRegenerate = true; // æ˜¯å¦è‡ªå‹•æ¢å¾©
+    public float regenInterval = 5f;  // æ¢å¾©é–“éš” (ç§’)
+    public int regenAmount = 1;       // æ¯æ¬¡æ¢å¾©é‡
 }
