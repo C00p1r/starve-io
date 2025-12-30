@@ -751,6 +751,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1724466422}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1409205216
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1409205217}
+  m_Layer: 0
+  m_Name: MobParent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1409205217
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1409205216}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1724466422}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1508985227
 GameObject:
   m_ObjectHideFlags: 0
@@ -922,6 +953,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1724466422}
   - component: {fileID: 1724466421}
+  - component: {fileID: 1724466423}
   m_Layer: 0
   m_Name: WorldManager
   m_TagString: Untagged
@@ -980,8 +1012,28 @@ Transform:
   - {fileID: 1941610788}
   - {fileID: 288129401}
   - {fileID: 1156243869}
+  - {fileID: 1409205217}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1724466423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1724466420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06ad282f9d4ec504d8fd01e5ae7cac3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CreatureSpawner
+  resourceParent: {fileID: 1409205217}
+  wolvesPrefab: {fileID: 7597778176648832391, guid: 441ce1f0bc2c2a9419b6d3c34e1fd572, type: 3}
+  spidersPrefab: {fileID: 7597778176648832391, guid: 40ad16336ecd1f248a31ee4e94cf8b39, type: 3}
+  maxCreatures: 20
+  mapWidth: 50
+  mapHeight: 50
+  frontZPosition: -1
 --- !u!1 &1867235780 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1973101817498293300, guid: 1b326890f8c202b48b0aff58c78ecbb3, type: 3}
@@ -1260,6 +1312,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab0ca85876b879d429a08859eed3b56a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryUIController
+  _inventoryManager: {fileID: 2074712203}
 --- !u!114 &2036016173
 MonoBehaviour:
   m_ObjectHideFlags: 0

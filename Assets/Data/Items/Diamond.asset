@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Diamond
   m_EditorClassIdentifier: Assembly-CSharp::StarveIO.Data.ItemData
   itemName: Diamond
-  icon: {fileID: 7599664719319321434, guid: 93dd10c5f9fff9d4a98f640bfd262a35, type: 3}
+  icon: {fileID: 4403054310650608413, guid: 090720892e673f64c89f6655d53885ee, type: 3}
   description: 
   maxStack: 5
   toolType: 0

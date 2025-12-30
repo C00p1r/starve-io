@@ -59,10 +59,11 @@ public class InventoryManager : MonoBehaviour
         // 2. 如果還有剩餘數量，嘗試找尋空格
         for (int i = 0; i < slots.Count && amount > 0; i++)
         {
+            Debug.Log("trying to find empty slot...");
             var slot = slots[i];
             if (slot.item != null && slot.count > 0)
                 continue;
-
+            Debug.Log("trying to find empty slot...Found!");
             int amountToAdd = Mathf.Min(amount, item.maxStack);
             slot.item = item;
             slot.count = amountToAdd;

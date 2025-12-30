@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Gold
   m_EditorClassIdentifier: Assembly-CSharp::StarveIO.Data.ItemData
   itemName: Gold
-  icon: {fileID: -7342811911535012669, guid: 0ab0cb7705ca0ba43851134507e38d65, type: 3}
+  icon: {fileID: 6107329616341019169, guid: 9b1653a603b1f044f89d873ff5a43af4, type: 3}
   description: 
   maxStack: 5
   toolType: 0

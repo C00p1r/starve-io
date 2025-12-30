@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 
 public class InventoryUIController : MonoBehaviour
 {
-    private InventoryManager _inventoryManager;
+    [SerializeField] private InventoryManager _inventoryManager;
     private VisualElement _root;
     private List<VisualElement> _slotElements = new List<VisualElement>();
 
@@ -14,7 +14,7 @@ public class InventoryUIController : MonoBehaviour
     private void OnEnable()
     {
         // 2. 在這裡嘗試獲取單例 (如果 Awake 還沒跑，這裡會拿到 null，我們等下在 Update 處理)
-        _inventoryManager = InventoryManager.Instance;
+        //_inventoryManager = InventoryManager.Instance;
 
         _root = GetComponent<UIDocument>().rootVisualElement;
         _slotElements = _root.Query<VisualElement>("Bar1").ToList();
@@ -33,25 +33,25 @@ public class InventoryUIController : MonoBehaviour
         // 4. 初始化顯示
         UpdateInventoryUI();
     }
-  
 
-    
-    
+
+
+
     // uncomment if  ERR NULL REFERENCE occured
-    //private void Start()
-    //{
-    //    // 5. 如果 OnEnable 的時候單例還沒準備好，Start 執行得比較晚，這裡再做一次保險
-    //    if (_inventoryManager == null)
-    //    {
-    //        _inventoryManager = InventoryManager.Instance;
-    //        if (_inventoryManager != null)
-    //        {
-    //            _inventoryManager.OnInventoryChanged -= UpdateInventoryUI;
-    //            _inventoryManager.OnInventoryChanged += UpdateInventoryUI;
-    //            UpdateInventoryUI();
-    //        }
-    //    }
-    //}
+    private void Start()
+    {
+        // 5. 如果 OnEnable 的時候單例還沒準備好，Start 執行得比較晚，這裡再做一次保險
+        if (_inventoryManager == null)
+        {
+            _inventoryManager = InventoryManager.Instance;
+            if (_inventoryManager != null)
+            {
+                _inventoryManager.OnInventoryChanged -= UpdateInventoryUI;
+                _inventoryManager.OnInventoryChanged += UpdateInventoryUI;
+                UpdateInventoryUI();
+            }
+        }
+    }
 
     private void OnDisable()
     {
@@ -64,8 +64,8 @@ public class InventoryUIController : MonoBehaviour
 
     public void UpdateInventoryUI()
     {
-        if (_inventoryManager == null)
-            return;
+        //if (_inventoryManager == null)
+        //    return;
 
         var slotsData = _inventoryManager.GetSlots();
         int selectedIndex = _inventoryManager.GetSelectedIndex();

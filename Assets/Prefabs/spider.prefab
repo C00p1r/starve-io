@@ -151,7 +151,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterBehavior
   player: {fileID: 0}
-  meetPrefab: {fileID: 0}
+  meetPrefab: {fileID: 6615762040543448315, guid: 7f03ad03f9a335442b002e36fc888eba, type: 3}
   threadPrefab: {fileID: 6615762040543448315, guid: 4260ec9f0e13d4847914ee3070a9f59d, type: 3}
   followDistance: 5
   moveSpeed: 2

@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Wood
   m_EditorClassIdentifier: Assembly-CSharp::StarveIO.Data.ItemData
   itemName: Wood
-  icon: {fileID: -7793352843893472228, guid: ab78072ac95fb9e48af9b4c9a618895f, type: 3}
+  icon: {fileID: 7440981132975211316, guid: 9f70d7ab52bfbca48a2e28500ca7a9f1, type: 3}
   description: Gained from Tree
   maxStack: 5
+  toolType: 0
+  toolTier: 0

@@ -9,6 +9,10 @@ using UnityEngine;
 
 public class CreatureSpawner : MonoBehaviour
 {
+
+    [Header("¼h¯ÅºÞ²z")]
+    public Transform resourceParent;
+
     public GameObject wolvesPrefab; // Reference to the wolves prefab
     public GameObject spidersPrefab; // Reference to the spiders prefab
     public int maxCreatures = 20; // Maximum number of creatures on the map
@@ -55,6 +59,6 @@ public class CreatureSpawner : MonoBehaviour
         );
 
         GameObject creaturePrefab = Random.value < 0.5f ? wolvesPrefab : spidersPrefab;
-        Instantiate(creaturePrefab, randomPosition, Quaternion.identity);
+        Instantiate(creaturePrefab, randomPosition, Quaternion.identity, resourceParent);
     }
 }
