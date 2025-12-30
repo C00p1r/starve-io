@@ -177,3 +177,16 @@
     border-bottom-right-radius: 8px;
     border-bottom-left-radius: 8px;
 }
+
+.count-label {
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+    color: white;
+    -unity-font-style: bold;
+    font-size: 35px;
+    -unity-text-outline-width: 1px;
+    -unity-text-outline-color: black;
+    picking-mode: ignore;
+    -unity-font-definition: resource('FlatSkin/Font/Roboto-BoldItalic');
+}

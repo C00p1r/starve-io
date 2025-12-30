@@ -8,7 +8,7 @@ public class ResourceNode : MonoBehaviour
 
     private int _currentStock;
     private float _regenTimer;
-    private event Action OnResourceEmpty;
+    //private event Action OnResourceEmpty;
     public ResourceData GetResourceData() { return data; }
     public ItemData GetItemData()
     {
@@ -48,7 +48,7 @@ public class ResourceNode : MonoBehaviour
     {
         if (_currentStock <= 0)
         {
-            OnResourceEmpty?.Invoke();
+            UIEventManager.TriggerNotify("Resource is Empty!");
             return 0;
         }
 

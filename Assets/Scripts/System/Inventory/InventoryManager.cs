@@ -14,7 +14,7 @@ public class InventoryManager : MonoBehaviour
     // 當背包變動時，通知 UI 更新
     public event Action OnInventoryChanged;
     public event Action OnInventoryExtended; // 合成出大背包
-    private event Action OnInventoryFull;
+    //private event Action OnInventoryFull;
     private void Awake()
     {
         if (Instance == null)
@@ -67,6 +67,77 @@ public class InventoryManager : MonoBehaviour
         
         return true;
     
+    }
+
+    public void UseItem(int index)
+    {
+        if (index < 0 || index >= slots.Count || slots[index].item == null) return;
+
+        InventorySlot slot = slots[index];
+        ItemData item = slot.item;
+
+        if (item is IUsable usableItem)
+        {
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            if (player == null)
+            {
+                Debug.Log("player is null wtf!");
+                return;
+            }
+            // 根據 Enum 執行不同的分支邏輯
+            usableItem.Use(player);
+            Debug.Log("item is used");
+            // 統一處理消耗邏輯：如果是消耗品分類，數量 -1
+            if (item.IsConsumable)
+            {
+                slot.count--;
+                if (slot.count <= 0)
+                {
+                    slot.item = null;
+                    slot.count = 0;
+                }
+            }
+        }
+        else
+        {
+            Debug.Log("這是資源，不能直接使用");
+        }
+
+        OnInventoryChanged?.Invoke();
+    }
+
+    public void SwapItems(int fromIndex, int toIndex)
+    {
+        if (fromIndex == toIndex || fromIndex >= slots.Count || toIndex >= slots.Count) return;
+
+        // 交換 List 中的元素
+        var temp = slots[fromIndex];
+        slots[fromIndex] = slots[toIndex];
+        slots[toIndex] = temp;
+
+        OnInventoryChanged?.Invoke();
+    }
+
+    public void DropItem(int index, int amount)
+    {
+        if (index < 0 || index >= slots.Count) return;
+
+        InventorySlot slot = slots[index];
+
+        // 限制丟出數量不能超過持有數量
+        int actualDropAmount = Mathf.Min(amount, slot.count);
+
+        // 執行生成掉落物邏輯
+        //SpawnItemInWorld(slot.item, actualDropAmount);
+
+        // 扣除數量
+        slot.count -= actualDropAmount;
+        if (slot.count <= 0)
+        {
+            slots.RemoveAt(index);
+        }
+
+        OnInventoryChanged?.Invoke();
     }
 
     public List<InventorySlot> GetSlots() => slots;
