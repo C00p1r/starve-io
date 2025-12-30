@@ -79,13 +79,13 @@ public class CraftingManager : MonoBehaviour
             return false;
         }
 
-        if (inventory.GetItemCount(stoneItem) < stoneCost)
+        if (inventory.GetItemCount(stoneItem) < stoneCost || inventory.GetItemCount(woodenPickaxeItem) < 1)
         {
-            UIEventManager.TriggerNotify("Not enough stone to craft a stone pickaxe.");
+            UIEventManager.TriggerNotify("Can't craft a stone pickaxe.");
             return false;
         }
 
-        if (!inventory.TryRemoveItem(stoneItem, stoneCost))
+        if (!inventory.TryRemoveItem(stoneItem, stoneCost) || !inventory.TryRemoveItem(woodenPickaxeItem, 1))
             return false;
 
         if (!inventory.AddItem(stonePickaxeItem, stonePickaxeAmount))
@@ -122,13 +122,13 @@ public class CraftingManager : MonoBehaviour
             return false;
         }
 
-        if (inventory.GetItemCount(goldItem) < goldCost)
+        if (inventory.GetItemCount(goldItem) < goldCost || inventory.GetItemCount(stonePickaxeItem) < 1)
         {
-            UIEventManager.TriggerNotify("Not enough gold to craft a golden pickaxe.");
+            UIEventManager.TriggerNotify("Can't craft a golden pickaxe.");
             return false;
         }
 
-        if (!inventory.TryRemoveItem(goldItem, goldCost))
+        if (!inventory.TryRemoveItem(goldItem, goldCost) || !inventory.TryRemoveItem(stonePickaxeItem, 1))
             return false;
 
         if (!inventory.AddItem(goldenPickaxeItem, goldenPickaxeAmount))
@@ -165,13 +165,13 @@ public class CraftingManager : MonoBehaviour
             return false;
         }
 
-        if (inventory.GetItemCount(diamondItem) < diamondCost)
+        if (inventory.GetItemCount(diamondItem) < diamondCost || inventory.GetItemCount(goldenPickaxeItem) < 1)
         {
-            UIEventManager.TriggerNotify("Not enough diamond to craft a diamond pickaxe.");
+            UIEventManager.TriggerNotify("Can't craft a diamond pickaxe.");
             return false;
         }
 
-        if (!inventory.TryRemoveItem(diamondItem, diamondCost))
+        if (!inventory.TryRemoveItem(diamondItem, diamondCost) || !inventory.TryRemoveItem(goldenPickaxeItem, 1))
             return false;
 
         if (!inventory.AddItem(diamondPickaxeItem, diamondPickaxeAmount))

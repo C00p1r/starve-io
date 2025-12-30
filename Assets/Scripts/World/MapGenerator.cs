@@ -4,14 +4,24 @@ using UnityEngine.Tilemaps;
 
 public class MapGenerator : MonoBehaviour
 {
+
+    [Header("層級管理")]
+    public Transform resourceParent;
+
     [Header("地圖與資源")]
     public Tilemap groundTilemap;
     public TileBase grassTile;
     public TileBase snowTile;
     public GameObject treePrefab;
+    public GameObject tree2Prefab;
+    public GameObject fruitTreePrefab;
     public GameObject rockPrefab;
     public GameObject goldPrefab;
     public GameObject diamondPrefab;
+
+    [Header("生成物縮放範圍")]
+    public float minScale;
+    public float maxScale;
 
     [Header("大小設定")]
     public int width = 100;
@@ -23,7 +33,9 @@ public class MapGenerator : MonoBehaviour
     public CinemachineConfiner2D confiner; // 拖入你的 CM vcam1 (包含 Confiner 組件的那個)
 
     [Header("機率")]
-    [Range(0, 1)] public float treeDensity = 0.05f;
+    [Range(0, 1)] public float treeDensity = 0.04f;
+    [Range(0, 1)] public float tree2Density = 0.01f;
+    [Range(0, 1)] public float fruitTreeDensity = 0.02f;
     [Range(0, 1)] public float rockDensity = 0.02f;
     [Range(0, 1)] public float goldDensity = 0.005f;
     [Range(0, 1)] public float diamondDensity = 0.002f;
@@ -108,25 +120,53 @@ public class MapGenerator : MonoBehaviour
     void SpawnRandomResource(Vector3 pos)
     {
         float rand = Random.value;
-        if (rand < treeDensity)
+        //if (rand < treeDensity)
+        //{
+        //    if (treePrefab != null)
+        //        Instantiate(treePrefab, pos, Quaternion.identity, transform);
+        //}
+        //else if (rand < treeDensity + rockDensity)
+        //{
+        //    if (rockPrefab != null)
+        //        Instantiate(rockPrefab, pos, Quaternion.identity, transform);
+        //}
+        //else if (rand < treeDensity + rockDensity + goldDensity)
+        //{
+        //    if (goldPrefab != null)
+        //        Instantiate(goldPrefab, pos, Quaternion.identity, transform);
+        //}
+        //else if (rand < treeDensity + rockDensity + goldDensity + diamondDensity)
+        //{
+        //    if (diamondPrefab != null)
+        //        Instantiate(diamondPrefab, pos, Quaternion.identity, transform);
+        //}
+        // 使用累積機率判斷
+        float cumulative = 0f;
+
+        // 決定要生成的物件類型
+        GameObject prefabToSpawn = null;
+
+        if (rand < (cumulative += treeDensity)) prefabToSpawn = treePrefab;
+        else if (rand < (cumulative += tree2Density)) prefabToSpawn = tree2Prefab;
+        else if (rand < (cumulative += rockDensity)) prefabToSpawn = rockPrefab;
+        else if (rand < (cumulative += goldDensity)) prefabToSpawn = goldPrefab;
+        else if (rand < (cumulative += diamondDensity)) prefabToSpawn = diamondPrefab;
+        else if (rand < (cumulative += fruitTreeDensity)) prefabToSpawn = fruitTreePrefab;
+
+        if (prefabToSpawn != null)
         {
-            if (treePrefab != null)
-                Instantiate(treePrefab, pos, Quaternion.identity, transform);
-        }
-        else if (rand < treeDensity + rockDensity)
-        {
-            if (rockPrefab != null)
-                Instantiate(rockPrefab, pos, Quaternion.identity, transform);
-        }
-        else if (rand < treeDensity + rockDensity + goldDensity)
-        {
-            if (goldPrefab != null)
-                Instantiate(goldPrefab, pos, Quaternion.identity, transform);
-        }
-        else if (rand < treeDensity + rockDensity + goldDensity + diamondDensity)
-        {
-            if (diamondPrefab != null)
-                Instantiate(diamondPrefab, pos, Quaternion.identity, transform);
+            // 1. 確保 Z 軸座標為 0，解決你之前提到的消失問題
+            Vector3 spawnPos = new Vector3(pos.x, pos.y, 0f);
+
+            // 2. 實例化物件
+            GameObject instance = Instantiate(prefabToSpawn, spawnPos, Quaternion.identity, resourceParent);
+
+            // 3. 執行隨機縮放
+            float randomScale = Random.Range(minScale, maxScale);
+            instance.transform.localScale = Vector3.one * randomScale;
+
+            // 4. (選配) 加入一點隨機旋轉讓地圖更亂一點 (僅限 2D)
+            // instance.transform.rotation = Quaternion.Euler(0, 0, Random.Range(0, 360));
         }
     }
 }

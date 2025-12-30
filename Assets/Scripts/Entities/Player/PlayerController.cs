@@ -108,7 +108,7 @@ public class PlayerController : MonoBehaviour
                 if (gatheredAmount > 0)
                 {
                     bool success = _inventoryManager.AddItem(gatheredItem, gatheredAmount);
-                    if (!success) Debug.Log("背包已滿！顯示");
+                    if (!success) UIEventManager.TriggerNotify("The Inventory is Full!");
                     else Debug.Log($"成功將 {gatheredItem.name}x{gatheredAmount} 放入背包!");
                 }
             }

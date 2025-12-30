@@ -1,12 +1,15 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
-using System.Collections.Generic;
 
 public class InventoryUIController : MonoBehaviour
 {
     private InventoryManager _inventoryManager;
     private VisualElement _root;
     private List<VisualElement> _slotElements = new List<VisualElement>();
+
+    
 
     private void OnEnable()
     {
@@ -15,6 +18,7 @@ public class InventoryUIController : MonoBehaviour
 
         _root = GetComponent<UIDocument>().rootVisualElement;
         _slotElements = _root.Query<VisualElement>("Bar1").ToList();
+        
 
         // 3. 訂閱事件 (先檢查 null，防止報錯)
         if (_inventoryManager != null)
@@ -29,7 +33,10 @@ public class InventoryUIController : MonoBehaviour
         // 4. 初始化顯示
         UpdateInventoryUI();
     }
+  
 
+    
+    
     // uncomment if  ERR NULL REFERENCE occured
     //private void Start()
     //{
@@ -55,7 +62,7 @@ public class InventoryUIController : MonoBehaviour
         }
     }
 
-    private void UpdateInventoryUI()
+    public void UpdateInventoryUI()
     {
         if (_inventoryManager == null)
             return;
