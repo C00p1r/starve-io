@@ -7,7 +7,7 @@ public class UINotifier : MonoBehaviour
 {
     private Label _notifyLabel;
     private Coroutine _currentFadeRoutine;
-    [Header("Åã¥Ü³]©w")]
+    [Header("é¡¯ç¤ºè¨­å®š")]
     [SerializeField] private float DisplayDuration = 2f;
     [SerializeField] private float FadeOutDuration = 0.5f;
 
@@ -16,7 +16,7 @@ public class UINotifier : MonoBehaviour
         var root = GetComponent<UIDocument>().rootVisualElement;
         _notifyLabel = root.Q<Label>("NotifyLabel");
         _notifyLabel.style.visibility = Visibility.Hidden;
-        // ­q¾\¨Æ¥ó
+        // è¨‚é–±äº‹ä»¶
         UIEventManager.OnNotify += ShowNotification;
     }
 
@@ -29,7 +29,7 @@ public class UINotifier : MonoBehaviour
     {
         if (_notifyLabel == null) return;
 
-        // ¦pªG¥Ø«e¥¿¦bÅã¥Ü¤W¤@­Ó´£¥Ü¡A¥ı°±¤î¥¦
+        // å¦‚æœç›®å‰æ­£åœ¨é¡¯ç¤ºä¸Šä¸€å€‹æç¤ºï¼Œå…ˆåœæ­¢å®ƒ
         if (_currentFadeRoutine != null) StopCoroutine(_currentFadeRoutine);
 
         _currentFadeRoutine = StartCoroutine(FadeNotify(message));
@@ -41,10 +41,10 @@ public class UINotifier : MonoBehaviour
         _notifyLabel.style.visibility = Visibility.Visible;
         _notifyLabel.style.opacity = 1f;
 
-        // Åã¥Ü 2 ¬í
+        // é¡¯ç¤º 2 ç§’
         yield return new WaitForSeconds(DisplayDuration);
 
-        // Â²³æªº²H¥X®ÄªG (¦pªG USS ¦³³]©w transition¡A³o¸Ì§ï³z©ú«×§Y¥i)
+        // ç°¡å–®çš„æ·¡å‡ºæ•ˆæœ (å¦‚æœ USS æœ‰è¨­å®š transitionï¼Œé€™è£¡æ”¹é€æ˜åº¦å³å¯)
         _notifyLabel.style.opacity = 0f;
 
         yield return new WaitForSeconds(FadeOutDuration);

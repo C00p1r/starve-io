@@ -2,10 +2,10 @@ using System;
 
 public static class UIEventManager
 {
-    // ©w¸q¤@­Ó±µ¦¬¦r¦êªº¨Æ¥ó
+    // å®šç¾©ä¸€å€‹æ¥æ”¶å­—ä¸²çš„äº‹ä»¶
     public static event Action<string> OnNotify;
 
-    // ´£¨Ñµ¹¦UÃş¸}¥»©I¥sªºÀRºA¤èªk
+    // æä¾›çµ¦å„é¡è…³æœ¬å‘¼å«çš„éœæ…‹æ–¹æ³•
     public static void TriggerNotify(string message)
     {
         OnNotify?.Invoke(message);

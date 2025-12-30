@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 63b5067300f9b43b4b4a751b334f77ca
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - woodItem: {fileID: 11400000, guid: 3aafa725d661f7148b99c397d8a63776, type: 2}
+  - pickaxeItem: {fileID: 11400000, guid: 5b09f144e16a3402aa227928e9fc6b88, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

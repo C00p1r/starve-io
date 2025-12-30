@@ -4,24 +4,24 @@ using UnityEngine.InputSystem;
 
 namespace StarveIO.Input
 {
-    // ±NÀÉ®×¦WºÙ§ï¬°»P§Aªº¸ê·½¤Ç°t
+    // å°‡æª”æ¡ˆåç¨±æ”¹ç‚ºèˆ‡ä½ çš„è³‡æºåŒ¹é…
     [CreateAssetMenu(fileName = "InputReader", menuName = "StarveIO/Input/InputReader")]
-    public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions // ¨Ï¥Î§A§ä¨ìªº¤¶­±¦W
+    public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions // ä½¿ç”¨ä½ æ‰¾åˆ°çš„ä»‹é¢å
     {
-        // ©w¸q¨Æ¥ó¨Ñ¨ä¥L¨t²Î­q¾\
+        // å®šç¾©äº‹ä»¶ä¾›å…¶ä»–ç³»çµ±è¨‚é–±
         public event UnityAction<Vector2> MoveEvent = delegate { };
         public event UnityAction<Vector2> LookEvent = delegate { };
         public event UnityAction AttackEvent = delegate { };
         public event UnityAction InteractEvent = delegate { };
 
-        private InputSystem_Actions _inputActions; // §ï¥Î§AªºÃş§O¦W
+        private InputSystem_Actions _inputActions; // æ”¹ç”¨ä½ çš„é¡åˆ¥å
 
         private void OnEnable()
         {
             if (_inputActions == null)
             {
                 _inputActions = new InputSystem_Actions();
-                _inputActions.Player.SetCallbacks(this); // ³o¸Ì¹ïÀ³§Aªº Player Action Map
+                _inputActions.Player.SetCallbacks(this); // é€™è£¡å°æ‡‰ä½ çš„ Player Action Map
             }
             _inputActions.Player.Enable();
         }
@@ -31,12 +31,12 @@ namespace StarveIO.Input
             _inputActions.Player.Disable();
         }
 
-        // --- ¹ê§@ IPlayerActions ¤¶­±¤¤ªº¤èªk ---
-        // µù¡G¨ãÅé¤èªk¦WºÙ¨ú¨M©ó§A¦b Input Action µøµ¡¤¤©w¸qªº Action ¦W¦r
+        // --- å¯¦ä½œ IPlayerActions ä»‹é¢ä¸­çš„æ–¹æ³• ---
+        // è¨»ï¼šå…·é«”æ–¹æ³•åç¨±å–æ±ºæ–¼ä½ åœ¨ Input Action è¦–çª—ä¸­å®šç¾©çš„ Action åå­—
 
         public void OnLook(InputAction.CallbackContext context)
         {
-            // Åª¨ú·Æ¹«¦b¿Ã¹õ¤Wªº®y¼Ğ (Screen Position)
+            // è®€å–æ»‘é¼ åœ¨è¢å¹•ä¸Šçš„åº§æ¨™ (Screen Position)
             LookEvent.Invoke(context.ReadValue<Vector2>());
         }
 
@@ -44,7 +44,7 @@ namespace StarveIO.Input
         {
             Vector2 moveVal = context.ReadValue<Vector2>();
 
-            // °£¿ù¥Î¡G½T»{©ñ¶}«öÁä®É¬O§_¦³¦L¥X (0.0, 0.0)
+            // é™¤éŒ¯ç”¨ï¼šç¢ºèªæ”¾é–‹æŒ‰éµæ™‚æ˜¯å¦æœ‰å°å‡º (0.0, 0.0)
             Debug.Log($"Move Input: {moveVal}, Phase: {context.phase}");
 
             MoveEvent.Invoke(moveVal);
@@ -56,15 +56,15 @@ namespace StarveIO.Input
                 AttackEvent.Invoke();
         }
 
-        // ¦pªG§Aªº Action ¥s Interact¡A´N·|¦³³o­Ó¤èªk
+        // å¦‚æœä½ çš„ Action å« Interactï¼Œå°±æœƒæœ‰é€™å€‹æ–¹æ³•
         public void OnInteract(InputAction.CallbackContext context)
         {
             if (context.phase == InputActionPhase.Performed)
                 InteractEvent.Invoke();
         }
 
-        // ª`·N¡G¦pªG¤¶­±´£¥Ü§A¯Ê¤Ö¨ä¥L¤èªk¡]¨Ò¦p OnLook, OnJump¡^¡A
-        // §Y¨Ï¨S¥Î¨ì¤]¥²¶·¼g¥X¨Ó¡A¥i¥H¯dªÅ¡A§_«h·|³ø¿ù¡C
+        // æ³¨æ„ï¼šå¦‚æœä»‹é¢æç¤ºä½ ç¼ºå°‘å…¶ä»–æ–¹æ³•ï¼ˆä¾‹å¦‚ OnLook, OnJumpï¼‰ï¼Œ
+        // å³ä½¿æ²’ç”¨åˆ°ä¹Ÿå¿…é ˆå¯«å‡ºä¾†ï¼Œå¯ä»¥ç•™ç©ºï¼Œå¦å‰‡æœƒå ±éŒ¯ã€‚
         public void OnJump(InputAction.CallbackContext context) { }
         public void OnSprint(InputAction.CallbackContext context) { }
         public void OnCrouch(InputAction.CallbackContext context) { }

@@ -7,13 +7,15 @@ public class InventoryManager : MonoBehaviour
 {
     public static InventoryManager Instance { get; private set; }
 
-    [Header("­I¥]³]©w")]
+    [Header("èƒŒåŒ…è¨­å®š")]
     [SerializeField] private int maxSlots = 10;
     [SerializeField] private List<InventorySlot> slots = new List<InventorySlot>();
+    [SerializeField] private int selectedIndex = 0;
 
-    // ·í­I¥]ÅÜ°Ê®É¡A³qª¾ UI §ó·s
+    // ç•¶èƒŒåŒ…è®Šå‹•æ™‚ï¼Œé€šçŸ¥ UI æ›´æ–°
     public event Action OnInventoryChanged;
-    public event Action OnInventoryExtended; // ¦X¦¨¥X¤j­I¥]
+    public event Action OnInventoryExtended; // åˆæˆå‡ºå¤§èƒŒåŒ…
+    public event Action<int> OnSelectedIndexChanged;
     private event Action OnInventoryFull;
     private void Awake()
     {
@@ -26,12 +28,17 @@ public class InventoryManager : MonoBehaviour
             Destroy(gameObject);
         }
         slots.Clear();
+        for (int i = 0; i < maxSlots; i++)
+            slots.Add(new InventorySlot(null, 0));
     }
 
-    // ®Ö¤ß¥\¯à¡G¼W¥[ª««~
+    // æ ¸å¿ƒåŠŸèƒ½ï¼šå¢åŠ ç‰©å“
     public bool AddItem(ItemData item, int amount)
     {
-        // 1. ¹Á¸Õ§ä´M²{¦³ªº°ïÅ| (¥B¥¼º¡)
+        if (item == null || amount <= 0)
+            return false;
+
+        // 1. å˜—è©¦æ‰¾å°‹ç¾æœ‰çš„å †ç–Š (ä¸”æœªæ»¿)
         foreach (var slot in slots)
         {
             if (slot.item == item && slot.count < item.maxStack)
@@ -48,17 +55,22 @@ public class InventoryManager : MonoBehaviour
             }
         }
 
-        // 2. ¦pªGÁÙ¦³³Ñ¾l¼Æ¶q¡A¹Á¸Õ§ä´M·sªº®æ¤l
-        while (amount > 0 && slots.Count < maxSlots)
+        // 2. å¦‚æœé‚„æœ‰å‰©é¤˜æ•¸é‡ï¼Œå˜—è©¦æ‰¾å°‹ç©ºæ ¼
+        for (int i = 0; i < slots.Count && amount > 0; i++)
         {
+            var slot = slots[i];
+            if (slot.item != null && slot.count > 0)
+                continue;
+
             int amountToAdd = Mathf.Min(amount, item.maxStack);
-            slots.Add(new InventorySlot(item, amountToAdd));
+            slot.item = item;
+            slot.count = amountToAdd;
             amount -= amountToAdd;
         }
 
         OnInventoryChanged?.Invoke();
 
-        // ¦pªG amount ÁÙ¦³³Ñ¡A¥Nªí­I¥]º¡¤F©ñ¤£¤U
+        // å¦‚æœ amount é‚„æœ‰å‰©ï¼Œä»£è¡¨èƒŒåŒ…æ»¿äº†æ”¾ä¸ä¸‹
         if (amount > 0)
         {
             UIEventManager.TriggerNotify("The Inventory is Full!");
@@ -70,4 +82,106 @@ public class InventoryManager : MonoBehaviour
     }
 
     public List<InventorySlot> GetSlots() => slots;
+    public int GetSelectedIndex() => selectedIndex;
+    public int GetMaxSlots() => maxSlots;
+
+    public ItemData GetSelectedItem()
+    {
+        if (selectedIndex < 0 || selectedIndex >= slots.Count)
+            return null;
+
+        var slot = slots[selectedIndex];
+        if (slot.item == null || slot.count <= 0)
+            return null;
+
+        return slot.item;
+    }
+
+    public void SelectIndex(int index)
+    {
+        int clampedIndex = Mathf.Clamp(index, 0, Mathf.Max(0, maxSlots - 1));
+        if (clampedIndex == selectedIndex)
+            return;
+
+        selectedIndex = clampedIndex;
+        OnSelectedIndexChanged?.Invoke(selectedIndex);
+    }
+
+    public void CycleSelection(int direction)
+    {
+        if (maxSlots <= 0)
+            return;
+
+        int nextIndex = selectedIndex + direction;
+        if (nextIndex < 0)
+            nextIndex = maxSlots - 1;
+        else if (nextIndex >= maxSlots)
+            nextIndex = 0;
+
+        SelectIndex(nextIndex);
+    }
+
+    public int GetItemCount(ItemData item)
+    {
+        if (item == null)
+            return 0;
+
+        int total = 0;
+        foreach (var slot in slots)
+        {
+            if (slot.item == item)
+                total += slot.count;
+        }
+
+        return total;
+    }
+
+    public bool TryRemoveItem(ItemData item, int amount)
+    {
+        if (item == null || amount <= 0)
+            return false;
+
+        if (GetItemCount(item) < amount)
+            return false;
+
+        for (int i = slots.Count - 1; i >= 0 && amount > 0; i--)
+        {
+            var slot = slots[i];
+            if (slot.item != item)
+                continue;
+
+            int take = Mathf.Min(amount, slot.count);
+            slot.count -= take;
+            amount -= take;
+
+            if (slot.count <= 0)
+            {
+                slot.count = 0;
+                slot.item = null;
+            }
+        }
+
+        OnInventoryChanged?.Invoke();
+        return true;
+    }
+
+    public bool ClearSelectedSlot()
+    {
+        return ClearSlot(selectedIndex);
+    }
+
+    public bool ClearSlot(int index)
+    {
+        if (index < 0 || index >= slots.Count)
+            return false;
+
+        var slot = slots[index];
+        if (slot.item == null || slot.count <= 0)
+            return false;
+
+        slot.item = null;
+        slot.count = 0;
+        OnInventoryChanged?.Invoke();
+        return true;
+    }
 }
