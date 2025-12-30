@@ -1,4 +1,3 @@
-using NUnit.Framework.Interfaces;
 using StarveIO.Data;
 using UnityEngine;
 
@@ -9,6 +8,10 @@ public class ResourceData : ScriptableObject
     public ItemData item;             // 產出的物品 (如：木頭 ItemData)
     public int maxStock = 20;         // 資源最大容量
     public int yieldPerHit = 2;       // 每次敲擊產量
+
+    [Header("Tool Requirements")]
+    public ToolType requiredToolType = ToolType.None;
+    public int requiredToolTier = 0;
 
     [Header("恢復設定")]
     public bool canRegenerate = true; // 是否自動恢復

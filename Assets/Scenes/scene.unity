@@ -1000,6 +1000,58 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!1 &1907333765
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1907333767}
+  - component: {fileID: 1907333766}
+  m_Layer: 0
+  m_Name: CraftingManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1907333766
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1907333765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63b5067300f9b43b4b4a751b334f77ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CraftingManager
+  woodItem: {fileID: 11400000, guid: 3aafa725d661f7148b99c397d8a63776, type: 2}
+  woodenPickaxeItem: {fileID: 11400000, guid: 5b09f144e16a3402aa227928e9fc6b88, type: 2}
+  woodCost: 5
+  pickaxeAmount: 1
+  stoneItem: {fileID: 11400000, guid: 81d971fb735d58d4d9dd88ff642f14ea, type: 2}
+  stonePickaxeItem: {fileID: 11400000, guid: 01d14dcdc6f5c42729b6303d250fdb52, type: 2}
+  stoneCost: 5
+  stonePickaxeAmount: 1
+--- !u!4 &1907333767
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1907333765}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2, y: 0.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1941610786
 GameObject:
   m_ObjectHideFlags: 0
@@ -1096,6 +1148,8 @@ GameObject:
   - component: {fileID: 2036016170}
   - component: {fileID: 2036016172}
   - component: {fileID: 2036016173}
+  - component: {fileID: 2036016174}
+  - component: {fileID: 2036016175}
   m_Layer: 5
   m_Name: InGameUI
   m_TagString: Untagged
@@ -1167,6 +1221,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UINotifier
   DisplayDuration: 2
   FadeOutDuration: 0.5
+--- !u!114 &2036016174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2036016169}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 329af2523521c4b91bc1f416cf3ea76e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CraftingUIController
+  craftingManager: {fileID: 1907333766}
+--- !u!114 &2036016175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2036016169}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46063fc9bb5b145d9bb56dc25643deff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InventoryDeleteController
+  inventoryManager: {fileID: 0}
 --- !u!1001 &1709109133380762305
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1248,3 +1328,4 @@ SceneRoots:
   - {fileID: 1709109133380762305}
   - {fileID: 2036016171}
   - {fileID: 30285147}
+  - {fileID: 1907333767}

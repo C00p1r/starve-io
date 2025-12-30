@@ -10,6 +10,8 @@ public class MapGenerator : MonoBehaviour
     public TileBase snowTile;
     public GameObject treePrefab;
     public GameObject rockPrefab;
+    public GameObject goldPrefab;
+    public GameObject diamondPrefab;
 
     [Header("大小設定")]
     public int width = 100;
@@ -23,6 +25,8 @@ public class MapGenerator : MonoBehaviour
     [Header("機率")]
     [Range(0, 1)] public float treeDensity = 0.05f;
     [Range(0, 1)] public float rockDensity = 0.02f;
+    [Range(0, 1)] public float goldDensity = 0.005f;
+    [Range(0, 1)] public float diamondDensity = 0.002f;
 
 
     void Start()
@@ -106,11 +110,23 @@ public class MapGenerator : MonoBehaviour
         float rand = Random.value;
         if (rand < treeDensity)
         {
-            Instantiate(treePrefab, pos, Quaternion.identity, transform);
+            if (treePrefab != null)
+                Instantiate(treePrefab, pos, Quaternion.identity, transform);
         }
         else if (rand < treeDensity + rockDensity)
         {
-            Instantiate(rockPrefab, pos, Quaternion.identity, transform);
+            if (rockPrefab != null)
+                Instantiate(rockPrefab, pos, Quaternion.identity, transform);
+        }
+        else if (rand < treeDensity + rockDensity + goldDensity)
+        {
+            if (goldPrefab != null)
+                Instantiate(goldPrefab, pos, Quaternion.identity, transform);
+        }
+        else if (rand < treeDensity + rockDensity + goldDensity + diamondDensity)
+        {
+            if (diamondPrefab != null)
+                Instantiate(diamondPrefab, pos, Quaternion.identity, transform);
         }
     }
 }

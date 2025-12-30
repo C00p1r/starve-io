@@ -22,6 +22,8 @@ public class InventoryUIController : MonoBehaviour
             // 記得先退訂再訂閱，防止重複訂閱 (這是 UI Toolkit 的好習慣)
             _inventoryManager.OnInventoryChanged -= UpdateInventoryUI; 
             _inventoryManager.OnInventoryChanged += UpdateInventoryUI;
+            _inventoryManager.OnSelectedIndexChanged -= UpdateInventoryUI;
+            _inventoryManager.OnSelectedIndexChanged += UpdateInventoryUI;
         }
 
         // 4. 初始化顯示
@@ -47,12 +49,19 @@ public class InventoryUIController : MonoBehaviour
     private void OnDisable()
     {
         if (_inventoryManager != null)
+        {
             _inventoryManager.OnInventoryChanged -= UpdateInventoryUI;
+            _inventoryManager.OnSelectedIndexChanged -= UpdateInventoryUI;
+        }
     }
 
     private void UpdateInventoryUI()
     {
+        if (_inventoryManager == null)
+            return;
+
         var slotsData = _inventoryManager.GetSlots();
+        int selectedIndex = _inventoryManager.GetSelectedIndex();
 
         for (int i = 0; i < _slotElements.Count; i++)
         {
@@ -60,8 +69,28 @@ public class InventoryUIController : MonoBehaviour
 
             // 先清空格子內的舊標籤（如果有）
             currentSlot.Clear();
+            bool isSelected = i == selectedIndex;
+            currentSlot.EnableInClassList("hotbar-selected", isSelected);
+            if (isSelected)
+            {
+                currentSlot.style.borderTopWidth = 5;
+                currentSlot.style.borderRightWidth = 5;
+                currentSlot.style.borderBottomWidth = 5;
+                currentSlot.style.borderLeftWidth = 5;
+                currentSlot.style.borderTopColor = new StyleColor(new Color32(245, 214, 66, 255));
+                currentSlot.style.borderRightColor = new StyleColor(new Color32(245, 214, 66, 255));
+                currentSlot.style.borderBottomColor = new StyleColor(new Color32(245, 214, 66, 255));
+                currentSlot.style.borderLeftColor = new StyleColor(new Color32(245, 214, 66, 255));
+            }
+            else
+            {
+                currentSlot.style.borderTopWidth = 0;
+                currentSlot.style.borderRightWidth = 0;
+                currentSlot.style.borderBottomWidth = 0;
+                currentSlot.style.borderLeftWidth = 0;
+            }
 
-            if (i < slotsData.Count)
+            if (i < slotsData.Count && slotsData[i].item != null && slotsData[i].count > 0)
             {
                 var data = slotsData[i];
 
@@ -90,7 +119,13 @@ public class InventoryUIController : MonoBehaviour
             {
                 // 如果格子是空的
                 currentSlot.style.backgroundImage = null;
+                currentSlot.style.opacity = 0.5f;
             }
         }
+    }
+
+    private void UpdateInventoryUI(int _)
+    {
+        UpdateInventoryUI();
     }
 }

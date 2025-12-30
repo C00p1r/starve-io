@@ -1,65 +1,56 @@
-using StarveIO.Input; // ½T«O¤Ş¥Î¤F§Aªº Input ©R¦WªÅ¶¡
+using StarveIO.Input;
 using StarveIO.Data;
 using UnityEngine;
 using System;
-using System.Drawing;
 public class PlayerController : MonoBehaviour
 {
-
-    // new add
     private Vector2 _mouseScreenPos;
     private Camera _mainCamera;
     private InventoryManager _inventoryManager;
 
-    [Header("¿é¤J³]©w")]
-    [SerializeField] private InputReader _inputReader; // ©ì¤J§Aªº InputReader ¸ê·½ÀÉ
-    //[SerializeField] private InventoryManager _inventoryManager;
+    [Header("è¼¸å…¥è¨­å®š")]
+    [SerializeField] private InputReader _inputReader;
 
-    [Header("²¾°Ê³]©w")]
-    public float baseSpeed = 5f;             // °òÂ¦³t«×
-    public float speedReductionRate = 0.5f;  // ¶i¤J¸­¤l­n´î¥hªº³t«×¤ñ²v
-    private float currentSpeed;              // ·í«e¹ê»Ú³t«×
+    [Header("ç§»å‹•è¨­å®š")]
+    public float baseSpeed = 5f;
+    public float speedReductionRate = 0.5f;
+    private float currentSpeed;
 
-    [Header("§ğÀ»»P±Ä¶°³]©w(¼È®É¨S¥Î)")]
-    [SerializeField] private float attackRange = 1.0f;  // ¶ê°é¶ZÂ÷ª±®a¤¤¤ßªº¶ZÂ÷
-    [SerializeField] private float attackRadius = 0.5f; // §ğÀ»¶ê°éªº¥b®|
-    [SerializeField] private int attackDamage = 10;     // §ğÀ»¤O
-    [Header("¸ê·½¼h")]
-    [SerializeField] private LayerMask resourceLayer;   // ³]©w­ş¨Ç Layer ¬O¥i±Ä¶°ªº (¦p Resource)
-    
+    [Header("æ”»æ“Šèˆ‡æ¡é›†è¨­å®š(æš«æ™‚æ²’ç”¨)")]
+    [SerializeField] private float attackRange = 1.0f;
+    [SerializeField] private float attackRadius = 0.5f;
+    [SerializeField] private int attackDamage = 10;
+    [Header("è³‡æºå±¤")]
+    [SerializeField] private LayerMask resourceLayer;
 
-    [Header("½¦Ån§ğÀ»³]©w")]
-    [SerializeField] private Vector2 capsuleSize = new Vector2(1.2f, 2.0f); // ¼e«×»Pªø«×
-    [SerializeField] private float capsuleOffset = 1.0f;                 // ¶ZÂ÷ª±®a¤¤¤ßªº¶ZÂ÷
+    [Header("è† å›Šæ”»æ“Šè¨­å®š")]
+    [SerializeField] private Vector2 capsuleSize = new Vector2(1.2f, 2.0f);
+    [SerializeField] private float capsuleOffset = 1.0f;
     [SerializeField] private CapsuleDirection2D capsuleDirection = CapsuleDirection2D.Vertical;
 
-
-    private int leavesCount = 0;             // ¥Ø«e­«Å|ªº¸­¤l¼Æ¶q
+    private int leavesCount = 0;
     private Rigidbody2D rb;
-    private Vector2 _moveInput;              // ±q InputReader ±µ¦¬¨ìªº¼Æ­È
+    private Vector2 _moveInput;
     private float targetRotation;
-
 
     private void OnEnable()
     {
-        // ­q¾\ InputReader ªº²¾°Ê¨Æ¥ó
         _inputReader.MoveEvent += OnMove;
-         _inputReader.AttackEvent += OnAttack; // new added
-        _inputReader.LookEvent += OnLook; // ­q¾\·Æ¹«¦ì¸m new added
+        _inputReader.AttackEvent += OnAttack;
+        _inputReader.LookEvent += OnLook;
     }
 
     private void OnDisable()
     {
-        // ¨ú®ø­q¾\¡A¨¾¤îª«¥ó¾P·´«áµo¥Í°O¾ĞÅé¿ù»~
         _inputReader.MoveEvent -= OnMove;
         _inputReader.AttackEvent -= OnAttack;
-        _inputReader.LookEvent -= OnLook; // new added
+        _inputReader.LookEvent -= OnLook;
     }
 
     void Start()
     {
         _inventoryManager = InventoryManager.Instance;
-        _mainCamera = Camera.main; // new added
+        _mainCamera = Camera.main;
 
         rb = GetComponent<Rigidbody2D>();
         currentSpeed = baseSpeed;
@@ -68,7 +59,6 @@ public class PlayerController : MonoBehaviour
         rb.freezeRotation = true;
     }
 
-    // ¨Æ¥ó¦^½Õ¨ç¼Æ¡G·í InputReader °»´ú¨ì²¾°Ê®É·|©I¥s¦¹³B
     public void OnMove(Vector2 direction)
     {
         _moveInput = direction;
@@ -78,7 +68,6 @@ public class PlayerController : MonoBehaviour
         _mouseScreenPos = mousePos;
     }
 
-    // new added attack
     private void OnAttack()
     {
         Debug.Log("perform attack animation");
@@ -86,90 +75,177 @@ public class PlayerController : MonoBehaviour
     }
     public void OnAttackHitFrame()
     {
-        Debug.Log("°õ¦æ±Ä¶°°Ê§@¡I");
+        Debug.Log("åŸ·è¡Œæ¡é›†å‹•ä½œï¼");
+        if (_inventoryManager == null)
+        {
+            Debug.LogWarning("InventoryManager instance not found.");
+            return;
+        }
 
-        // 1. ­pºâ½¦Ånªº¤¤¤ßÂI (ª±®a¦ì¸m + ¥¿«e¤è°¾²¾)
         Vector2 center = (Vector2)transform.position + (Vector2)transform.up * capsuleOffset;
-
-        // 2. Àò¨úª±®a¥Ø«eªº±ÛÂà¨¤«× (Z¶b)
         float angle = transform.eulerAngles.z;
-
-        // 3. °õ¦æ½¦Ån°»´ú
         Collider2D[] hitObjects = Physics2D.OverlapCapsuleAll(center, capsuleSize, capsuleDirection, angle, resourceLayer);
-        //Physics2D.OverlapCapsuleAll
+        bool notifiedMissingTool = false;
         foreach (Collider2D hit in hitObjects)
         {
-            // exclude collision box for triggering sth
             if (hit.TryGetComponent<ResourceNode>(out ResourceNode node))
             {
+                ResourceData resourceData = node.GetResourceData();
+                ItemData selectedItem = _inventoryManager.GetSelectedItem();
+                if (!CanGatherResource(resourceData, selectedItem, _inventoryManager, out string denyMessage))
+                {
+                    if (!notifiedMissingTool)
+                    {
+                        UIEventManager.TriggerNotify(denyMessage);
+                        notifiedMissingTool = true;
+                    }
+                    continue;
+                }
+
                 ItemData gatheredItem = node.GetItemData();
                 int gatheredAmount = node.GatherResource();
 
                 if (gatheredAmount > 0)
                 {
-                    // ±N¸ê·½¦s¤J­I¥]
                     bool success = _inventoryManager.AddItem(gatheredItem, gatheredAmount);
-                    if (!success) Debug.Log("­I¥]¤wº¡¡IÅã¥Ü");
-                    else Debug.Log($"¦¨¥\±N {gatheredItem.name}x{gatheredAmount} ©ñ¤J­I¥]!");
+                    if (!success) Debug.Log("èƒŒåŒ…å·²æ»¿ï¼é¡¯ç¤º");
+                    else Debug.Log($"æˆåŠŸå°‡ {gatheredItem.name}x{gatheredAmount} æ”¾å…¥èƒŒåŒ…!");
                 }
             }
         }
     }
 
-    // ¦b½s¿è¾¹¤¤µe¥X§ğÀ»½d³ò¡A¤è«K°£¿ù
+    private bool CanGatherResource(ResourceData resourceData, ItemData selectedItem, InventoryManager inventory, out string denyMessage)
+    {
+        denyMessage = null;
+        if (resourceData == null)
+            return true;
+
+        ToolType requiredType = resourceData.requiredToolType;
+        int requiredTier = resourceData.requiredToolTier;
+
+        if (requiredType == ToolType.None)
+            return true;
+
+        int minTier = Mathf.Max(1, requiredTier);
+        if (selectedItem != null &&
+            selectedItem.toolType == requiredType &&
+            selectedItem.toolTier >= minTier)
+            return true;
+
+        bool hasRequiredTool = HasRequiredToolInInventory(inventory, requiredType, minTier);
+        string tierName = GetTierName(minTier);
+        string toolName = requiredType.ToString().ToLowerInvariant();
+        denyMessage = hasRequiredTool
+            ? $"Need to hold a {tierName} {toolName} to mine this."
+            : $"Need a {tierName} {toolName} to mine this.";
+        return false;
+
+        return true;
+    }
+
+    private string GetTierName(int tier)
+    {
+        switch (tier)
+        {
+            case 1:
+                return "wooden";
+            case 2:
+                return "stone";
+            case 3:
+                return "golden";
+            case 4:
+                return "diamond";
+            default:
+                return $"tier {tier}";
+        }
+    }
+
+    private bool HasRequiredToolInInventory(InventoryManager inventory, ToolType requiredType, int minTier)
+    {
+        if (inventory == null)
+            return false;
+
+        foreach (var slot in inventory.GetSlots())
+        {
+            if (slot.item == null || slot.count <= 0)
+                continue;
+
+            if (slot.item.toolType == requiredType && slot.item.toolTier >= minTier)
+                return true;
+        }
+
+        return false;
+    }
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = UnityEngine.Color.red;
 
-        // ­pºâ»P¤W­±¬Û¦Pªº¤¤¤ßÂI»P±ÛÂà
         Vector2 center = (Vector2)transform.position + (Vector2)transform.up * capsuleOffset;
         float angle = transform.eulerAngles.z;
 
-        // ¨Ï¥Î¯x°}¨ÓÃ¸»s±ÛÂà¹Lªº½¦Ån (³o¤ñ¸û¶i¶¥¡A¦ı¯àµe¥X¥¿½Tªº±ÛÂà)
         Matrix4x4 rotationMatrix = Matrix4x4.TRS(center, Quaternion.Euler(0, 0, angle), Vector3.one);
         Gizmos.matrix = rotationMatrix;
 
-        // µe¥X¤@­Ó¥Nªí½¦Ånªº WireCube ©Î¦Û©w¸q§Îª¬
-        // ÁöµM Gizmos ¨S¦³ª½±µµe Capsule ªº¤èªk¡A¦ıµe¤@­Ó±a¶ê¨¤ªºªø¤è§Î®ÄªG¤@­P
         Gizmos.DrawWireCube(Vector3.zero, new Vector3(capsuleSize.x, capsuleSize.y, 0));
 
-        // ­«¸m¯x°}¡AÁ×§K¼vÅT¨ä¥L Gizmos
         Gizmos.matrix = Matrix4x4.identity;
     }
     void Update()
     {
         RotateTowardsMouse();
+        HandleHotbarScroll();
+        HandleHotbarNumberSelection();
     }
 
-    
     private void RotateTowardsMouse()
     {
-        // Âà´«·Æ¹«®y¼Ğ
         Vector3 mousePos = _mouseScreenPos;
         mousePos.z = -_mainCamera.transform.position.z;
         Vector3 worldPos = _mainCamera.ScreenToWorldPoint(mousePos);
 
-        // ­pºâ¤è¦V¦V¶q
         Vector2 lookDir = (Vector2)worldPos - rb.position;
 
-        // ­pºâ¨¤«×¨Ã²Î¤@¨Ï¥Î -90f °¾²¾¶q
         float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
 
         targetRotation = angle;
     }
-    //void Update()
-    //{
-    //    // ±ÛÂàÅŞ¿è (­×¥¿«áªº WASD Âà¦V)
-    //    if (_moveInput.sqrMagnitude > 0.1f)
-    //    {
-    //        float angle = Mathf.Atan2(_moveInput.y, _moveInput.x) * Mathf.Rad2Deg;
-    //        targetRotation = angle + 90f; // ®Ú¾Ú§Aªº Sprite ´Â¦V¥i¯à»İ­n½Õ¾ã°¾²¾¶q
-    //    }
-    //}
 
+    private void HandleHotbarScroll()
+    {
+        if (_inventoryManager == null)
+            return;
+
+        float scroll = UnityEngine.InputSystem.Mouse.current != null
+            ? UnityEngine.InputSystem.Mouse.current.scroll.ReadValue().y
+            : 0f;
+        if (Mathf.Abs(scroll) > 0.01f)
+        {
+            int direction = scroll > 0f ? -1 : 1;
+            _inventoryManager.CycleSelection(direction);
+        }
+    }
+
+    private void HandleHotbarNumberSelection()
+    {
+        if (_inventoryManager == null || UnityEngine.InputSystem.Keyboard.current == null)
+            return;
+
+        var keyboard = UnityEngine.InputSystem.Keyboard.current;
+        if (keyboard.digit1Key.wasPressedThisFrame) _inventoryManager.SelectIndex(0);
+        else if (keyboard.digit2Key.wasPressedThisFrame) _inventoryManager.SelectIndex(1);
+        else if (keyboard.digit3Key.wasPressedThisFrame) _inventoryManager.SelectIndex(2);
+        else if (keyboard.digit4Key.wasPressedThisFrame) _inventoryManager.SelectIndex(3);
+        else if (keyboard.digit5Key.wasPressedThisFrame) _inventoryManager.SelectIndex(4);
+        else if (keyboard.digit6Key.wasPressedThisFrame) _inventoryManager.SelectIndex(5);
+        else if (keyboard.digit7Key.wasPressedThisFrame) _inventoryManager.SelectIndex(6);
+        else if (keyboard.digit8Key.wasPressedThisFrame) _inventoryManager.SelectIndex(7);
+        else if (keyboard.digit9Key.wasPressedThisFrame) _inventoryManager.SelectIndex(8);
+        else if (keyboard.digit0Key.wasPressedThisFrame) _inventoryManager.SelectIndex(9);
+    }
     void FixedUpdate()
     {
-        // ²¾°ÊÅŞ¿è
         if (_moveInput.sqrMagnitude > 0.01f)
         {
             rb.MovePosition(rb.position + currentSpeed * Time.fixedDeltaTime * _moveInput.normalized);
@@ -179,12 +255,9 @@ public class PlayerController : MonoBehaviour
             rb.linearVelocity = new Vector2(0, 0);
         }
 
-            // ¥­·ÆÂà¦V
-            float newAngle = Mathf.MoveTowardsAngle(rb.rotation, targetRotation, 720f * Time.fixedDeltaTime);
+        float newAngle = Mathf.MoveTowardsAngle(rb.rotation, targetRotation, 720f * Time.fixedDeltaTime);
         rb.MoveRotation(newAngle);
     }
-
-    // --- ¸­¤l³t«×ÅŞ¿è («O«ù¤£ÅÜ) ---
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -193,7 +266,6 @@ public class PlayerController : MonoBehaviour
             if (leavesCount == 0)
             {
                 currentSpeed = baseSpeed * (1 - speedReductionRate);
-                //Debug.Log("¶i¤J¸­¤l½d³ò¡A³t«×´î¦Ü: " + currentSpeed);
             }
             leavesCount++;
         }
@@ -208,7 +280,6 @@ public class PlayerController : MonoBehaviour
             {
                 leavesCount = 0;
                 currentSpeed = baseSpeed;
-                //Debug.Log("Â÷¶}¸­¤l½d³ò¡A«ì´_³t«×: " + currentSpeed);
             }
         }
     }
