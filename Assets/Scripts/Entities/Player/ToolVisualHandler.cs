@@ -1,11 +1,12 @@
 using UnityEngine;
-using StarveIO.Data; // 確保與你的 ItemData 命名空間一致
+using StarveIO.Data;
+using UnityEditor.UI; // 確保與你的 ItemData 命名空間一致
 
 public class ToolVisualHandler : MonoBehaviour
 {
     private SpriteRenderer _spriteRenderer;
     [SerializeField] public InventoryManager _inventoryManager;
-
+    [SerializeField] public float _itemScale = 1;
     void Start()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
@@ -28,13 +29,14 @@ public class ToolVisualHandler : MonoBehaviour
         ItemData selectedItem = _inventoryManager.GetSelectedItem();
 
         // 1. 檢查是否選中了東西，且該東西有工具圖片
-        if (selectedItem != null && selectedItem.icon != null)
+        if (selectedItem != null && selectedItem.toolType > 0 && selectedItem.icon != null)
         {
             _spriteRenderer.enabled = true;
             _spriteRenderer.sprite = selectedItem.icon;
+            this.transform.localScale = new Vector3(_itemScale, _itemScale, _itemScale);
 
             // 如果你的工具圖片是橫的，這裡可以微調旋轉角度
-            // transform.localRotation = Quaternion.Euler(0, 0, -45); 
+             //transform.localRotation = Quaternion.Euler(0, 0, -45);
         }
         else
         {

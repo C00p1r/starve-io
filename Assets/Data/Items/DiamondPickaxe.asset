@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: DiamondPickaxe
   m_EditorClassIdentifier: Assembly-CSharp::StarveIO.Data.ItemData
   itemName: DiamondPickaxe
-  icon: {fileID: 4906868809196768215, guid: 9e1d87309029f4abca4ecd3ba4988776, type: 3}
+  icon: {fileID: -5563659230636437988, guid: c5586a8ce15f63a40891432b9e6b4f61, type: 3}
   description: 
   maxStack: 1
   toolType: 1

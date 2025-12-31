@@ -293,19 +293,19 @@
 //    }
 //}
 
-using StarveIO.Input;
 using StarveIO.Data;
+using StarveIO.Input;
+using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using System;
 
 public class PlayerController : MonoBehaviour
 {
     private Vector2 _mouseScreenPos;
     private Camera _mainCamera;
-    private InventoryManager _inventoryManager;
     private Animator _animator;
-
+    [SerializeField] public InventoryManager _inventoryManager;
     [Header("輸入設定")]
     [SerializeField] private InputReader _inputReader;
 
@@ -350,7 +350,6 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         _animator = GetComponent<Animator>();
-        _inventoryManager = InventoryManager.Instance;
         _mainCamera = Camera.main;
 
         rb = GetComponent<Rigidbody2D>();
@@ -389,10 +388,19 @@ public class PlayerController : MonoBehaviour
                 isMousePressed = UnityEngine.InputSystem.Mouse.current.leftButton.isPressed;
             }
         }
-
+        bool moving = _moveInput.sqrMagnitude > 0.01f;
+        bool holdingTool = false;
+        if (_inventoryManager != null)
+        {
+            var item = _inventoryManager.GetSelectedItem();
+            if (item != null && item.toolType > 0)
+                holdingTool = true;
+        }
         if (_animator != null)
         {
             _animator.SetBool("isAttacking", isMousePressed);
+            _animator.SetBool("isMoving", moving);
+            _animator.SetBool("holdingTool", holdingTool);
         }
     }
 
@@ -419,8 +427,9 @@ public class PlayerController : MonoBehaviour
             {
                 ResourceData resourceData = node.GetResourceData();
                 ItemData selectedItem = _inventoryManager.GetSelectedItem();
-
+                
                 // 檢查工具階級
+                
                 if (!CanGatherResource(resourceData, selectedItem, _inventoryManager, out string denyMessage))
                 {
                     if (!notifiedMissingTool)
@@ -430,6 +439,12 @@ public class PlayerController : MonoBehaviour
                     }
                     continue;
                 }
+
+                // --- 新增：計算攻擊方向並觸發震動 ---
+                // 方向 = 資源位置 - 玩家位置
+                Vector2 hitDirection = (hit.transform.position - this.transform.position).normalized;
+                Debug.Log($"Hit Direction ({hitDirection.x}, {hitDirection.y})");
+                node.TriggerHitEffect(hitDirection);
 
                 ItemData gatheredItem = node.GetItemData();
                 int gatheredAmount = node.GatherResource();

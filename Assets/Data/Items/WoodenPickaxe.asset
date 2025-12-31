@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: WoodenPickaxe
   m_EditorClassIdentifier: Assembly-CSharp::StarveIO.Data.ItemData
   itemName: WoodenPickaxe
-  icon: {fileID: 7336594955601087276, guid: 35545a48839e042b8aa10fb11d509c18, type: 3}
+  icon: {fileID: -3867017715014690049, guid: 090bfe4c8a5a5f0449d5965e5fa099c9, type: 3}
   description: 
   maxStack: 1
   toolType: 1

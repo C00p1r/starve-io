@@ -82,6 +82,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResourceNode
   data: {fileID: 11400000, guid: 2f7b1bcd6c4d5489fbdc2f5d31ca737d, type: 2}
+  visualTransform: {fileID: 6895856099619672515}
+  shakeDuration: 0.15
+  shakeStrength: 0.1
 --- !u!1 &6278045191879399705
 GameObject:
   m_ObjectHideFlags: 0

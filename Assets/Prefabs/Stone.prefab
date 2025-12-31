@@ -210,3 +210,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResourceNode
   data: {fileID: 11400000, guid: b89c40541ab641a4dbdd3afcc490bc75, type: 2}
+  visualTransform: {fileID: 6234343904322453892}
+  shakeDuration: 0.15
+  shakeStrength: 0.1
