@@ -720,6 +720,68 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1867235783}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1156243868
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1156243869}
+  m_Layer: 0
+  m_Name: ResourceParent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1156243869
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1156243868}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1724466422}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1409205216
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1409205217}
+  m_Layer: 0
+  m_Name: MobParent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1409205217
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1409205216}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1724466422}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1508985227
 GameObject:
   m_ObjectHideFlags: 0
@@ -891,6 +953,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1724466422}
   - component: {fileID: 1724466421}
+  - component: {fileID: 1724466423}
   m_Layer: 0
   m_Name: WorldManager
   m_TagString: Untagged
@@ -910,18 +973,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02ec6dbf2f1f4a34792c68d85b18af8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapGenerator
+  resourceParent: {fileID: 1156243869}
   groundTilemap: {fileID: 554717038}
   grassTile: {fileID: 11400000, guid: ccd0e7fbf059f5448a6f15b3653d07d8, type: 2}
   snowTile: {fileID: 11400000, guid: 26010d104e7a69e4bbc0f762e6800c67, type: 2}
   treePrefab: {fileID: 6615762040543448315, guid: 1cf7dacec5b129e438ce77b399c99127, type: 3}
+  tree2Prefab: {fileID: 6615762040543448315, guid: f9ba2837701af384a9806541dc7ce89b, type: 3}
+  fruitTreePrefab: {fileID: 7640660970183307885, guid: 376435121378cc04daf6a9fa4142f093, type: 3}
   rockPrefab: {fileID: 991945098734668003, guid: 4e09b1ec4dc38d04db1a4c0a4362d8e4, type: 3}
+  goldPrefab: {fileID: 5945111395375985425, guid: 28d0d149602bc944eb97bd2c4e47cfdc, type: 3}
+  diamondPrefab: {fileID: 6278045191879399705, guid: 99bd864e140f61f4aa7eb0a7a9bd8b1e, type: 3}
+  minScale: 0.9
+  maxScale: 1.2
   width: 50
   height: 50
   mapBoundsCollider: {fileID: 1941610787}
   physicalBoundaryCollider: {fileID: 288129400}
   confiner: {fileID: 1555489547}
-  treeDensity: 0.061
+  treeDensity: 0.05
+  tree2Density: 0.01
+  fruitTreeDensity: 0.02
   rockDensity: 0.03
+  goldDensity: 0.005
+  diamondDensity: 0.002
 --- !u!4 &1724466422
 Transform:
   m_ObjectHideFlags: 0
@@ -937,8 +1011,29 @@ Transform:
   m_Children:
   - {fileID: 1941610788}
   - {fileID: 288129401}
+  - {fileID: 1156243869}
+  - {fileID: 1409205217}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1724466423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1724466420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06ad282f9d4ec504d8fd01e5ae7cac3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CreatureSpawner
+  resourceParent: {fileID: 1409205217}
+  wolvesPrefab: {fileID: 7597778176648832391, guid: 441ce1f0bc2c2a9419b6d3c34e1fd572, type: 3}
+  spidersPrefab: {fileID: 7597778176648832391, guid: 40ad16336ecd1f248a31ee4e94cf8b39, type: 3}
+  maxCreatures: 20
+  mapWidth: 50
+  mapHeight: 50
+  frontZPosition: -1
 --- !u!1 &1867235780 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1973101817498293300, guid: 1b326890f8c202b48b0aff58c78ecbb3, type: 3}
@@ -1037,6 +1132,14 @@ MonoBehaviour:
   stonePickaxeItem: {fileID: 11400000, guid: 01d14dcdc6f5c42729b6303d250fdb52, type: 2}
   stoneCost: 5
   stonePickaxeAmount: 1
+  goldItem: {fileID: 11400000, guid: 85bfa42f9aacf492994d7e5ced958f3e, type: 2}
+  goldenPickaxeItem: {fileID: 11400000, guid: 5e28c3d78d5024044acd80b2ca7c9241, type: 2}
+  goldCost: 5
+  goldenPickaxeAmount: 1
+  diamondItem: {fileID: 11400000, guid: 5458b423bfc934479abec306bd380476, type: 2}
+  diamondPickaxeItem: {fileID: 11400000, guid: d251083c6967e484eb42ac613cd361d8, type: 2}
+  diamondCost: 5
+  diamondPickaxeAmount: 1
 --- !u!4 &1907333767
 Transform:
   m_ObjectHideFlags: 0
@@ -1150,6 +1253,8 @@ GameObject:
   - component: {fileID: 2036016173}
   - component: {fileID: 2036016174}
   - component: {fileID: 2036016175}
+  - component: {fileID: 2036016176}
+  - component: {fileID: 2036016177}
   m_Layer: 5
   m_Name: InGameUI
   m_TagString: Untagged
@@ -1207,6 +1312,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab0ca85876b879d429a08859eed3b56a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryUIController
+  _inventoryManager: {fileID: 2074712203}
 --- !u!114 &2036016173
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1246,7 +1352,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46063fc9bb5b145d9bb56dc25643deff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryDeleteController
-  inventoryManager: {fileID: 0}
+  inventoryManager: {fileID: 2074712203}
+--- !u!114 &2036016176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2036016169}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a79c4e23d4d4b64bfa5fa9e6671a460, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UIElements.PanelRaycaster
+--- !u!114 &2036016177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2036016169}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f7dcb1422643374e97e44bf5008688a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InventoryDragController
+  _inventoryManager: {fileID: 2074712203}
+  _longPressThreshold: 0.1
+--- !u!114 &2074712203 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2032022551611859474, guid: 11ed74cb95f60df488ef9516e4a7113a, type: 3}
+  m_PrefabInstance: {fileID: 30285147}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebf24808393dce3429ad10cd025974cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InventoryManager
 --- !u!1001 &1709109133380762305
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1324,8 +1467,8 @@ SceneRoots:
   - {fileID: 403201891}
   - {fileID: 1555489550}
   - {fileID: 1508985229}
-  - {fileID: 1724466422}
   - {fileID: 1709109133380762305}
   - {fileID: 2036016171}
   - {fileID: 30285147}
   - {fileID: 1907333767}
+  - {fileID: 1724466422}

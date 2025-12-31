@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Stone
   m_EditorClassIdentifier: Assembly-CSharp::StarveIO.Data.ItemData
   itemName: Stone
-  icon: {fileID: -7471787430918905357, guid: 1a33fde7c346ee54d8caf13b15552e68, type: 3}
+  icon: {fileID: -7623140327574030266, guid: 0c764e5b73f97774ab9bff9a008d6c14, type: 3}
   description: 
   maxStack: 5
+  toolType: 0
+  toolTier: 0

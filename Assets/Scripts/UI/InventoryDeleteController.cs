@@ -5,7 +5,6 @@ using UnityEngine.InputSystem;
 public class InventoryDeleteController : MonoBehaviour
 {
     [SerializeField] private InventoryManager inventoryManager;
-
     private VisualElement _confirmPanel;
     private Button _confirmYes;
     private Button _confirmNo;
@@ -109,4 +108,6 @@ public class InventoryDeleteController : MonoBehaviour
         inventoryManager.ClearSelectedSlot();
         HideConfirm();
     }
+
+
 }

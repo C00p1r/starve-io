@@ -16,7 +16,7 @@ public class InventoryManager : MonoBehaviour
     public event Action OnInventoryChanged;
     public event Action OnInventoryExtended; // 合成出大背包
     public event Action<int> OnSelectedIndexChanged;
-    private event Action OnInventoryFull;
+    //private event Action OnInventoryFull;
     private void Awake()
     {
         if (Instance == null)
@@ -32,6 +32,7 @@ public class InventoryManager : MonoBehaviour
             slots.Add(new InventorySlot(null, 0));
     }
 
+    public void UpdateInventoryUI() {  OnInventoryChanged?.Invoke(); }
     // 核心功能：增加物品
     public bool AddItem(ItemData item, int amount)
     {
@@ -58,10 +59,11 @@ public class InventoryManager : MonoBehaviour
         // 2. 如果還有剩餘數量，嘗試找尋空格
         for (int i = 0; i < slots.Count && amount > 0; i++)
         {
+            Debug.Log("trying to find empty slot...");
             var slot = slots[i];
             if (slot.item != null && slot.count > 0)
                 continue;
-
+            Debug.Log("trying to find empty slot...Found!");
             int amountToAdd = Mathf.Min(amount, item.maxStack);
             slot.item = item;
             slot.count = amountToAdd;
@@ -184,4 +186,16 @@ public class InventoryManager : MonoBehaviour
         OnInventoryChanged?.Invoke();
         return true;
     }
+    public void SwapItems(int fromIndex, int toIndex)
+    {
+        if (fromIndex == toIndex || fromIndex >= slots.Count || toIndex >= slots.Count) return;
+
+        // 交換 List 中的元素
+        var temp = slots[fromIndex];
+        slots[fromIndex] = slots[toIndex];
+        slots[toIndex] = temp;
+
+        OnInventoryChanged?.Invoke();
+    }
+
 }

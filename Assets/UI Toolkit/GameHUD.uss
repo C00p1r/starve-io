@@ -233,7 +233,7 @@
     border-bottom-left-radius: 8px;
 }
 
-.thurst-bar .unity-progress-bar__background {
+.thirst-bar .unity-progress-bar__background {
     border-left-color: rgb(19, 117, 207);
     border-right-color: rgb(19, 117, 207);
     border-top-color: rgb(19, 117, 207);
