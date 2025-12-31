@@ -11,6 +11,7 @@ public class UINotifier : MonoBehaviour
     [SerializeField] private float DisplayDuration = 2f;
     [SerializeField] private float FadeOutDuration = 0.5f;
 
+    private float originFontSize;
     private void OnEnable()
     {
         var root = GetComponent<UIDocument>().rootVisualElement;
@@ -24,23 +25,18 @@ public class UINotifier : MonoBehaviour
     {
         UIEventManager.OnNotify -= ShowNotification;
     }
-
-    private void ShowNotification(string message)
+    private void ShowNotification(string message, float fontSize)
     {
         if (_notifyLabel == null) return;
-
-        // 如果目前正在顯示上一個提示，先停止它
         if (_currentFadeRoutine != null) StopCoroutine(_currentFadeRoutine);
-
+        _notifyLabel.style.fontSize = fontSize;
         _currentFadeRoutine = StartCoroutine(FadeNotify(message));
     }
-
     private IEnumerator FadeNotify(string message)
     {
         _notifyLabel.text = message;
         _notifyLabel.style.visibility = Visibility.Visible;
         _notifyLabel.style.opacity = 1f;
-
         // 顯示 2 秒
         yield return new WaitForSeconds(DisplayDuration);
 

@@ -84,7 +84,7 @@ MonoBehaviour:
   data: {fileID: 11400000, guid: f1425f5edfc61714d8a32adb31dadee1, type: 2}
   visualTransform: {fileID: 4886068276767085289}
   shakeDuration: 0.15
-  shakeStrength: 0.2
+  shakeStrength: 0.1
 --- !u!1 &6615762040543448315
 GameObject:
   m_ObjectHideFlags: 0
