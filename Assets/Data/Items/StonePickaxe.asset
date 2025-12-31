@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: StonePickaxe
   m_EditorClassIdentifier: Assembly-CSharp::StarveIO.Data.ItemData
   itemName: StonePickaxe
-  icon: {fileID: 1034084447419628944, guid: 9253abc4ed235465eb898e6384671519, type: 3}
+  icon: {fileID: 7768654303352168875, guid: 9ed1ec71ca37daa43bb3a5475300cbcd, type: 3}
   description: 
   maxStack: 1
   toolType: 1

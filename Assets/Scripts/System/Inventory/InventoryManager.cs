@@ -107,6 +107,7 @@ public class InventoryManager : MonoBehaviour
 
         selectedIndex = clampedIndex;
         OnSelectedIndexChanged?.Invoke(selectedIndex);
+        OnInventoryChanged?.Invoke();
     }
 
     public void CycleSelection(int direction)

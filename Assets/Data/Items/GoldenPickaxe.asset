@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GoldenPickaxe
   m_EditorClassIdentifier: Assembly-CSharp::StarveIO.Data.ItemData
   itemName: GoldenPickaxe
-  icon: {fileID: -1792657866749114738, guid: 8a7b4e366856d48b18b7265cd1ffa8cb, type: 3}
+  icon: {fileID: 4865815385165745197, guid: 45c583dcfbe0b6f48aa67537b9455647, type: 3}
   description: 
   maxStack: 1
   toolType: 1

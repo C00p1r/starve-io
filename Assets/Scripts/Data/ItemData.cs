@@ -6,6 +6,7 @@ namespace StarveIO.Data
     {
         None = 0,
         Pickaxe = 1,
+        Sword = 2,
     }
 
     [CreateAssetMenu(fileName = "NewItem", menuName = "StarveIO/Inventory/Item")]
