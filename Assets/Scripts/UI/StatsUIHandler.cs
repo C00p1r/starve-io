@@ -6,7 +6,7 @@ public class StatsUIHandler : MonoBehaviour
     private UIDocument uiDocument;
     [SerializeField] private PlayerStats statsSource;
 
-    // UI ¤¸¯À°Ñ·Ó
+    // UI å…ƒç´ åƒç…§
     private ProgressBar _healthBar;
     private ProgressBar _hungerBar;
     private ProgressBar _thirstBar;
@@ -18,7 +18,7 @@ public class StatsUIHandler : MonoBehaviour
 
         var root = uiDocument.rootVisualElement;
 
-        // --- ½Ğ½T«O UXML ¤¤ªº Name Äİ©Ê»P³o¸Ìªº¦r¦ê¤@­P ---
+        // --- è«‹ç¢ºä¿ UXML ä¸­çš„ Name å±¬æ€§èˆ‡é€™è£¡çš„å­—ä¸²ä¸€è‡´ ---
         _healthBar = root.Q<ProgressBar>("HealthBar");
         _hungerBar = root.Q<ProgressBar>("HungerBar");
         _thirstBar = root.Q<ProgressBar>("ThirstBar");
@@ -26,7 +26,7 @@ public class StatsUIHandler : MonoBehaviour
 
         if (statsSource != null)
         {
-            // ­q¾\¨Æ¥ó¡G·í¼Æ¾ÚÅÜ°Ê®É¡A°õ¦æ UpdateHUD
+            // è¨‚é–±äº‹ä»¶ï¼šç•¶æ•¸æ“šè®Šå‹•æ™‚ï¼ŒåŸ·è¡Œ UpdateHUD
             statsSource.OnStatsUpdated += UpdateHUD;
         }
     }
@@ -43,7 +43,7 @@ public class StatsUIHandler : MonoBehaviour
     {
         if (statsSource == null) return;
 
-        // ­pºâ¦Ê¤À¤ñ¨Ã§ó·s UI
+        // è¨ˆç®—ç™¾åˆ†æ¯”ä¸¦æ›´æ–° UI
         if (_healthBar != null) _healthBar.value = (statsSource.currentHealth / statsSource.maxHealth) * 100f;
         if (_hungerBar != null) _hungerBar.value = (statsSource.currentHunger / statsSource.maxHunger) * 100f;
         if (_thirstBar != null) _thirstBar.value = (statsSource.currentThirst / statsSource.maxThirst) * 100f;
