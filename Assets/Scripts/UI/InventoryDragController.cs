@@ -10,13 +10,13 @@ public class InventoryDragController: MonoBehaviour
     private VisualElement _root;
     private List<VisualElement> _slotElements = new List<VisualElement>();
 
-    [Header("¥æ¤¬³]©w")]
+    [Header("äº¤äº’è¨­å®š")]
     [SerializeField] private float _longPressThreshold = 0.2f;
     private Coroutine _pressTimer;
     private bool _isDragging = false;
     private int _dragStartIndex = -1;
     private int _lastPointerId = -1;
-    private VisualElement _dragGhost;  // ¹ê²{²æ«ûª««~®ÄªG
+    private VisualElement _dragGhost;  // å¯¦ç¾è„«æ‹½ç‰©å“æ•ˆæœ
     
 
     private void OnEnable()
@@ -32,11 +32,11 @@ public class InventoryDragController: MonoBehaviour
 
         for (int i = 0; i < _slotElements.Count; i++)
         {
-            int index = i; // ³¬¥]³´¨À
+            int index = i; // é–‰åŒ…é™·é˜±
             _slotElements[i].RegisterCallback<PointerDownEvent>(evt => OnPointerDown(evt, index));
         }
 
-        // 3. µù¥U¥ş°ì¨Æ¥ó (Move & Up) - ½T«O¾ã­Óµe­±³£¥i©ì«û¡B©ñ¶}Ä²µo
+        // 3. è¨»å†Šå…¨åŸŸäº‹ä»¶ (Move & Up) - ç¢ºä¿æ•´å€‹ç•«é¢éƒ½å¯æ‹–æ‹½ã€æ”¾é–‹è§¸ç™¼
         _root.RegisterCallback<PointerMoveEvent>(OnPointerMove);
         _root.RegisterCallback<PointerUpEvent>(OnPointerUpGlobal);
 
@@ -44,59 +44,59 @@ public class InventoryDragController: MonoBehaviour
     private void OnPointerDown(PointerDownEvent evt, int index)
     {
         if (index < 0 || index >= _inventoryManager.GetSlots().Count) return;
-        if (evt.button == 0) // ¥ªÁä
+        if (evt.button == 0) // å·¦éµ
         {
             _dragStartIndex = index;
             _lastPointerId = evt.pointerId;
             if (_pressTimer != null) StopCoroutine(_pressTimer);
             _pressTimer = StartCoroutine(LongPressRoutine(index));
 
-            // ¬°¤F½T«O¥ş¿Ã¹õ©ì«û¤£¥á¥¢¡A¥i¥HÅı root ®·Àò·Æ¹« (¥i¿ï)
+            // ç‚ºäº†ç¢ºä¿å…¨è¢å¹•æ‹–æ‹½ä¸ä¸Ÿå¤±ï¼Œå¯ä»¥è®“ root æ•ç²æ»‘é¼  (å¯é¸)
             _root.CapturePointer(evt.pointerId);
         }
     }
 
     private void OnPointerUpGlobal(PointerUpEvent evt)
     {
-        // ¦pªG®Ú¥»¨SÂI¤U¥ô¦óªF¦è´N©ñ¶}¡Aª½±µµLµø
+        // å¦‚æœæ ¹æœ¬æ²’é»ä¸‹ä»»ä½•æ±è¥¿å°±æ”¾é–‹ï¼Œç›´æ¥ç„¡è¦–
         if (_dragStartIndex == -1) return;
 
-        if (evt.button == 0) // ¥ªÁä©ñ¶}
+        if (evt.button == 0) // å·¦éµæ”¾é–‹
         {
             if (_pressTimer != null) StopCoroutine(_pressTimer);
 
             if (_isDragging)
             {
-                // 1. §P©w©ñ¶}¦ì¸m¤Uªº UI
+                // 1. åˆ¤å®šæ”¾é–‹ä½ç½®ä¸‹çš„ UI
                 VisualElement pickedElement = _root.panel.Pick(evt.position);
                 int targetIndex = FindSlotIndex(pickedElement);
 
-                // 2. °õ¦æ¥æ´«ÅŞ¿è (¶È·í©ì¨ì¥t¤@­Ó¦³®Ä®æ¤l®É)
-                if (targetIndex != -1 && targetIndex <= _inventoryManager.GetMaxSlots())
+                // 2. åŸ·è¡Œäº¤æ›é‚è¼¯ (åƒ…ç•¶æ‹–åˆ°å¦ä¸€å€‹æœ‰æ•ˆæ ¼å­æ™‚)
+                if (targetIndex != -1 && targetIndex < _inventoryManager.GetMaxSlots())
                 {
                     _inventoryManager.SwapItems(_dragStartIndex, targetIndex);
-                    Debug.Log($"¥ş°ì§P©w¡G¥æ´«¦¨¥\ {targetIndex}");
+                    Debug.Log($"å…¨åŸŸåˆ¤å®šï¼šäº¤æ›æˆåŠŸ {targetIndex}");
                 }
                 else
                 {
-                    Debug.Log("¥ş°ì§P©w¡G©ñ¶}¦ì¸mµL®Ä¡A«ì´_­ì¦ì");
+                    Debug.Log("å…¨åŸŸåˆ¤å®šï¼šæ”¾é–‹ä½ç½®ç„¡æ•ˆï¼Œæ¢å¾©åŸä½");
                 }
 
-                // 3. µ²§ô©ì«ûª¬ºA
+                // 3. çµæŸæ‹–æ‹½ç‹€æ…‹
                 ResetDragState();
             }
             else
             {
-                // --- ³B²zµu«ö (Use Item) ---
-                // §Y¨Ï¬Oµu«ö¡A²{¦b¤]¬O¦b _root ©ñ¶}
-                // §Ú­ÌÀË¬d·Æ¹«©ñ¶}®É¬O§_ÁÙ¦b­ì¥»«ö¤Uªº¨º¤@®æ
+                // --- è™•ç†çŸ­æŒ‰ (Use Item) ---
+                // å³ä½¿æ˜¯çŸ­æŒ‰ï¼Œç¾åœ¨ä¹Ÿæ˜¯åœ¨ _root æ”¾é–‹
+                // æˆ‘å€‘æª¢æŸ¥æ»‘é¼ æ”¾é–‹æ™‚æ˜¯å¦é‚„åœ¨åŸæœ¬æŒ‰ä¸‹çš„é‚£ä¸€æ ¼
                 VisualElement pickedElement = _root.panel.Pick(evt.position);
                 int targetIndex = FindSlotIndex(pickedElement);
 
                 if (targetIndex == _dragStartIndex)
                 {
                     //_inventoryManager.UseItem(_dragStartIndex);
-                    Debug.Log($"¥ş°ì§P©w¡G¨Ï¥Îª««~ {_dragStartIndex}");
+                    Debug.Log($"å…¨åŸŸåˆ¤å®šï¼šä½¿ç”¨ç‰©å“ {_dragStartIndex}");
                 }
 
                 ResetDragState();
@@ -106,8 +106,8 @@ public class InventoryDragController: MonoBehaviour
 
     private void ResetDragState()
     {
-        // ÄÀ©ñ®·Àò («D±`­«­n¡A§_«h UI ·|¥d¦ºµLªkÂIÀ»¨ä¥LªF¦è)
-        if (_root.HasPointerCapture(_lastPointerId)) // »İ­n¦b Down ®É¦s¤U evt.pointerId
+        // é‡‹æ”¾æ•ç² (éå¸¸é‡è¦ï¼Œå¦å‰‡ UI æœƒå¡æ­»ç„¡æ³•é»æ“Šå…¶ä»–æ±è¥¿)
+        if (_root.HasPointerCapture(_lastPointerId)) // éœ€è¦åœ¨ Down æ™‚å­˜ä¸‹ evt.pointerId
         {
             _root.ReleasePointer(_lastPointerId);
         }
@@ -120,7 +120,7 @@ public class InventoryDragController: MonoBehaviour
     }
 
 
-    // »²§U¤èªk¡G®Ú¾Ú³Q Pick ¨ìªº¤¸¥ó§ä¦^¥¦ªº Index
+    // è¼”åŠ©æ–¹æ³•ï¼šæ ¹æ“šè¢« Pick åˆ°çš„å…ƒä»¶æ‰¾å›å®ƒçš„ Index
     private int FindSlotIndex(VisualElement element)
     {
         VisualElement current = element;
@@ -140,12 +140,12 @@ public class InventoryDragController: MonoBehaviour
 
         _isDragging = true;
 
-        // µøÄ±§ó·s¡G®³¨ú®ÄªG
+        // è¦–è¦ºæ›´æ–°ï¼šæ‹¿å–æ•ˆæœ
         _dragGhost.style.width = _slotElements[index].resolvedStyle.width;
         _dragGhost.style.height = _slotElements[index].resolvedStyle.height;
         _dragGhost.style.backgroundImage = new StyleBackground(slots[index].item.icon);
         _dragGhost.style.display = DisplayStyle.Flex;
-        _dragGhost.pickingMode = PickingMode.Ignore; // ¨¾¤îªı¾× panel.Pick
+        _dragGhost.pickingMode = PickingMode.Ignore; // é˜²æ­¢é˜»æ“‹ panel.Pick
 
         _slotElements[index].style.opacity = 0.3f;
     }
@@ -153,12 +153,12 @@ public class InventoryDragController: MonoBehaviour
     {
         if (_isDragging && _dragGhost != null)
         {
-            // ½T«O§Ú­Ì®³¨ìªº¬O³Ìºë½Tªº·í«e¤Ø¤o
+            // ç¢ºä¿æˆ‘å€‘æ‹¿åˆ°çš„æ˜¯æœ€ç²¾ç¢ºçš„ç•¶å‰å°ºå¯¸
             float width = _dragGhost.resolvedStyle.width;
             float height = _dragGhost.resolvedStyle.height;
 
-            // ª½±µ¨Ï¥Î panel §¤¼Ğ
-            // ¦pªG§Aªº UI ¦³ÁY©ñ¡]Scale¡^¡A¥i¯à»İ­n°£¥H panel ªºÁY©ñ­¿²v
+            // ç›´æ¥ä½¿ç”¨ panel åæ¨™
+            // å¦‚æœä½ çš„ UI æœ‰ç¸®æ”¾ï¼ˆScaleï¼‰ï¼Œå¯èƒ½éœ€è¦é™¤ä»¥ panel çš„ç¸®æ”¾å€ç‡
             _dragGhost.style.left = evt.position.x - (width / 2);
             _dragGhost.style.top = evt.position.y - (height / 2);
         }
