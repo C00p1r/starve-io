@@ -1374,6 +1374,18 @@ MonoBehaviour:
   diamondPickaxeItem: {fileID: 11400000, guid: d251083c6967e484eb42ac613cd361d8, type: 2}
   diamondCost: 5
   diamondPickaxeAmount: 1
+  woodenSwordItem: {fileID: 11400000, guid: eb04fdedeec44eaeb1cce321bcca3e9f, type: 2}
+  woodSwordCost: 5
+  woodenSwordAmount: 1
+  stoneSwordItem: {fileID: 11400000, guid: ff254131a5184ad1b757d273064d25bb, type: 2}
+  stoneSwordCost: 5
+  stoneSwordAmount: 1
+  goldenSwordItem: {fileID: 11400000, guid: 9195ccba935e47a9845abf3ac78490bf, type: 2}
+  goldSwordCost: 5
+  goldenSwordAmount: 1
+  diamondSwordItem: {fileID: 11400000, guid: 642dd0c4c3544d2d8f498df15d13707a, type: 2}
+  diamondSwordCost: 5
+  diamondSwordAmount: 1
 --- !u!4 &1907333767
 Transform:
   m_ObjectHideFlags: 0
