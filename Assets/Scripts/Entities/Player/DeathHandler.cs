@@ -1,12 +1,14 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UIElements;
 using System.Collections;
 
 public class DeathHandler : MonoBehaviour
 {
     [SerializeField] private PlayerStats playerStats;
+    [SerializeField] private PlayerController playerController;
+    [SerializeField] private Rigidbody2D playerRigidbody;
     [SerializeField] private UIDocument uiDocument;
-    [SerializeField] private float fadeDuration = 2.0f; // ÅÜ·tªº®É¶¡
+    [SerializeField] private float fadeDuration = 2.0f; // è®Šæš—çš„æ™‚é–“
     [SerializeField] private float fontSize = 40f;
     private VisualElement _darkScreen;
 
@@ -14,12 +16,16 @@ public class DeathHandler : MonoBehaviour
     {
         if (playerStats != null)
             playerStats.OnPlayerDeath += StartDeathSequence;
+        if (playerController == null)
+            playerController = GetComponent<PlayerController>();
+        if (playerRigidbody == null)
+            playerRigidbody = GetComponent<Rigidbody2D>();
 
         if (uiDocument != null)
         {
-            // °²³]§A¦b UXML ¸Ì¦³¤@­Óº¡ª©ªº¶Â¦â VisualElement ¥s "DarkScreen"
+            // å‡è¨­ä½ åœ¨ UXML è£¡æœ‰ä¸€å€‹æ»¿ç‰ˆçš„é»‘è‰² VisualElement å« "DarkScreen"
             _darkScreen = uiDocument.rootVisualElement.Q<VisualElement>("DarkScreen");
-            if (_darkScreen != null) _darkScreen.style.opacity = 0; // ªì©l³z©ú
+            if (_darkScreen != null) _darkScreen.style.opacity = 0; // åˆå§‹é€æ˜
         }
     }
 
@@ -31,16 +37,20 @@ public class DeathHandler : MonoBehaviour
 
     private void StartDeathSequence()
     {
-        // 1. Ä²µo UI ³qª¾ (¨Ï¥Î§A²{¦³ªº UI ¨t²Î)
+        DisablePlayerControl();
+        // 1. è§¸ç™¼ UI é€šçŸ¥ (ä½¿ç”¨ä½ ç¾æœ‰çš„ UI ç³»çµ±)
         UIEventManager.TriggerNotify("YOU DIED", 150);
 
-        // 2. ¶}©lÅÜ·t¨Ãµ²§ô¹CÀ¸ªº¨óµ{
+        // 2. é–‹å§‹è®Šæš—ä¸¦çµæŸéŠæˆ²çš„å”ç¨‹
         StartCoroutine(DeathRoutine());
     }
 
     private IEnumerator DeathRoutine()
     {
-        // ¸T¤îª±®a²¾°Ê (¦pªG»İ­n¡A¥i¥H¦b³o¸Ì§â PlayerController ªº enabled ³]¬° false)
+        // Disable player movement
+        DisablePlayerControl();
+
+        // ç¦æ­¢ç©å®¶ç§»å‹• (å¦‚æœéœ€è¦ï¼Œå¯ä»¥åœ¨é€™è£¡æŠŠ PlayerController çš„ enabled è¨­ç‚º false)
 
         float elapsed = 0f;
         while (elapsed < fadeDuration)
@@ -48,22 +58,30 @@ public class DeathHandler : MonoBehaviour
             elapsed += Time.deltaTime;
             if (_darkScreen != null)
             {
-                // ³vº¥¼W¥[³z©ú«× (0 ¨ì 1)
+                // é€æ¼¸å¢åŠ é€æ˜åº¦ (0 åˆ° 1)
                 _darkScreen.style.opacity = elapsed / fadeDuration;
             }
             yield return null;
         }
 
-        // µ¥«İ¤@¤p¬q®É¶¡Åıª±®a¬İ²M·¡ YOU DIED
+        // ç­‰å¾…ä¸€å°æ®µæ™‚é–“è®“ç©å®¶çœ‹æ¸…æ¥š YOU DIED
         yield return new WaitForSeconds(2.0f);
 
-        Debug.Log("¥¿¦bµ²§ô¹CÀ¸...");
+        Debug.Log("æ­£åœ¨çµæŸéŠæˆ²...");
 
-        // 3. µ²§ô¹CÀ¸
+        // 3. çµæŸéŠæˆ²
 #if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false; // ¦b½s¿è¾¹¤¤°±¤î
+        UnityEditor.EditorApplication.isPlaying = false; // åœ¨ç·¨è¼¯å™¨ä¸­åœæ­¢
 #else
-            Application.Quit(); // ¦b¥´¥]«áªº¹CÀ¸¤¤°h¥X
+            Application.Quit(); // åœ¨æ‰“åŒ…å¾Œçš„éŠæˆ²ä¸­é€€å‡º
 #endif
+    }
+
+    private void DisablePlayerControl()
+    {
+        if (playerController != null)
+            playerController.enabled = false;
+        if (playerRigidbody != null)
+            playerRigidbody.bodyType = RigidbodyType2D.Static;
     }
 }

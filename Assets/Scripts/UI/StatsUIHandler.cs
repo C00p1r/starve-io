@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UIElements;
 
 public class StatsUIHandler : MonoBehaviour
@@ -11,6 +11,11 @@ public class StatsUIHandler : MonoBehaviour
     private ProgressBar _hungerBar;
     private ProgressBar _thirstBar;
     private ProgressBar _tempBar;
+    private VisualElement _tempIcon;
+    [SerializeField] private Sprite coldTempSprite;
+    [SerializeField] private Sprite goodTempSprite;
+    [SerializeField] private Sprite hotTempSprite;
+    private Sprite _currentTempSprite;
 
     void OnEnable()
     {
@@ -23,6 +28,8 @@ public class StatsUIHandler : MonoBehaviour
         _hungerBar = root.Q<ProgressBar>("HungerBar");
         _thirstBar = root.Q<ProgressBar>("ThirstBar");
         _tempBar = root.Q<ProgressBar>("TempBar");
+        if (_tempBar != null)
+            _tempIcon = _tempBar.Q<VisualElement>("TempIcon");
 
         if (statsSource != null)
         {
@@ -48,5 +55,27 @@ public class StatsUIHandler : MonoBehaviour
         if (_hungerBar != null) _hungerBar.value = (statsSource.currentHunger / statsSource.maxHunger) * 100f;
         if (_thirstBar != null) _thirstBar.value = (statsSource.currentThirst / statsSource.maxThirst) * 100f;
         if (_tempBar != null) _tempBar.value = statsSource.currentTemperature;
+
+        UpdateTempIcon();
+    }
+
+    private void UpdateTempIcon()
+    {
+        if (_tempIcon == null || statsSource == null)
+            return;
+
+        float tempPercent = statsSource.maxTemperature > 0f
+            ? statsSource.currentTemperature / statsSource.maxTemperature
+            : 0f;
+
+        Sprite nextSprite = tempPercent < 0.5f
+            ? coldTempSprite
+            : tempPercent <= 0.95f ? goodTempSprite : hotTempSprite;
+
+        if (nextSprite == null || nextSprite == _currentTempSprite)
+            return;
+
+        _tempIcon.style.backgroundImage = new StyleBackground(nextSprite);
+        _currentTempSprite = nextSprite;
     }
 }

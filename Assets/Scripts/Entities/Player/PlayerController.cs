@@ -323,6 +323,17 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float capsuleOffset = 1.0f;
     [SerializeField] private CapsuleDirection2D capsuleDirection = CapsuleDirection2D.Vertical;
 
+    [Header("Placement")]
+    [SerializeField] private GameObject bonfirePrefab;
+    [SerializeField] private float bonfirePlaceOffset = 0.6f;
+    [SerializeField] private float bonfirePlaceRadius = 0.2f;
+    [SerializeField] private LayerMask bonfireBlockerLayers;
+    [SerializeField] private Color bonfirePreviewValidColor = new Color(0.2f, 1f, 0.2f, 0.55f);
+    [SerializeField] private Color bonfirePreviewInvalidColor = new Color(1f, 0.2f, 0.2f, 0.55f);
+    private GameObject _bonfirePreview;
+    private SpriteRenderer _bonfirePreviewRenderer;
+    private bool _skipNextAttackHit;
+
     [Header("狀態監控")]
     private bool _isAttacking = false; // 新增：用來鎖定攻擊狀態
     private bool _isAttackingHeld = false;
@@ -330,7 +341,18 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private Vector2 _moveInput;
     private float targetRotation;
-
+    [Header("Sound Effect Settings")]
+    [SerializeField] private AudioSource die_effect;
+    [SerializeField] private AudioSource eat_berry;
+    [SerializeField] private AudioSource eat_meat;
+    [SerializeField] private AudioSource get_hit;
+    [SerializeField] private AudioSource hit_sound_diamond;
+    [SerializeField] private AudioSource hit_sound_gold; 
+    [SerializeField] private AudioSource hit_sound_stone;
+    [SerializeField] private AudioSource hit_sound_tree;
+    [SerializeField] private AudioSource mine_berry;
+    [SerializeField] private AudioSource mine_fail;
+    [SerializeField] private AudioSource use_bandage;
     private void OnEnable()
     {
         _inputReader.MoveEvent += OnMove;
@@ -351,12 +373,16 @@ public class PlayerController : MonoBehaviour
     {
         _animator = GetComponent<Animator>();
         _mainCamera = Camera.main;
+        if (_inventoryManager == null)
+            _inventoryManager = InventoryManager.Instance;
 
         rb = GetComponent<Rigidbody2D>();
         currentSpeed = baseSpeed;
 
         rb.gravityScale = 0;
         rb.freezeRotation = true;
+
+        CacheAudioSources();
     }
 
     // --- 輸入處理 ---
@@ -369,7 +395,14 @@ public class PlayerController : MonoBehaviour
         // 這裡如果是單次點擊事件，可以直接執行。
         // 如果需要長按，建議在 InputReader 裡區分 Started 和 Canceled。
         // 暫時以單次點擊作為觸發，或使用 UnityEngine.InputSystem.Mouse.current.leftButton.isPressed
+        if (TryPlaceBonfire())
+        {
+            _skipNextAttackHit = true;
+            return;
+        }
+
         _isAttackingHeld = true;
+
     }
 
     void Update()
@@ -402,12 +435,20 @@ public class PlayerController : MonoBehaviour
             _animator.SetBool("isMoving", moving);
             _animator.SetBool("holdingTool", holdingTool);
         }
+
+        UpdateBonfirePreview();
     }
 
 
     // used by animation
     public void OnAttackHitFrame()
     {
+        if (_skipNextAttackHit)
+        {
+            _skipNextAttackHit = false;
+            return;
+        }
+
         Debug.Log("動畫偵測到打擊點！執行判定");
         if (_inventoryManager == null)
         {
@@ -434,12 +475,33 @@ public class PlayerController : MonoBehaviour
                 {
                     if (!notifiedMissingTool)
                     {
+                        PlayAudioOnce(mine_fail);
                         UIEventManager.TriggerNotify(denyMessage);
                         notifiedMissingTool = true;
                     }
                     continue;
                 }
-
+                switch(resourceData.name)
+                {
+                    case "Diamond":
+                        PlayAudioOnce(hit_sound_diamond);
+                        break;
+                    case "Stone":
+                        PlayAudioOnce(hit_sound_stone);
+                        break;
+                    case "Gold":
+                        PlayAudioOnce(hit_sound_gold);
+                        break;
+                    case "Wood":
+                        PlayAudioOnce(hit_sound_tree);
+                        break;
+                    case "FruitTree":
+                        PlayAudioOnce(mine_berry);
+                        break;
+                    default:
+                        Debug.LogWarning("未找到相符物件");
+                        break;
+                }
                 // --- 新增：計算攻擊方向並觸發震動 ---
                 // 方向 = 資源位置 - 玩家位置
                 Vector2 hitDirection = (hit.transform.position - this.transform.position).normalized;
@@ -461,8 +523,18 @@ public class PlayerController : MonoBehaviour
                 int damage = selectedItem != null ? selectedItem.damage : _handDamage; // Use item damage or hand damage
                 monster.TakeDamage(damage); // Apply damage to the monster
             }
+            if (hit.TryGetComponent<BonfireInteractable>(out BonfireInteractable bonfire))
+            {
+                Debug.Log("Bonfire hit.");
+                bonfire.RequestDestroy();
+                return;
+            }
         }
-
+        if (hitObjects.Length == 0)
+        {
+            if (!TryPlaceBonfire())
+                _inventoryManager.UseSelectedItem();
+        }
     }
 
     // --- 採集邏輯檢查 ---
@@ -515,6 +587,160 @@ public class PlayerController : MonoBehaviour
                 return true;
         }
         return false;
+    }
+
+    private void PlayAudioOnce(AudioSource source)
+    {
+        if (source == null)
+            return;
+
+        source.time = 0f;
+        source.Play();
+    }
+
+    private void CacheAudioSources()
+    {
+        var sources = GetComponentsInChildren<AudioSource>(true);
+        foreach (var source in sources)
+        {
+            if (source == null)
+                continue;
+
+            string name = source.gameObject.name;
+            switch (name)
+            {
+                case "chracter_die":
+                    if (die_effect == null) die_effect = source;
+                    break;
+                case "eat_berry":
+                    if (eat_berry == null) eat_berry = source;
+                    break;
+                case "eat_meat":
+                    if (eat_meat == null) eat_meat = source;
+                    break;
+                case "player_GetHit":
+                    if (get_hit == null) get_hit = source;
+                    break;
+                case "mine_diamond":
+                    if (hit_sound_diamond == null) hit_sound_diamond = source;
+                    break;
+                case "mine_gold":
+                    if (hit_sound_gold == null) hit_sound_gold = source;
+                    break;
+                case "mine_stone":
+                    if (hit_sound_stone == null) hit_sound_stone = source;
+                    break;
+                case "mine_wood":
+                    if (hit_sound_tree == null) hit_sound_tree = source;
+                    break;
+                case "use_thread//bandage":
+                    if (use_bandage == null) use_bandage = source;
+                    break;
+                case "mine_fail":
+                    if (mine_fail == null) mine_fail = source;
+                    break;
+                case "mine_berry":
+                    if (mine_berry == null) mine_berry = source;
+                    break;
+            }
+        }
+    }
+
+    private bool TryPlaceBonfire()
+    {
+        if (_inventoryManager == null)
+            return false;
+
+        var selectedItem = _inventoryManager.GetSelectedItem();
+        if (selectedItem == null || !string.Equals(selectedItem.itemName, "Bonfire", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        if (bonfirePrefab == null)
+        {
+            Debug.LogWarning("Bonfire prefab not assigned on PlayerController.");
+            return true;
+        }
+
+        Vector3 placePosition = transform.position + (Vector3)(Vector2)transform.up * bonfirePlaceOffset;
+        placePosition.z = 0f;
+
+        if (!IsBonfirePlacementValid(placePosition))
+        {
+            UIEventManager.TriggerNotify("Can't place bonfire here.");
+            return true;
+        }
+
+        if (!_inventoryManager.TryRemoveItem(selectedItem, 1))
+            return true;
+
+        Instantiate(bonfirePrefab, placePosition, Quaternion.identity);
+        return true;
+    }
+
+    private void UpdateBonfirePreview()
+    {
+        if (_inventoryManager == null)
+        {
+            SetBonfirePreviewVisible(false);
+            return;
+        }
+
+        var selectedItem = _inventoryManager.GetSelectedItem();
+        bool shouldShow = selectedItem != null &&
+            string.Equals(selectedItem.itemName, "Bonfire", StringComparison.OrdinalIgnoreCase);
+        if (!shouldShow)
+        {
+            SetBonfirePreviewVisible(false);
+            return;
+        }
+
+        EnsureBonfirePreview(selectedItem);
+        Vector3 placePosition = transform.position + (Vector3)(Vector2)transform.up * bonfirePlaceOffset;
+        placePosition.z = 0f;
+        _bonfirePreview.transform.position = placePosition;
+
+        bool isValid = IsBonfirePlacementValid(placePosition);
+        if (_bonfirePreviewRenderer != null)
+            _bonfirePreviewRenderer.color = isValid ? bonfirePreviewValidColor : bonfirePreviewInvalidColor;
+
+        SetBonfirePreviewVisible(true);
+    }
+
+    private void EnsureBonfirePreview(ItemData selectedItem)
+    {
+        if (_bonfirePreview != null)
+            return;
+
+        _bonfirePreview = new GameObject("BonfirePreview");
+        _bonfirePreviewRenderer = _bonfirePreview.AddComponent<SpriteRenderer>();
+
+        SpriteRenderer sourceRenderer = bonfirePrefab != null ? bonfirePrefab.GetComponent<SpriteRenderer>() : null;
+        if (sourceRenderer != null)
+        {
+            _bonfirePreviewRenderer.sprite = sourceRenderer.sprite;
+            _bonfirePreviewRenderer.sortingLayerID = sourceRenderer.sortingLayerID;
+            _bonfirePreviewRenderer.sortingOrder = sourceRenderer.sortingOrder;
+        }
+        else if (selectedItem != null && selectedItem.icon != null)
+        {
+            _bonfirePreviewRenderer.sprite = selectedItem.icon;
+        }
+
+        _bonfirePreview.transform.localScale = Vector3.one * 2f;
+    }
+
+    private void SetBonfirePreviewVisible(bool visible)
+    {
+        if (_bonfirePreview != null && _bonfirePreview.activeSelf != visible)
+            _bonfirePreview.SetActive(visible);
+    }
+
+    private bool IsBonfirePlacementValid(Vector3 position)
+    {
+        if (bonfireBlockerLayers.value == 0)
+            return true;
+
+        return Physics2D.OverlapCircle(position, bonfirePlaceRadius, bonfireBlockerLayers) == null;
     }
 
     // --- 移動與基礎邏輯 ---

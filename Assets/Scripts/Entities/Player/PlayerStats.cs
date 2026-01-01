@@ -1,71 +1,182 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System;
 
 public class PlayerStats : MonoBehaviour
 {
-    [Header("³Ì¤j­È")]
+    [Header("æœ€å¤§å€¼")]
     public float maxHealth = 100f;
     public float maxHunger = 100f;
     public float maxThirst = 100f;
     public float maxTemperature = 100f;
 
-    [Header("·í«e¼Æ­È")]
+    [Header("ç•¶å‰æ•¸å€¼")]
     public float currentHealth;
     public float currentHunger;
     public float currentThirst;
     public float currentTemperature;
 
-    [Header("¨C¬í¦©°£²v")]
+    [Header("æ¯ç§’æ‰£é™¤ç‡")]
     [SerializeField] private float hungerDecayRate = 0.3f;
     [SerializeField] private float thirstDecayRate = 0.5f;
     [SerializeField] private float starvationDamage = 1.0f;
+    [SerializeField] private float dayTempDecayRate = 0.5f;
+    [SerializeField] private float nightTempDecayRate = 1.0f;
+    [SerializeField] private float heatDamagePerSecond = 2.0f;
+    [SerializeField] private float heatDamageInterval = 1.0f;
+    [SerializeField] private float hotThresholdPercent = 0.95f;
+    [SerializeField] private float heatNotifyInterval = 2.5f;
+    [SerializeField] private Color heatFlashColor = new Color(1f, 0.3f, 0.3f, 1f);
+    [SerializeField] private float heatFlashDuration = 0.2f;
+    [SerializeField] private float heatFlashCooldown = 1.0f;
+    [SerializeField] private PlayerFeedback playerFeedback;
+    [SerializeField] private float coldDamagePerSecond = 2.0f;
+    [SerializeField] private float coldDamageInterval = 1.0f;
+    [SerializeField] private float coldThresholdPercent = 0.05f;
+    [SerializeField] private float coldNotifyInterval = 2.5f;
+    [SerializeField] private Color coldFlashColor = new Color(0.5f, 0.75f, 1f, 1f);
+    [SerializeField] private float coldFlashDuration = 0.2f;
+    [SerializeField] private float coldFlashCooldown = 1.0f;
 
-    // ©w¸q¤@­Ó¨Æ¥ó¡A·í¼Æ­È§ó·s®É³qª¾ UI
+    // å®šç¾©ä¸€å€‹äº‹ä»¶ï¼Œç•¶æ•¸å€¼æ›´æ–°æ™‚é€šçŸ¥ UI
     public event Action OnStatsUpdated;
-    public event Action OnPlayerDeath; // ¦º¤`¨Æ¥ó
+    public event Action OnPlayerDeath; // æ­»äº¡äº‹ä»¶
     private bool _isDead = false;
-
+    private float _heatNotifyTimer = 0f;
+    private float _heatDamageTimer = 0f;
+    private float _heatFlashTimer = 0f;
+    private float _coldNotifyTimer = 0f;
+    private float _coldDamageTimer = 0f;
+    private float _coldFlashTimer = 0f;
+    private TimeManager _timeManager;
+    [Header("å—å‚·èˆ‡æ­»äº¡éŸ³æ•ˆ")]
+    [SerializeField] private AudioSource get_hurt;
+    [SerializeField] private AudioSource dead;
     void Awake()
     {
         currentHealth = maxHealth;
         currentHunger = maxHunger;
         currentThirst = maxThirst;
-        currentTemperature = 50f; // ªì©lÅé·Å
+        currentTemperature = 60f; // åˆå§‹é«”æº«
+        if (playerFeedback == null)
+            playerFeedback = GetComponent<PlayerFeedback>();
+        _timeManager = FindObjectOfType<TimeManager>();
     }
 
     void Update()
     {
-        // 1. ÀH®É¶¡ºCºC¦©°§¾j­È»P¤f´÷­È
+        // 1. éš¨æ™‚é–“æ…¢æ…¢æ‰£é£¢é¤“å€¼èˆ‡å£æ¸´å€¼
         currentHunger = Mathf.Max(0, currentHunger - hungerDecayRate * Time.deltaTime);
         currentThirst = Mathf.Max(0, currentThirst - thirstDecayRate * Time.deltaTime);
 
-        // 2. °§¾j©Î¤f´÷Âk¹s®É¡Aª±®a·|¶}©l¦©¦å
+        // 2. é£¢é¤“æˆ–å£æ¸´æ­¸é›¶æ™‚ï¼Œç©å®¶æœƒé–‹å§‹æ‰£è¡€
         if (currentHunger <= 0 || currentThirst <= 0)
         {
             TakeDamage(starvationDamage * Time.deltaTime);
         }
 
-        // 3. ³qª¾©Ò¦³­q¾\ªÌ¡]¦p StatsUIHandler¡^§ó·sµe­±
+        float tempDecay = GetTemperatureDecayRate();
+        if (tempDecay > 0f)
+            currentTemperature = Mathf.Max(0f, currentTemperature - tempDecay * Time.deltaTime);
+
+        _heatFlashTimer = Mathf.Max(0f, _heatFlashTimer - Time.deltaTime);
+        _coldFlashTimer = Mathf.Max(0f, _coldFlashTimer - Time.deltaTime);
+        float hotThreshold = maxTemperature * hotThresholdPercent;
+        if (currentTemperature >= hotThreshold)
+        {
+            _heatDamageTimer += Time.deltaTime;
+            if (_heatDamageTimer >= heatDamageInterval)
+            {
+                TakeDamage(heatDamagePerSecond * heatDamageInterval);
+                _heatDamageTimer = 0f;
+
+                if (playerFeedback != null && _heatFlashTimer <= 0f)
+                {
+                    playerFeedback.TriggerDamageFlash(heatFlashColor, heatFlashDuration);
+                    _heatFlashTimer = heatFlashCooldown;
+                }
+            }
+
+            _heatNotifyTimer += Time.deltaTime;
+            if (_heatNotifyTimer >= heatNotifyInterval)
+            {
+                UIEventManager.TriggerNotify("Scorching heat!");
+                _heatNotifyTimer = 0f;
+            }
+        }
+        else
+        {
+            _heatNotifyTimer = 0f;
+            _heatDamageTimer = 0f;
+            _heatFlashTimer = 0f;
+        }
+
+        float coldThreshold = maxTemperature * coldThresholdPercent;
+        if (currentTemperature <= coldThreshold)
+        {
+            _coldDamageTimer += Time.deltaTime;
+            if (_coldDamageTimer >= coldDamageInterval)
+            {
+                TakeDamage(coldDamagePerSecond * coldDamageInterval);
+                _coldDamageTimer = 0f;
+
+                if (playerFeedback != null && _coldFlashTimer <= 0f)
+                {
+                    playerFeedback.TriggerDamageFlash(coldFlashColor, coldFlashDuration);
+                    _coldFlashTimer = coldFlashCooldown;
+                }
+            }
+
+            _coldNotifyTimer += Time.deltaTime;
+            if (_coldNotifyTimer >= coldNotifyInterval)
+            {
+                UIEventManager.TriggerNotify("Freezing cold!");
+                _coldNotifyTimer = 0f;
+            }
+        }
+        else
+        {
+            _coldNotifyTimer = 0f;
+            _coldDamageTimer = 0f;
+            _coldFlashTimer = 0f;
+        }
+
+        // 3. é€šçŸ¥æ‰€æœ‰è¨‚é–±è€…ï¼ˆå¦‚ StatsUIHandlerï¼‰æ›´æ–°ç•«é¢
         OnStatsUpdated?.Invoke();
     }
 
-    // ³Q©Çª«§ğÀ»¥i©I¥s
+    // è¢«æ€ªç‰©æ”»æ“Šå¯å‘¼å«
     public void TakeDamage(float amount)
     {
-        if (_isDead) return;
-
+        if (_isDead)
+        {
+            if (dead != null && dead.isPlaying == false)
+            {
+                dead.Play();
+            }
+            return;
+        }
+        if (get_hurt != null)
+        {
+            get_hurt.time = 0;
+            get_hurt.Play();
+        }
         currentHealth = Mathf.Max(0, currentHealth - amount);
         OnStatsUpdated?.Invoke();
 
         if (currentHealth <= 0)
         {
             _isDead = true;
-            OnPlayerDeath?.Invoke(); // Ä²µo¦º¤`
-            Debug.Log("ª±®a¤w¦º¤`");
+            OnPlayerDeath?.Invoke(); // è§¸ç™¼æ­»äº¡
+            Debug.Log("ç©å®¶å·²æ­»äº¡");
         }
     }
 
-    // ¥¼¨Ó¥i¥Hµ¹­¹ª«©Î¤ô©I¥s
+    // æœªä¾†å¯ä»¥çµ¦é£Ÿç‰©æˆ–æ°´å‘¼å«
+    public void RestoreHealth(float amount)
+    {
+        currentHealth = Mathf.Min(maxHealth, currentHealth + amount);
+        OnStatsUpdated?.Invoke();
+    }
     public void RestoreHunger(float amount)
     {
         currentHunger = Mathf.Min(maxHunger, currentHunger + amount);
@@ -75,5 +186,20 @@ public class PlayerStats : MonoBehaviour
     {
         currentThirst = Mathf.Min(maxThirst, currentThirst + amount);
         OnStatsUpdated?.Invoke();
+    }
+
+    public void ModifyTemperature(float amount)
+    {
+        currentTemperature = Mathf.Clamp(currentTemperature + amount, 0f, maxTemperature);
+        OnStatsUpdated?.Invoke();
+    }
+
+    private float GetTemperatureDecayRate()
+    {
+        if (_timeManager == null)
+            _timeManager = FindObjectOfType<TimeManager>();
+
+        bool isNight = _timeManager != null && _timeManager.IsNight;
+        return isNight ? nightTempDecayRate : dayTempDecayRate;
     }
 }

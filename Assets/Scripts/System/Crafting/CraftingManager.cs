@@ -35,6 +35,11 @@ public class CraftingManager : MonoBehaviour
     [SerializeField] private int diamondSwordCost = 5;
     [SerializeField] private int diamondSwordAmount = 1;
 
+    [Header("Bonfire Recipe")]
+    [SerializeField] private ItemData bonfireItem;
+    [SerializeField] private int bonfireWoodCost = 10;
+    [SerializeField] private int bonfireAmount = 1;
+
     public bool CraftPickaxe()
     {
         var inventory = InventoryManager.Instance;
@@ -95,7 +100,7 @@ public class CraftingManager : MonoBehaviour
 
         if (inventory.GetItemCount(stoneItem) < stoneCost || inventory.GetItemCount(woodenPickaxeItem) < 1)
         {
-            UIEventManager.TriggerNotify("Can't craft a stone pickaxe.");
+            UIEventManager.TriggerNotify("Can't craft a stone pickaxe.\nNeed a wooden pickaxe first.");
             return false;
         }
 
@@ -138,7 +143,7 @@ public class CraftingManager : MonoBehaviour
 
         if (inventory.GetItemCount(goldItem) < goldCost || inventory.GetItemCount(stonePickaxeItem) < 1)
         {
-            UIEventManager.TriggerNotify("Can't craft a golden pickaxe.");
+            UIEventManager.TriggerNotify("Can't craft a golden pickaxe.\nNeed a stone pickaxe first.");
             return false;
         }
 
@@ -181,7 +186,7 @@ public class CraftingManager : MonoBehaviour
 
         if (inventory.GetItemCount(diamondItem) < diamondCost || inventory.GetItemCount(goldenPickaxeItem) < 1)
         {
-            UIEventManager.TriggerNotify("Can't craft a diamond pickaxe.");
+            UIEventManager.TriggerNotify("Can't craft a diamond pickaxe.\nNeed a golden pickaxe first.");
             return false;
         }
 
@@ -267,7 +272,7 @@ public class CraftingManager : MonoBehaviour
 
         if (inventory.GetItemCount(stoneItem) < stoneSwordCost || inventory.GetItemCount(woodenSwordItem) < 1)
         {
-            UIEventManager.TriggerNotify("Can't craft a stone sword.");
+            UIEventManager.TriggerNotify("Can't craft a stone sword.\nNeed a wooden sword first.");
             return false;
         }
 
@@ -310,7 +315,7 @@ public class CraftingManager : MonoBehaviour
 
         if (inventory.GetItemCount(goldItem) < goldSwordCost || inventory.GetItemCount(stoneSwordItem) < 1)
         {
-            UIEventManager.TriggerNotify("Can't craft a golden sword.");
+            UIEventManager.TriggerNotify("Can't craft a golden sword.\nNeed a stone sword first.");
             return false;
         }
 
@@ -353,7 +358,7 @@ public class CraftingManager : MonoBehaviour
 
         if (inventory.GetItemCount(diamondItem) < diamondSwordCost || inventory.GetItemCount(goldenSwordItem) < 1)
         {
-            UIEventManager.TriggerNotify("Can't craft a diamond sword.");
+            UIEventManager.TriggerNotify("Can't craft a diamond sword.\nNeed a golden sword first.");
             return false;
         }
 
@@ -378,4 +383,57 @@ public class CraftingManager : MonoBehaviour
 
         return inventory.GetItemCount(diamondItem) >= diamondSwordCost;
     }
+
+    public bool CraftBonfire()
+    {
+        var inventory = InventoryManager.Instance;
+        if (inventory == null)
+        {
+            Debug.LogWarning("InventoryManager instance not found.");
+            return false;
+        }
+
+        if (woodItem == null || bonfireItem == null)
+        {
+            Debug.LogWarning("CraftingManager missing bonfire item references.");
+            return false;
+        }
+
+        if (inventory.GetItemCount(woodItem) < bonfireWoodCost)
+        {
+            UIEventManager.TriggerNotify("Not enough wood to craft a bonfire.");
+            return false;
+        }
+
+        if (!inventory.TryRemoveItem(woodItem, bonfireWoodCost))
+            return false;
+
+        if (!inventory.AddItem(bonfireItem, bonfireAmount))
+        {
+            inventory.AddItem(woodItem, bonfireWoodCost);
+            return false;
+        }
+
+        UIEventManager.TriggerNotify("Crafted a bonfire.");
+        return true;
+    }
+
+    public bool CanCraftBonfire()
+    {
+        var inventory = InventoryManager.Instance;
+        if (inventory == null || woodItem == null)
+            return false;
+
+        return inventory.GetItemCount(woodItem) >= bonfireWoodCost;
+    }
+
+    public ItemData WoodenPickaxeItem => woodenPickaxeItem;
+    public ItemData StonePickaxeItem => stonePickaxeItem;
+    public ItemData GoldenPickaxeItem => goldenPickaxeItem;
+    public ItemData DiamondPickaxeItem => diamondPickaxeItem;
+    public ItemData WoodenSwordItem => woodenSwordItem;
+    public ItemData StoneSwordItem => stoneSwordItem;
+    public ItemData GoldenSwordItem => goldenSwordItem;
+    public ItemData DiamondSwordItem => diamondSwordItem;
+    public ItemData BonfireItem => bonfireItem;
 }

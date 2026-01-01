@@ -1,10 +1,11 @@
 ﻿// 2026/1/1 AI-Tag
 // This was created with the help of Assistant, a Unity Artificial Intelligence product.
 
+using StarveIO.Data;
 using System;
+using System.Runtime.CompilerServices;
 using UnityEditor;
 using UnityEngine;
-using StarveIO.Data;
 public class MeetPickup : MonoBehaviour
 {
     [SerializeField] private ItemData itemData; // Reference to the ItemData asset
@@ -20,14 +21,19 @@ public class MeetPickup : MonoBehaviour
             {
                 // Add the item to the player's inventory
                 InventoryManager inventoryManager = playerController._inventoryManager;
+                bool ispicked = false;
                 if (inventoryManager != null && itemData != null)
                 {
-                    inventoryManager.AddItem(itemData, itemAmount);
+                    ispicked = inventoryManager.AddItem(itemData, itemAmount);
                     Debug.Log($"Player picked up {itemAmount} {itemData.itemName}.");
                 }
 
                 // Destroy the item object after pickup
-                Destroy(gameObject);
+                if (ispicked == true)
+                {
+                    Destroy(gameObject);
+                }
+                
             }
         }
     }

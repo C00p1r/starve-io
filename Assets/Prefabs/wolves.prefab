@@ -13,11 +13,15 @@ GameObject:
   - component: {fileID: -7712231288025433826}
   - component: {fileID: 7312256401651518421}
   - component: {fileID: 4678830623697330810}
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
   - component: {fileID: 7187152402990223778}
   - component: {fileID: -6436940616472290517}
 >>>>>>> Stashed changes
+=======
+  - component: {fileID: 7187152402990223778}
+>>>>>>> main
   m_Layer: 3
   m_Name: wolves
   m_TagString: Untagged
@@ -163,6 +167,7 @@ MonoBehaviour:
   meetPrefab: {fileID: 6615762040543448315, guid: 7f03ad03f9a335442b002e36fc888eba, type: 3}
   threadPrefab: {fileID: 0}
   damagePerHit: 10
+  attackRange: 0.8
   attackCoolDown: 0.7
   alertColor: {r: 1, g: 0, b: 0, a: 1}
   alertDuration: 0.3
@@ -171,12 +176,17 @@ MonoBehaviour:
   randomMoveDistance: 1
   hitboxScale: 1
   facingOffsetDegrees: 180
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
   monsterFlashColor: {r: 1, g: 0, b: 0, a: 1}
   monsterFlashDuration: 0.2
   get_hit: {fileID: -6436940616472290517}
 >>>>>>> Stashed changes
+=======
+  monsterFlashColor: {r: 1, g: 0, b: 0, a: 1}
+  monsterFlashDuration: 0.2
+>>>>>>> main
 --- !u!50 &4678830623697330810
 Rigidbody2D:
   serializedVersion: 5

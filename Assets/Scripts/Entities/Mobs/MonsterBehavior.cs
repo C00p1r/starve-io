@@ -15,6 +15,7 @@ public class MonsterBehavior : MonoBehaviour
 
     [Header("攻擊與變色設定 (新增)")]
     public float damagePerHit = 10f;
+    public float attackRange = 1.2f;
     public float attackCoolDown = 1f; // 攻擊冷卻時間
     public Color alertColor = new Color(1f, 0f, 0f, 1f); // 受傷閃紅
     public float alertDuration = 0.3f;
@@ -30,6 +31,12 @@ public class MonsterBehavior : MonoBehaviour
     public float randomMoveDistance = 1f;
     public float hitboxScale = 1.3f;
     public float facingOffsetDegrees = 180f;
+    [Header("受傷回饋 (新增)")]
+    public Color monsterFlashColor = Color.red;
+    public float monsterFlashDuration = 0.2f;
+    private SpriteRenderer monsterSR;
+    private Color monsterOriginalColor;
+    private Coroutine flashCoroutine;
 
     private Vector3 randomTarget;
     private float randomMoveTimer;
@@ -38,6 +45,7 @@ public class MonsterBehavior : MonoBehaviour
     private Collider2D monsterCollider;
     private Collider2D playerCollider;
     private Vector2 moveDirection;
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
     private PlayerStats playerStats;
@@ -46,12 +54,26 @@ public class MonsterBehavior : MonoBehaviour
 
     [SerializeField] private AudioSource get_hit;
 >>>>>>> Stashed changes
+=======
+    private PlayerStats playerStats;
+    private PlayerFeedback playerFeedback;
+
+    
+
+>>>>>>> main
 
     void Awake()
     {
+        // --- 新增：初始化顏色回饋 ---
+        monsterSR = GetComponent<SpriteRenderer>();
+        if (monsterSR != null)
+        {
+            monsterOriginalColor = monsterSR.color; // 存下最初的顏色 (重要！)
+        }
+
+        // --- 原有的 Rigidbody 設定 ---
         rb = GetComponent<Rigidbody2D>();
-        if (rb == null)
-            rb = gameObject.AddComponent<Rigidbody2D>();
+        if (rb == null) rb = gameObject.AddComponent<Rigidbody2D>();
 
         rb.gravityScale = 0f;
         rb.freezeRotation = true;
@@ -78,6 +100,8 @@ public class MonsterBehavior : MonoBehaviour
         {
             player = playerObject.transform;
             playerCollider = playerObject.GetComponent<Collider2D>();
+            playerStats = playerObject.GetComponent<PlayerStats>();
+            playerFeedback = playerObject.GetComponent<PlayerFeedback>();
             if (monsterCollider != null && playerCollider != null)
             {
                 Physics2D.IgnoreCollision(monsterCollider, playerCollider, true);
@@ -100,6 +124,8 @@ public class MonsterBehavior : MonoBehaviour
         moveDirection = distanceToPlayer <= followDistance
             ? GetFollowDirection(distanceToPlayer)
             : GetRandomDirection();
+
+        HandleAttack(distanceToPlayer);
     }
 
     void FixedUpdate()
@@ -150,33 +176,25 @@ public class MonsterBehavior : MonoBehaviour
         return direction;
     }
 
-    // --- 新增：處理與玩家的碰撞傷害 ---
-    // 在 MonsterBehavior.cs 裡的 OnTriggerStay2D 中修改
-    void OnTriggerStay2D(Collider2D collision)
+    void HandleAttack(float distanceToPlayer)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (distanceToPlayer > attackRange)
         {
-            contactTimer -= Time.deltaTime;
-
-            if (contactTimer <= 0)
-            {
-                // 1. 呼叫玩家的變色回饋
-                PlayerFeedback feedback = collision.GetComponent<PlayerFeedback>();
-                if (feedback != null)
-                {
-                    feedback.TriggerDamageFlash(alertColor, alertDuration);
-                }
-
-                // 2. 扣血邏輯
-                PlayerStats stats = collision.GetComponent<PlayerStats>();
-                if (stats != null)
-                {
-                    stats.TakeDamage(damagePerHit);
-                }
-
-                contactTimer = attackCoolDown;
-            }
+            contactTimer = 0f;
+            return;
         }
+
+        contactTimer -= Time.deltaTime;
+        if (contactTimer > 0f)
+            return;
+
+        if (playerFeedback != null)
+            playerFeedback.TriggerDamageFlash(alertColor, alertDuration);
+
+        if (playerStats != null)
+            playerStats.TakeDamage(damagePerHit);
+
+        contactTimer = attackCoolDown;
     }
     void SetRandomTarget()
     {
@@ -196,22 +214,40 @@ public class MonsterBehavior : MonoBehaviour
             transform.rotation = Quaternion.Euler(0f, 0f, angle);
     }
 
+    // --- 修改：TakeDamage 增加閃紅光邏輯 ---
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
+<<<<<<< HEAD
 <<<<<<< Updated upstream
         Debug.Log($"Wolves took {damage} damage! Current health: {currentHealth}");
 =======
         Debug.Log($"{gameObject.name} took {damage} damage! HP: {currentHealth}");
         get_hit.time = 0;
         get_hit.Play();
+=======
+        Debug.Log($"{gameObject.name} took {damage} damage! HP: {currentHealth}");
+        if (gameObject.name.Contains("wolves"))
+        {
+            //wolves_hit.time = 0;
+            //wolves_hit.Play();
+        }
+        else if (gameObject.name.Contains("spider"))
+        {
+            //spider_hit.time = 0;
+            //spider_hit.Play();
+        }
+>>>>>>> main
         // 觸發閃紅光
         if (monsterSR != null)
         {
             if (flashCoroutine != null) StopCoroutine(flashCoroutine); // 如果還在閃，先停止舊的
             flashCoroutine = StartCoroutine(MonsterFlashRoutine());
         }
+<<<<<<< HEAD
 >>>>>>> Stashed changes
+=======
+>>>>>>> main
 
         if (currentHealth <= 0)
         {
@@ -219,17 +255,28 @@ public class MonsterBehavior : MonoBehaviour
         }
     }
 
+    // --- 新增：怪物閃爍協程 ---
+    IEnumerator MonsterFlashRoutine()
+    {
+        monsterSR.color = monsterFlashColor;
+        yield return new WaitForSeconds(monsterFlashDuration);
+        monsterSR.color = monsterOriginalColor; // 變回 Awake 存下的原始顏色
+        flashCoroutine = null;
+    }
+
     void Die()
     {
-        Debug.Log("Wolves have died!");
-        if (meetPrefab != null)
-        {
+        // 確保死掉時不會因為正在協程中而導致報錯
+        if (flashCoroutine != null) StopCoroutine(flashCoroutine);
+
+        Debug.Log($"{gameObject.name} has died!");
+
+        // 掉落物邏輯
+        if (gameObject.name.Contains("wolves") && meetPrefab != null)
             Instantiate(meetPrefab, transform.position, Quaternion.identity);
-        }
-        if (threadPrefab != null)
-        {
+        else if (gameObject.name.Contains("spider") && threadPrefab != null)
             Instantiate(threadPrefab, transform.position, Quaternion.identity);
-        }
+
         Destroy(gameObject);
     }
 }
