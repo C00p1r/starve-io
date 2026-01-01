@@ -5045,11 +5045,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2ec98db6a929ff4fb70329ce635014d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
-  maxHealth: 10000
+  maxHealth: 100
   maxHunger: 100
   maxThirst: 100
   maxTemperature: 100
-  currentHealth: 10000
+  currentHealth: 100
   currentHunger: 100
   currentThirst: 100
   currentTemperature: 100
