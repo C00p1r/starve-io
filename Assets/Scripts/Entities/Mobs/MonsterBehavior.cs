@@ -31,11 +31,25 @@ public class MonsterBehavior : MonoBehaviour
     private float randomMoveTimer;
     private BoxCollider2D hitbox;
     private Rigidbody2D rb;
+    private Collider2D monsterCollider;
+    private Collider2D playerCollider;
+    private Vector2 moveDirection;
 
     void Awake()
     {
+        rb = GetComponent<Rigidbody2D>();
+        if (rb == null)
+            rb = gameObject.AddComponent<Rigidbody2D>();
+
+        rb.gravityScale = 0f;
+        rb.freezeRotation = true;
+        rb.interpolation = RigidbodyInterpolation2D.Interpolate;
+        rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+
+        monsterCollider = GetComponent<Collider2D>();
         hitbox = GetComponent<BoxCollider2D>();
-        rb = GetComponent<Rigidbody2D>(); // 確保抓到 Rigidbody
+        if (monsterCollider != null)
+            monsterCollider.isTrigger = false;
 
         if (hitbox != null && hitboxScale > 0f && !Mathf.Approximately(hitboxScale, 1f))
         {
@@ -49,6 +63,11 @@ public class MonsterBehavior : MonoBehaviour
         if (playerObject != null)
         {
             player = playerObject.transform;
+            playerCollider = playerObject.GetComponent<Collider2D>();
+            if (monsterCollider != null && playerCollider != null)
+            {
+                Physics2D.IgnoreCollision(monsterCollider, playerCollider, true);
+            }
         }
 
         randomMoveTimer = randomMoveInterval;
@@ -57,40 +76,45 @@ public class MonsterBehavior : MonoBehaviour
 
     void Update()
     {
-        if (player == null) return;
-
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-
-        if (distanceToPlayer <= followDistance)
+        if (player == null)
         {
-            FollowPlayer();
+            moveDirection = Vector2.zero;
+            return;
         }
-        else
-        {
-            RandomMove();
-        }
+
+        float distanceToPlayer = Vector2.Distance(rb.position, player.position);
+        moveDirection = distanceToPlayer <= followDistance
+            ? GetFollowDirection(distanceToPlayer)
+            : GetRandomDirection();
     }
 
-    // --- 修改：使用 rb.MovePosition 以支援物理碰撞 ---
-    void FollowPlayer()
+    void FixedUpdate()
     {
-        Vector2 direction = (player.position - transform.position).normalized;
-        float distance = Vector2.Distance(transform.position, player.position);
+        if (rb == null)
+            return;
 
-        if (distance > stopDistance)
+        if (moveDirection.sqrMagnitude > 0.0001f)
         {
-            // 推薦做法：直接給予速度，物理引擎會自動處理碰撞阻擋
-            rb.linearVelocity = direction * moveSpeed;
+            Vector2 step = moveDirection * moveSpeed * Time.fixedDeltaTime;
+            rb.MovePosition(rb.position + step);
         }
         else
         {
-            rb.linearVelocity = Vector2.zero; // 停下
+            rb.linearVelocity = Vector2.zero;
         }
-
-        FaceDirection(direction);
     }
 
-    void RandomMove()
+    Vector2 GetFollowDirection(float distanceToPlayer)
+    {
+        if (distanceToPlayer <= stopDistance)
+            return Vector2.zero;
+
+        Vector2 direction = ((Vector2)player.position - rb.position).normalized;
+        FaceDirection(direction);
+        return direction;
+    }
+
+    Vector2 GetRandomDirection()
     {
         randomMoveTimer -= Time.deltaTime;
 
@@ -100,14 +124,16 @@ public class MonsterBehavior : MonoBehaviour
             randomMoveTimer = randomMoveInterval;
         }
 
-        Vector3 direction = (randomTarget - transform.position).normalized;
-        rb.MovePosition(rb.position + (Vector2)direction * moveSpeed * Time.deltaTime);
-        FaceDirection(direction);
-
-        if (Vector3.Distance(transform.position, randomTarget) < 0.1f)
+        Vector2 toTarget = (Vector2)randomTarget - rb.position;
+        if (toTarget.sqrMagnitude < 0.01f)
         {
             SetRandomTarget();
+            toTarget = (Vector2)randomTarget - rb.position;
         }
+
+        Vector2 direction = toTarget.normalized;
+        FaceDirection(direction);
+        return direction;
     }
 
     // --- 新增：處理與玩家的碰撞傷害 ---
@@ -142,14 +168,18 @@ public class MonsterBehavior : MonoBehaviour
     {
         float randomX = Random.Range(-randomMoveDistance, randomMoveDistance);
         float randomY = Random.Range(-randomMoveDistance, randomMoveDistance);
-        randomTarget = transform.position + new Vector3(randomX, randomY, 0);
+        Vector2 origin = rb != null ? rb.position : (Vector2)transform.position;
+        randomTarget = origin + new Vector2(randomX, randomY);
     }
 
-    void FaceDirection(Vector3 direction)
+    void FaceDirection(Vector2 direction)
     {
         if (direction.sqrMagnitude <= 0.0001f) return;
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f + facingOffsetDegrees;
-        transform.rotation = Quaternion.Euler(0f, 0f, angle);
+        if (rb != null)
+            rb.MoveRotation(angle);
+        else
+            transform.rotation = Quaternion.Euler(0f, 0f, angle);
     }
 
     void OnDestroy()
