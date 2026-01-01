@@ -31,6 +31,12 @@ public class MonsterBehavior : MonoBehaviour
     public float randomMoveDistance = 1f;
     public float hitboxScale = 1.3f;
     public float facingOffsetDegrees = 180f;
+    [Header("受傷回饋 (新增)")]
+    public Color monsterFlashColor = Color.red;
+    public float monsterFlashDuration = 0.2f;
+    private SpriteRenderer monsterSR;
+    private Color monsterOriginalColor;
+    private Coroutine flashCoroutine;
 
     private Vector3 randomTarget;
     private float randomMoveTimer;
@@ -44,9 +50,16 @@ public class MonsterBehavior : MonoBehaviour
 
     void Awake()
     {
+        // --- 新增：初始化顏色回饋 ---
+        monsterSR = GetComponent<SpriteRenderer>();
+        if (monsterSR != null)
+        {
+            monsterOriginalColor = monsterSR.color; // 存下最初的顏色 (重要！)
+        }
+
+        // --- 原有的 Rigidbody 設定 ---
         rb = GetComponent<Rigidbody2D>();
-        if (rb == null)
-            rb = gameObject.AddComponent<Rigidbody2D>();
+        if (rb == null) rb = gameObject.AddComponent<Rigidbody2D>();
 
         rb.gravityScale = 0f;
         rb.freezeRotation = true;
@@ -187,10 +200,18 @@ public class MonsterBehavior : MonoBehaviour
             transform.rotation = Quaternion.Euler(0f, 0f, angle);
     }
 
+    // --- 修改：TakeDamage 增加閃紅光邏輯 ---
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
-        Debug.Log($"Wolves took {damage} damage! Current health: {currentHealth}");
+        Debug.Log($"{gameObject.name} took {damage} damage! HP: {currentHealth}");
+
+        // 觸發閃紅光
+        if (monsterSR != null)
+        {
+            if (flashCoroutine != null) StopCoroutine(flashCoroutine); // 如果還在閃，先停止舊的
+            flashCoroutine = StartCoroutine(MonsterFlashRoutine());
+        }
 
         if (currentHealth <= 0)
         {
@@ -198,17 +219,28 @@ public class MonsterBehavior : MonoBehaviour
         }
     }
 
+    // --- 新增：怪物閃爍協程 ---
+    IEnumerator MonsterFlashRoutine()
+    {
+        monsterSR.color = monsterFlashColor;
+        yield return new WaitForSeconds(monsterFlashDuration);
+        monsterSR.color = monsterOriginalColor; // 變回 Awake 存下的原始顏色
+        flashCoroutine = null;
+    }
+
     void Die()
     {
-        Debug.Log("Wolves have died!");
-        if (meetPrefab != null)
-        {
+        // 確保死掉時不會因為正在協程中而導致報錯
+        if (flashCoroutine != null) StopCoroutine(flashCoroutine);
+
+        Debug.Log($"{gameObject.name} has died!");
+
+        // 掉落物邏輯
+        if (gameObject.name.Contains("wolves") && meetPrefab != null)
             Instantiate(meetPrefab, transform.position, Quaternion.identity);
-        }
-        if (threadPrefab != null)
-        {
+        else if (gameObject.name.Contains("spider") && threadPrefab != null)
             Instantiate(threadPrefab, transform.position, Quaternion.identity);
-        }
+
         Destroy(gameObject);
     }
 }

@@ -1,4 +1,4 @@
-<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+﻿<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/UI%20Toolkit/GameHUD.uss?fileID=7433441132597879392&amp;guid=290b25ea552ea2e469d129e77391696d&amp;type=3#GameHUD" />
     <ui:VisualElement name="DeleteConfirmPanel" class="confirm-panel">
         <ui:Label text="Delete selected item?" name="DeleteConfirmLabel" class="confirm-text" />
