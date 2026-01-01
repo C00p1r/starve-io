@@ -1152,7 +1152,7 @@ MonoBehaviour:
   capsuleSize: {x: 1, y: 0.5}
   capsuleOffset: 0.3
   capsuleDirection: 0
-  bonfirePrefab: {fileID: 0}
+  bonfirePrefab: {fileID: 600000000, guid: 9c95714247964082a39bb58c999cd758, type: 3}
   bonfirePlaceOffset: 0.6
   bonfirePlaceRadius: 0.2
   bonfireBlockerLayers:
@@ -1363,7 +1363,7 @@ MonoBehaviour:
   diamondSwordItem: {fileID: 11400000, guid: 642dd0c4c3544d2d8f498df15d13707a, type: 2}
   diamondSwordCost: 5
   diamondSwordAmount: 1
-  bonfireItem: {fileID: 0}
+  bonfireItem: {fileID: 11400000, guid: 4f216b83f2144312a7fe02cd68637473, type: 2}
   bonfireWoodCost: 10
   bonfireAmount: 1
 --- !u!4 &1907333767
@@ -1807,6 +1807,10 @@ PrefabInstance:
       propertyPath: m_SortingLayerID
       value: 45658621
       objectReference: {fileID: 0}
+    - target: {fileID: 5161322094461607778, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: 853dbf5cb91d46c4794482415e353941, type: 3}
     - target: {fileID: 5815396289603200664, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.4
