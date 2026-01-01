@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Gold
   m_EditorClassIdentifier: Assembly-CSharp::ResourceData
   item: {fileID: 11400000, guid: 85bfa42f9aacf492994d7e5ced958f3e, type: 2}
-  maxStock: 5
+  maxStock: 20
   yieldPerHit: 1
   requiredToolType: 1
   requiredToolTier: 2

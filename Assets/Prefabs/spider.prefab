@@ -154,6 +154,9 @@ MonoBehaviour:
   meetPrefab: {fileID: 6615762040543448315, guid: 7f03ad03f9a335442b002e36fc888eba, type: 3}
   threadPrefab: {fileID: 6615762040543448315, guid: 4260ec9f0e13d4847914ee3070a9f59d, type: 3}
   followDistance: 5
+  stopDistance: 1
   moveSpeed: 2
   randomMoveInterval: 2
   randomMoveDistance: 1
+  hitboxScale: 1.4
+  facingOffsetDegrees: 0
