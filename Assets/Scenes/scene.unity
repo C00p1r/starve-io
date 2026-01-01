@@ -172,9 +172,21 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2032022551611859474, guid: 11ed74cb95f60df488ef9516e4a7113a, type: 3}
+      propertyPath: eat_meat
+      value: 
+      objectReference: {fileID: 447054232}
+    - target: {fileID: 2032022551611859474, guid: 11ed74cb95f60df488ef9516e4a7113a, type: 3}
+      propertyPath: eat_berry
+      value: 
+      objectReference: {fileID: 188474966}
+    - target: {fileID: 2032022551611859474, guid: 11ed74cb95f60df488ef9516e4a7113a, type: 3}
       propertyPath: playerStats
       value: 
       objectReference: {fileID: 1867235794}
+    - target: {fileID: 2032022551611859474, guid: 11ed74cb95f60df488ef9516e4a7113a, type: 3}
+      propertyPath: use_bandage
+      value: 
+      objectReference: {fileID: 1321900394}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -285,6 +297,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ToolVisualHandler
   _inventoryManager: {fileID: 2074712203}
   _itemScale: 0.8
+--- !u!82 &188474966 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 7675781950766400559, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
+  m_PrefabInstance: {fileID: 8599733783439269296}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &288129399
 GameObject:
   m_ObjectHideFlags: 0
@@ -530,6 +547,11 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   CustomBlends: {fileID: 0}
+--- !u!82 &447054232 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 3814512666592271732, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
+  m_PrefabInstance: {fileID: 8599733783439269296}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &554717035
 GameObject:
   m_ObjectHideFlags: 0
@@ -834,6 +856,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1724466422}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &1321900394 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 5161322094461607778, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
+  m_PrefabInstance: {fileID: 8599733783439269296}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1409205216
 GameObject:
   m_ObjectHideFlags: 0
@@ -1757,9 +1784,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HUDUIHandler
   statsSource: {fileID: 1867235794}
-  coldTempSprite: {fileID: 0}
-  goodTempSprite: {fileID: 0}
-  hotTempSprite: {fileID: 0}
+  coldTempSprite: {fileID: -8567186622430992613, guid: 445833905cbc9844ea815d266ee49a93, type: 3}
+  goodTempSprite: {fileID: -3777184159844669818, guid: d6333636da6a54d399ab400a44853204, type: 3}
+  hotTempSprite: {fileID: 6489471546171652785, guid: fc3d6ed9aab92405e901fdae0be8f405, type: 3}
 --- !u!114 &2074712203 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2032022551611859474, guid: 11ed74cb95f60df488ef9516e4a7113a, type: 3}
@@ -1807,10 +1834,6 @@ PrefabInstance:
       propertyPath: m_SortingLayerID
       value: 45658621
       objectReference: {fileID: 0}
-    - target: {fileID: 5161322094461607778, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
-      propertyPath: m_Resource
-      value: 
-      objectReference: {fileID: 8300000, guid: 853dbf5cb91d46c4794482415e353941, type: 3}
     - target: {fileID: 5815396289603200664, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.4

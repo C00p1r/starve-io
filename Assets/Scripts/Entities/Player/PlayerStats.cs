@@ -200,6 +200,9 @@ public class PlayerStats : MonoBehaviour
             _timeManager = FindObjectOfType<TimeManager>();
 
         bool isNight = _timeManager != null && _timeManager.IsNight;
-        return isNight ? nightTempDecayRate : dayTempDecayRate;
+        float rate = isNight ? nightTempDecayRate : dayTempDecayRate;
+        if (currentTemperature >= 95)
+            rate = 2f;
+        return rate;
     }
 }

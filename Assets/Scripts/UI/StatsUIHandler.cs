@@ -16,6 +16,7 @@ public class StatsUIHandler : MonoBehaviour
     [SerializeField] private Sprite goodTempSprite;
     [SerializeField] private Sprite hotTempSprite;
     private Sprite _currentTempSprite;
+    private bool _isSubscribed;
 
     void OnEnable()
     {
@@ -31,19 +32,41 @@ public class StatsUIHandler : MonoBehaviour
         if (_tempBar != null)
             _tempIcon = _tempBar.Q<VisualElement>("TempIcon");
 
+        if (statsSource == null)
+            statsSource = FindObjectOfType<PlayerStats>();
+
         if (statsSource != null)
         {
             // 訂閱事件：當數據變動時，執行 UpdateHUD
             statsSource.OnStatsUpdated += UpdateHUD;
+            _isSubscribed = true;
+            UpdateHUD();
         }
     }
 
     void OnDisable()
     {
-        if (statsSource != null)
+        if (statsSource != null && _isSubscribed)
         {
             statsSource.OnStatsUpdated -= UpdateHUD;
+            _isSubscribed = false;
         }
+    }
+
+    void Update()
+    {
+        if (_tempIcon == null && uiDocument != null)
+        {
+            var root = uiDocument.rootVisualElement;
+            _tempBar = root.Q<ProgressBar>("TempBar");
+            if (_tempBar != null)
+                _tempIcon = _tempBar.Q<VisualElement>("TempIcon");
+            if (_tempIcon == null)
+                _tempIcon = root.Q<VisualElement>("TempIcon");
+        }
+
+        if (statsSource != null)
+            UpdateTempIcon();
     }
 
     private void UpdateHUD()
@@ -67,6 +90,7 @@ public class StatsUIHandler : MonoBehaviour
         float tempPercent = statsSource.maxTemperature > 0f
             ? statsSource.currentTemperature / statsSource.maxTemperature
             : 0f;
+        tempPercent = Mathf.Clamp01(tempPercent);
 
         Sprite nextSprite = tempPercent < 0.5f
             ? coldTempSprite

@@ -246,6 +246,8 @@ public class CraftingUIController : MonoBehaviour
         _goldSwordCraftButton.style.display = canCraftGoldSword ? DisplayStyle.Flex : DisplayStyle.None;
         _diamondSwordCraftButton.style.display = canCraftDiamondSword ? DisplayStyle.Flex : DisplayStyle.None;
         _bonfireCraftButton.style.display = canCraftBonfire ? DisplayStyle.Flex : DisplayStyle.None;
+
+        ApplyButtonIcons();
     }
 
     private void ApplyButtonIcons()
