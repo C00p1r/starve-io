@@ -341,7 +341,17 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private Vector2 _moveInput;
     private float targetRotation;
-
+    [Header("Sound Effect Settings")]
+    [SerializeField] private AudioSource die_effect;
+    [SerializeField] private AudioSource eat_berry;
+    [SerializeField] private AudioSource eat_meat;
+    [SerializeField] private AudioSource get_hit;
+    [SerializeField] private AudioSource hit_sound_diamond;
+    [SerializeField] private AudioSource hit_sound_gold; 
+    [SerializeField] private AudioSource hit_sound_stone;
+    [SerializeField] private AudioSource hit_sound_tree;
+    [SerializeField] private AudioSource use_bandage;
+    [SerializeField] private AudioSource mine_fail;
     private void OnEnable()
     {
         _inputReader.MoveEvent += OnMove;
@@ -462,12 +472,30 @@ public class PlayerController : MonoBehaviour
                 {
                     if (!notifiedMissingTool)
                     {
+                        PlayAudioOnce(mine_fail);
                         UIEventManager.TriggerNotify(denyMessage);
                         notifiedMissingTool = true;
                     }
                     continue;
                 }
-
+                switch(resourceData.name)
+                {
+                    case "Diamond":
+                        PlayAudioOnce(hit_sound_diamond);
+                        break;
+                    case "Stone":
+                        PlayAudioOnce(hit_sound_stone);
+                        break;
+                    case "Gold":
+                        PlayAudioOnce(hit_sound_gold);
+                        break;
+                    case "Wood":
+                        PlayAudioOnce(hit_sound_tree);
+                        break;
+                    default:
+                        Debug.LogWarning("未找到相符物件/莓果音效尚未設定");
+                        break;
+                }
                 // --- 新增：計算攻擊方向並觸發震動 ---
                 // 方向 = 資源位置 - 玩家位置
                 Vector2 hitDirection = (hit.transform.position - this.transform.position).normalized;
@@ -553,6 +581,15 @@ public class PlayerController : MonoBehaviour
                 return true;
         }
         return false;
+    }
+
+    private void PlayAudioOnce(AudioSource source)
+    {
+        if (source == null)
+            return;
+
+        source.time = 0f;
+        source.Play();
     }
 
     private bool TryPlaceBonfire()

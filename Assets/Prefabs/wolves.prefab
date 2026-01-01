@@ -159,7 +159,7 @@ MonoBehaviour:
   meetPrefab: {fileID: 6615762040543448315, guid: 7f03ad03f9a335442b002e36fc888eba, type: 3}
   threadPrefab: {fileID: 0}
   damagePerHit: 10
-  attackRange: 1
+  attackRange: 0.8
   attackCoolDown: 0.7
   alertColor: {r: 1, g: 0, b: 0, a: 1}
   alertDuration: 0.3
