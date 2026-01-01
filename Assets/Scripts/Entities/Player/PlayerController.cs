@@ -339,7 +339,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioSource hit_sound_gold; 
     [SerializeField] private AudioSource hit_sound_stone;
     [SerializeField] private AudioSource hit_sound_tree;
-    [SerializeField] private AudioSource use_bandage;
+    [SerializeField] private AudioSource mine_berry;
     [SerializeField] private AudioSource mine_fail;
     private void OnEnable()
     {
@@ -471,8 +471,12 @@ public class PlayerController : MonoBehaviour
                         hit_sound_tree.time = 0;
                         hit_sound_tree.Play();
                         break;
+                    case "FruitTree":
+                        mine_berry.time = 0;
+                        mine_berry.Play();
+                        break;
                     default:
-                        Debug.LogWarning("未找到相符物件/莓果音效尚未設定");
+                        Debug.LogWarning("未找到相符物件");
                         break;
                 }
                 // --- 新增：計算攻擊方向並觸發震動 ---
