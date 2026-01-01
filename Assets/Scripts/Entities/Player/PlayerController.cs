@@ -464,10 +464,10 @@ public class PlayerController : MonoBehaviour
                 monster.TakeDamage(damage); // Apply damage to the monster
             }
         }
-        if (hitObjects.Length == 0)
-        {
-            _inventoryManager.UseSelectedItem();
-        }
+        //if (hitObjects.Length == 0)
+        //{
+        //    _inventoryManager.UseItem();
+        //}
     }
 
     // --- 採集邏輯檢查 ---

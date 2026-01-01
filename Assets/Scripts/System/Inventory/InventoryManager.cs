@@ -105,7 +105,13 @@ public class InventoryManager : MonoBehaviour
 
         return slot.item;
     }
-
+    public ItemData GetItem(int index)
+    {
+        if (index < 0 || index >= slots.Count) return null;
+        var slot = slots[index];
+        if (slot.item == null || slot.count <= 0) return null;
+        return slot.item;
+    }
     public void SelectIndex(int index)
     {
         int clampedIndex = Mathf.Clamp(index, 0, Mathf.Max(0, maxSlots - 1));
@@ -207,9 +213,9 @@ public class InventoryManager : MonoBehaviour
     }
 
     // New method: Use selected item
-    public void UseSelectedItem()
+    public void UseItem(int ind)
     {
-        ItemData selectedItem = GetSelectedItem();
+        ItemData selectedItem = GetItem(ind);
         if (selectedItem == null)
         {
             Debug.Log("No item selected to use.");

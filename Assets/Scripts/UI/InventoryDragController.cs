@@ -93,12 +93,13 @@ public class InventoryDragController: MonoBehaviour
                 VisualElement pickedElement = _root.panel.Pick(evt.position);
                 int targetIndex = FindSlotIndex(pickedElement);
 
-                if (targetIndex == _dragStartIndex)
-                {
-                    //_inventoryManager.UseSelectedItem();
-                    Debug.Log($"全域判定：使用物品 {_dragStartIndex}");
-                }
-
+                //if (targetIndex == _dragStartIndex)
+                //{
+                //    _inventoryManager.UseItem();
+                //    Debug.Log($"全域判定：使用物品 {_dragStartIndex}");
+                //}
+                _inventoryManager.UseItem(targetIndex);
+                Debug.Log($"全域判定：使用物品 {_dragStartIndex}");
                 ResetDragState();
             }
         }
