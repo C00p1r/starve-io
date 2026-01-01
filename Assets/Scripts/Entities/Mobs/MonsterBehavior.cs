@@ -48,6 +48,9 @@ public class MonsterBehavior : MonoBehaviour
     private PlayerStats playerStats;
     private PlayerFeedback playerFeedback;
 
+    
+
+
     void Awake()
     {
         // --- 新增：初始化顏色回饋 ---
@@ -205,7 +208,16 @@ public class MonsterBehavior : MonoBehaviour
     {
         currentHealth -= damage;
         Debug.Log($"{gameObject.name} took {damage} damage! HP: {currentHealth}");
-
+        if (gameObject.name.Contains("wolves"))
+        {
+            //wolves_hit.time = 0;
+            //wolves_hit.Play();
+        }
+        else if (gameObject.name.Contains("spider"))
+        {
+            //spider_hit.time = 0;
+            //spider_hit.Play();
+        }
         // 觸發閃紅光
         if (monsterSR != null)
         {

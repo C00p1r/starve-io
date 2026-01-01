@@ -350,8 +350,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioSource hit_sound_gold; 
     [SerializeField] private AudioSource hit_sound_stone;
     [SerializeField] private AudioSource hit_sound_tree;
-    [SerializeField] private AudioSource use_bandage;
+    [SerializeField] private AudioSource mine_berry;
     [SerializeField] private AudioSource mine_fail;
+    [SerializeField] private AudioSource use_bandage;
     private void OnEnable()
     {
         _inputReader.MoveEvent += OnMove;
@@ -380,6 +381,8 @@ public class PlayerController : MonoBehaviour
 
         rb.gravityScale = 0;
         rb.freezeRotation = true;
+
+        CacheAudioSources();
     }
 
     // --- 輸入處理 ---
@@ -492,8 +495,11 @@ public class PlayerController : MonoBehaviour
                     case "Wood":
                         PlayAudioOnce(hit_sound_tree);
                         break;
+                    case "FruitTree":
+                        PlayAudioOnce(mine_berry);
+                        break;
                     default:
-                        Debug.LogWarning("未找到相符物件/莓果音效尚未設定");
+                        Debug.LogWarning("未找到相符物件");
                         break;
                 }
                 // --- 新增：計算攻擊方向並觸發震動 ---
@@ -590,6 +596,54 @@ public class PlayerController : MonoBehaviour
 
         source.time = 0f;
         source.Play();
+    }
+
+    private void CacheAudioSources()
+    {
+        var sources = GetComponentsInChildren<AudioSource>(true);
+        foreach (var source in sources)
+        {
+            if (source == null)
+                continue;
+
+            string name = source.gameObject.name;
+            switch (name)
+            {
+                case "chracter_die":
+                    if (die_effect == null) die_effect = source;
+                    break;
+                case "eat_berry":
+                    if (eat_berry == null) eat_berry = source;
+                    break;
+                case "eat_meat":
+                    if (eat_meat == null) eat_meat = source;
+                    break;
+                case "player_GetHit":
+                    if (get_hit == null) get_hit = source;
+                    break;
+                case "mine_diamond":
+                    if (hit_sound_diamond == null) hit_sound_diamond = source;
+                    break;
+                case "mine_gold":
+                    if (hit_sound_gold == null) hit_sound_gold = source;
+                    break;
+                case "mine_stone":
+                    if (hit_sound_stone == null) hit_sound_stone = source;
+                    break;
+                case "mine_wood":
+                    if (hit_sound_tree == null) hit_sound_tree = source;
+                    break;
+                case "use_thread//bandage":
+                    if (use_bandage == null) use_bandage = source;
+                    break;
+                case "mine_fail":
+                    if (mine_fail == null) mine_fail = source;
+                    break;
+                case "mine_berry":
+                    if (mine_berry == null) mine_berry = source;
+                    break;
+            }
+        }
     }
 
     private bool TryPlaceBonfire()

@@ -24,7 +24,10 @@ public class InventoryManager : MonoBehaviour
     public event Action OnInventoryChanged;
     public event Action OnInventoryExtended; // 合成出大背包
     public event Action<int> OnSelectedIndexChanged;
-
+    [Header("音效")]
+    [SerializeField] private AudioSource eat_meet;
+    [SerializeField] private AudioSource eat_berry;
+    [SerializeField] private AudioSource use_bandage;
     private void Awake()
     {
         if (Instance == null)
@@ -239,6 +242,8 @@ public class InventoryManager : MonoBehaviour
         {
             if (TryRemoveItem(selectedItem, 1))
             {
+                eat_meet.time = 0;
+                eat_meet.Play();
                 playerStats.RestoreHunger(20); // Restore 20 hunger points
                 Debug.Log("used item");
 
@@ -252,6 +257,8 @@ public class InventoryManager : MonoBehaviour
         {
             if (TryRemoveItem(selectedItem, 1))
             {
+                use_bandage.time = 0;
+                use_bandage.Play();
                 playerStats.currentHealth = Mathf.Min(playerStats.maxHealth, playerStats.currentHealth + 10); // Restore 10 health points
                 playerStats.RestoreHealth(5);
                 Debug.Log("Used 1 thread. Health restored by 10 points.");
@@ -265,6 +272,8 @@ public class InventoryManager : MonoBehaviour
         {
             if (TryRemoveItem(selectedItem, 1))
             {
+                eat_berry.time = 0;
+                eat_berry.Play();
                 playerStats.RestoreHunger(10);
                 Debug.Log("Used 1 fruit. (Hunger +10)");
             }
