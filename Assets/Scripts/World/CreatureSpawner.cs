@@ -1,4 +1,4 @@
-// 2025/12/30 AI-Tag
+﻿// 2025/12/30 AI-Tag
 // This was created with the help of Assistant, a Unity Artificial Intelligence product.
 
 using UnityEditor;
@@ -10,7 +10,7 @@ using UnityEngine;
 public class CreatureSpawner : MonoBehaviour
 {
 
-    [Header("�h�ź޲z")]
+    [Header("層級管理")]
     public Transform resourceParent;
 
     public GameObject wolvesPrefab; // Reference to the wolves prefab
@@ -18,7 +18,7 @@ public class CreatureSpawner : MonoBehaviour
     public int maxCreatures = 20; // Maximum number of creatures on the map
     public int mapWidth = 50; // Width of the map
     public int mapHeight = 50; // Height of the map
-    public float frontZPosition = -1f; // Z position to bring creatures to the front
+    public float frontZPosition = 0f; // Z position to bring creatures to the front
 
     private int currentCreatureCount;
 
