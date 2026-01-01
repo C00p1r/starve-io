@@ -1,7 +1,6 @@
 ﻿// 2025/12/30 AI-Tag
 // This was created with the help of Assistant, a Unity Artificial Intelligence product.
 
-using UnityEditor;
 using UnityEngine;
 // 2025/12/30 AI-Tag
 // This was created with the help of Assistant, a Unity Artificial Intelligence product.
@@ -19,16 +18,37 @@ public class CreatureSpawner : MonoBehaviour
     public int mapWidth = 50; // Width of the map
     public int mapHeight = 50; // Height of the map
     public float frontZPosition = 0f; // Z position to bring creatures to the front
+    [SerializeField] private bool spawnOnlyAtNight = true;
+    [SerializeField] private bool despawnAtDay = false;
 
     private int currentCreatureCount;
+    private TimeManager timeManager;
+    private bool wasNight;
 
     void Start()
     {
-        SpawnInitialCreatures();
+        timeManager = FindObjectOfType<TimeManager>();
+        wasNight = IsNight();
+        if (!spawnOnlyAtNight || wasNight)
+            SpawnInitialCreatures();
     }
 
     void Update()
     {
+        bool isNight = IsNight();
+        if (spawnOnlyAtNight && !isNight)
+        {
+            if (despawnAtDay && wasNight)
+                DespawnAllCreatures();
+            wasNight = isNight;
+            return;
+        }
+
+        if (spawnOnlyAtNight && isNight && !wasNight)
+            SpawnInitialCreatures();
+
+        wasNight = isNight;
+
         CheckAndSpawnCreatures();
     }
 
@@ -60,5 +80,18 @@ public class CreatureSpawner : MonoBehaviour
 
         GameObject creaturePrefab = Random.value < 0.5f ? wolvesPrefab : spidersPrefab;
         Instantiate(creaturePrefab, randomPosition, Quaternion.identity, resourceParent);
+    }
+
+    private bool IsNight()
+    {
+        return timeManager == null || timeManager.IsNight;
+    }
+
+    private void DespawnAllCreatures()
+    {
+        foreach (var monster in FindObjectsOfType<MonsterBehavior>())
+        {
+            Destroy(monster.gameObject);
+        }
     }
 }
