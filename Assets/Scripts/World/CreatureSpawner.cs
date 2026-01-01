@@ -19,24 +19,43 @@ public class CreatureSpawner : MonoBehaviour
     public int mapWidth = 50; // Width of the map
     public int mapHeight = 50; // Height of the map
     public float frontZPosition = 0f; // Z position to bring creatures to the front
+    public bool spawnOnlyAtNight = true;
+    public bool despawnAtDay = true;
 
     private int currentCreatureCount;
+    private TimeManager timeManager;
 
     void Start()
     {
-        SpawnInitialCreatures();
+        timeManager = TimeManager.Instance ?? FindObjectOfType<TimeManager>();
+        if (timeManager != null)
+        {
+            timeManager.OnDayStateChanged += HandleDayStateChanged;
+        }
+
+        if (!spawnOnlyAtNight || IsNight())
+            SpawnCreaturesToMax();
     }
 
     void Update()
     {
-        CheckAndSpawnCreatures();
+        if (!spawnOnlyAtNight || IsNight())
+            CheckAndSpawnCreatures();
     }
 
-    void SpawnInitialCreatures()
+    void OnDestroy()
     {
-        for (int i = 0; i < maxCreatures; i++)
+        if (timeManager != null)
+            timeManager.OnDayStateChanged -= HandleDayStateChanged;
+    }
+
+    void SpawnCreaturesToMax()
+    {
+        currentCreatureCount = GameObject.FindObjectsOfType<MonsterBehavior>().Length;
+        while (currentCreatureCount < maxCreatures)
         {
             SpawnRandomCreature();
+            currentCreatureCount++;
         }
     }
 
@@ -50,6 +69,21 @@ public class CreatureSpawner : MonoBehaviour
         }
     }
 
+    void HandleDayStateChanged(bool isDay)
+    {
+        if (!spawnOnlyAtNight)
+            return;
+
+        if (isDay && despawnAtDay)
+        {
+            DespawnAllCreatures();
+            return;
+        }
+
+        if (!isDay)
+            SpawnCreaturesToMax();
+    }
+
     void SpawnRandomCreature()
     {
         Vector3 randomPosition = new Vector3(
@@ -60,5 +94,18 @@ public class CreatureSpawner : MonoBehaviour
 
         GameObject creaturePrefab = Random.value < 0.5f ? wolvesPrefab : spidersPrefab;
         Instantiate(creaturePrefab, randomPosition, Quaternion.identity, resourceParent);
+    }
+
+    void DespawnAllCreatures()
+    {
+        foreach (var monster in FindObjectsOfType<MonsterBehavior>())
+        {
+            monster.Despawn();
+        }
+    }
+
+    bool IsNight()
+    {
+        return timeManager == null || timeManager.IsNight;
     }
 }

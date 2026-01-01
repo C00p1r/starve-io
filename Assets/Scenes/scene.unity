@@ -1279,31 +1279,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CraftingManager
   woodItem: {fileID: 11400000, guid: 3aafa725d661f7148b99c397d8a63776, type: 2}
   woodenPickaxeItem: {fileID: 11400000, guid: 5b09f144e16a3402aa227928e9fc6b88, type: 2}
-  woodCost: 5
+  woodCost: 10
   pickaxeAmount: 1
   stoneItem: {fileID: 11400000, guid: 81d971fb735d58d4d9dd88ff642f14ea, type: 2}
   stonePickaxeItem: {fileID: 11400000, guid: 01d14dcdc6f5c42729b6303d250fdb52, type: 2}
-  stoneCost: 5
+  stoneCost: 10
   stonePickaxeAmount: 1
   goldItem: {fileID: 11400000, guid: 85bfa42f9aacf492994d7e5ced958f3e, type: 2}
   goldenPickaxeItem: {fileID: 11400000, guid: 5e28c3d78d5024044acd80b2ca7c9241, type: 2}
-  goldCost: 5
+  goldCost: 10
   goldenPickaxeAmount: 1
   diamondItem: {fileID: 11400000, guid: 5458b423bfc934479abec306bd380476, type: 2}
   diamondPickaxeItem: {fileID: 11400000, guid: d251083c6967e484eb42ac613cd361d8, type: 2}
-  diamondCost: 5
+  diamondCost: 10
   diamondPickaxeAmount: 1
   woodenSwordItem: {fileID: 11400000, guid: eb04fdedeec44eaeb1cce321bcca3e9f, type: 2}
-  woodSwordCost: 5
+  woodSwordCost: 20
   woodenSwordAmount: 1
   stoneSwordItem: {fileID: 11400000, guid: ff254131a5184ad1b757d273064d25bb, type: 2}
-  stoneSwordCost: 5
+  stoneSwordCost: 20
   stoneSwordAmount: 1
   goldenSwordItem: {fileID: 11400000, guid: 9195ccba935e47a9845abf3ac78490bf, type: 2}
-  goldSwordCost: 5
+  goldSwordCost: 20
   goldenSwordAmount: 1
   diamondSwordItem: {fileID: 11400000, guid: 642dd0c4c3544d2d8f498df15d13707a, type: 2}
-  diamondSwordCost: 5
+  diamondSwordCost: 20
   diamondSwordAmount: 1
 --- !u!4 &1907333767
 Transform:
@@ -1714,6 +1714,138 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1867235795}
   m_SourcePrefab: {fileID: 100100000, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
+--- !u!1 &1965000000
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1965000001}
+  - component: {fileID: 1965000002}
+  - component: {fileID: 1965000003}
+  m_Layer: 0
+  m_Name: Global Light 2D
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1965000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1965000000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 073797afb82c5a1438f328866b10b3f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ComponentVersion: 1
+  m_LightType: 4
+  m_BlendStyleIndex: 0
+  m_FalloffIntensity: 0.5
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Intensity: 1
+  m_LightVolumeIntensity: 1
+  m_LightVolumeIntensityEnabled: 0
+  m_ApplyToSortingLayers: 00000000
+  m_LightCookieSprite: {fileID: 0}
+  m_DeprecatedPointLightCookieSprite: {fileID: 0}
+  m_LightOrder: 0
+  m_OverlapOperation: 0
+  m_NormalMapDistance: 3
+  m_NormalMapQuality: 2
+  m_UseNormalMap: 0
+  m_ShadowIntensityEnabled: 0
+  m_ShadowIntensity: 0.75
+  m_ShadowVolumeIntensityEnabled: 0
+  m_ShadowVolumeIntensity: 0.75
+  m_Vertices:
+  - position: {x: 0.9985302, y: 0.9985302, z: 0}
+    color: {r: 0.70710677, g: 0.70710677, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: 0.9985302, y: 0.9985302, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 1}
+    uv: {x: 0, y: 0}
+  - position: {x: -0.9985302, y: 0.9985302, z: 0}
+    color: {r: -0.70710677, g: 0.70710677, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: -0.9985302, y: 0.9985302, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 1}
+    uv: {x: 0, y: 0}
+  - position: {x: -0.99853003, y: -0.9985304, z: 0}
+    color: {r: -0.70710665, g: -0.7071069, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: -0.99853003, y: -0.9985304, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 1}
+    uv: {x: 0, y: 0}
+  - position: {x: 0.99853003, y: -0.9985304, z: 0}
+    color: {r: 0.70710665, g: -0.7071069, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: 0.99853003, y: -0.9985304, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 1}
+    uv: {x: 0, y: 0}
+  - position: {x: 0, y: 0, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 1}
+    uv: {x: 0, y: 0}
+  m_Triangles: 030001000800020000000100030002000100050003000800040002000300050004000300070005000800060004000500070006000500010007000800000006000700010000000700
+  m_LocalBounds:
+    m_Center: {x: 0, y: -0.00000011920929, z: 0}
+    m_Extent: {x: 0.9985302, y: 0.99853027, z: 0}
+  m_PointLightInnerAngle: 360
+  m_PointLightOuterAngle: 360
+  m_PointLightInnerRadius: 0
+  m_PointLightOuterRadius: 1
+  m_ShapeLightParametricSides: 5
+  m_ShapeLightParametricAngleOffset: 0
+  m_ShapeLightParametricRadius: 1
+  m_ShapeLightFalloffSize: 0.5
+  m_ShapeLightFalloffOffset: {x: 0, y: 0}
+  m_ShapePath:
+  - {x: -0.5, y: -0.5, z: 0}
+  - {x: 0.5, y: -0.5, z: 0}
+  - {x: 0.5, y: 0.5, z: 0}
+  - {x: -0.5, y: 0.5, z: 0}
+--- !u!114 &1965000003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1965000000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 485fbaea4706aa244a2d57b1993ec626, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dayDurationSeconds: 300
+  nightDurationSeconds: 300
+  transitionSeconds: 10
+  startAtDay: 1
+  globalLight: {fileID: 1965000002}
+  dayColor: {r: 1, g: 1, b: 1, a: 1}
+  nightColor: {r: 0.2, g: 0.25, b: 0.35, a: 1}
+  dayIntensity: 1
+  nightIntensity: 0.25
+--- !u!4 &1965000001
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1965000000}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1726,3 +1858,4 @@ SceneRoots:
   - {fileID: 30285147}
   - {fileID: 1907333767}
   - {fileID: 1724466422}
+  - {fileID: 1965000001}

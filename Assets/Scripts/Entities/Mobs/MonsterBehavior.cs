@@ -12,6 +12,7 @@ public class MonsterBehavior : MonoBehaviour
     [Header("掉落物")]
     public GameObject meetPrefab;
     public GameObject threadPrefab;
+    [SerializeField] private bool dropLootOnDestroy = true;
 
     [Header("攻擊與變色設定 (新增)")]
     public float damagePerHit = 10f;
@@ -194,6 +195,7 @@ public class MonsterBehavior : MonoBehaviour
     {
         // 只有在遊戲運行中且物件被摧毀（死亡）時才掉落
         if (!gameObject.scene.isLoaded) return;
+        if (!dropLootOnDestroy) return;
 
         if (gameObject.name.Contains("wolves") && meetPrefab != null)
         {
@@ -203,5 +205,11 @@ public class MonsterBehavior : MonoBehaviour
         {
             Instantiate(threadPrefab, transform.position, Quaternion.identity);
         }
+    }
+
+    public void Despawn()
+    {
+        dropLootOnDestroy = false;
+        Destroy(gameObject);
     }
 }
