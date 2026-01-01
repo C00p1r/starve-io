@@ -24,16 +24,16 @@ public class MapGenerator : MonoBehaviour
     public GameObject diamondPrefab;
 
 
-    [Header("湖泊生成設定")]
-    [Range(0, 1)] public float lakeProbability = 0.3f;
-    public float lakeAreaScale = 2f;
-    [Range(0, 1)] public float waterThreshold = 0.6f;
-    public float noiseScale = 10f;
+    //[Header("湖泊生成設定")]
+    //[Range(0, 1)] public float lakeProbability = 0.3f;
+    //public float lakeAreaScale = 2f;
+    //[Range(0, 1)] public float waterThreshold = 0.6f;
+    //public float noiseScale = 10f;
     private float offsetX;
     private float offsetY;
 
-    [Tooltip("如果一格水周圍的水格少於這個數量，它就會變成陸地。建議設為 3 或 4")]
-    [Range(0, 8)] public int waterSmoothThreshold = 4;
+    //[Tooltip("如果一格水周圍的水格少於這個數量，它就會變成陸地。建議設為 3 或 4")]
+    //[Range(0, 8)] public int waterSmoothThreshold = 4;
 
     [Header("生成物縮放範圍")]
     public float minScale = 0.8f;
@@ -62,38 +62,70 @@ public class MapGenerator : MonoBehaviour
         offsetY = Random.Range(0, 9999f);
         GenerateMap();
     }
+
+    [Header("矩形湖泊複合設定")]
+    [Tooltip("地圖上嘗試生成湖泊區域的次數")]
+    public int lakeSpawnAttempts = 10;
+    [Tooltip("每次嘗試成功生成的機率 (0~1)")]
+    [Range(0, 1)] public float lakeSpawnProbability = 0.6f;
+    [Tooltip("一個湖泊區域由多少個隨機矩形組成 (複合效果)")]
+    public int rectsPerLake = 3;
+
+    [Header("矩形大小設定")]
+    public int minRectSize = 3;
+    public int maxRectSize = 8;
+    [Tooltip("複合矩形之間的偏移範圍 (數值越大，湖泊形狀越散)")]
+    public int compoundOffset = 4;
+
     public void GenerateMap()
     {
         groundTilemap.ClearAllTiles();
         int midY = height / 2;
 
-        // 第一階段：原始雜訊生成
+        // 1. 初始化地圖數據
         int[,] mapData = new int[width, height];
-        for (int x = 0; x < width; x++)
+
+        // 2. 複合矩形生成邏輯
+        for (int i = 0; i < lakeSpawnAttempts; i++)
         {
-            for (int y = 0; y < height; y++)
+            // 判定本次嘗試是否成功生成
+            if (Random.value > lakeSpawnProbability) continue;
+
+            // 隨機決定這個「湖泊群」的中心點 (限制在草地 midY 以下)
+            int centerX = Random.Range(10, width - 10);
+            int centerY = Random.Range(10, midY - 10);
+
+            // 在中心點附近生成數個重疊的矩形，形成複合形狀
+            for (int j = 0; j < rectsPerLake; j++)
             {
-                float maskX = (float)x / width * lakeAreaScale + offsetX;
-                float maskY = (float)y / height * lakeAreaScale + offsetY;
-                float lakeMask = Mathf.PerlinNoise(maskX, maskY);
+                int lakeWidth = Random.Range(minRectSize, maxRectSize);
+                int lakeHeight = Random.Range(minRectSize, maxRectSize);
 
-                float xCoord = (float)x / width * noiseScale + offsetX;
-                float yCoord = (float)y / height * noiseScale + offsetY;
-                float noiseValue = Mathf.PerlinNoise(xCoord, yCoord);
+                // 讓每個矩形在中心點附近隨機偏移
+                int startX = centerX + Random.Range(-compoundOffset, compoundOffset);
+                int startY = centerY + Random.Range(-compoundOffset, compoundOffset);
 
-                bool isSnowRegion = y >= midY;
-                mapData[x, y] = (!isSnowRegion && lakeMask < lakeProbability && noiseValue > waterThreshold) ? 1 : 0;
+                // 填充矩形數據
+                for (int x = startX; x < startX + lakeWidth; x++)
+                {
+                    for (int y = startY; y < startY + lakeHeight; y++)
+                    {
+                        // 邊界檢查，防止超出地圖數組
+                        if (x >= 0 && x < width && y >= 0 && y < height && y < midY)
+                        {
+                            mapData[x, y] = 1;
+                        }
+                    }
+                }
             }
         }
 
-        // --- 關鍵修正：執行多次平滑化以確保連貫性 ---
-        // 執行 3 次平滑化會讓水池邊緣變得非常圓滑且連貫
-        for (int i = 0; i < 3; i++)
-        {
-            mapData = SmoothMap(mapData);
-        }
+        // 3. 平滑處理 (選擇性使用)
+        // 如果你想要完全死板的矩形，可以註解掉這行。
+        // 如果希望複合矩形的連接處更自然，可以執行 1 次平滑化。
+        // mapData = SmoothMap(mapData); 
 
-        // 第三階段：繪製與生成資源
+        // 4. 正式繪製
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
@@ -117,41 +149,7 @@ public class MapGenerator : MonoBehaviour
         UpdateMapBounds();
     }
 
-    // 獨立出來的平滑化函數
-    int[,] SmoothMap(int[,] oldMap)
-    {
-        int[,] newMap = (int[,])oldMap.Clone();
-        for (int x = 1; x < width - 1; x++)
-        {
-            for (int y = 1; y < height - 1; y++)
-            {
-                int neighbors = CountWaterNeighbors(oldMap, x, y);
 
-                // 核心規則：
-                // 如果周圍水很多(>4)，這格就變成水 (填補空洞)
-                // 如果周圍水太少(<4)，這格就變成草地 (消除孤立點)
-                if (neighbors > 4) newMap[x, y] = 1;
-                else if (neighbors < 4) newMap[x, y] = 0;
-            }
-        }
-        return newMap;
-    }
-
-    // 計算周圍 8 格水的數量 (輔助函數保持不變)
-    int CountWaterNeighbors(int[,] map, int centerX, int centerY)
-    {
-        if (centerX <= 0 || centerX >= width - 1 || centerY <= 0 || centerY >= height - 1) return 0;
-        int count = 0;
-        for (int x = centerX - 1; x <= centerX + 1; x++)
-        {
-            for (int y = centerY - 1; y <= centerY + 1; y++)
-            {
-                if (x == centerX && y == centerY) continue;
-                if (map[x, y] == 1) count++;
-            }
-        }
-        return count;
-    }
     void SpawnRandomResource(Vector3 pos)
     {
         float rand = Random.value;
