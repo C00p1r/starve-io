@@ -15,6 +15,7 @@ public class ResourceNode : MonoBehaviour
     [SerializeField] private Transform visualTransform; // 拖入顯示圖片的子物件
     [SerializeField] private float shakeDuration = 0.1f;
     [SerializeField] private float shakeStrength = 0.15f;
+    [SerializeField] private GameObject stockVisual;
 
     private Coroutine _shakeCoroutine;
     private Vector3 _originalLocalPos;
@@ -67,6 +68,7 @@ public class ResourceNode : MonoBehaviour
             return;
         }
         _currentStock = data.maxStock;
+        UpdateStockVisual();
     }
 
     private void Update()
@@ -86,6 +88,7 @@ public class ResourceNode : MonoBehaviour
             _currentStock = Mathf.Min(_currentStock + data.regenAmount, data.maxStock);
             _regenTimer = 0;
             Debug.Log($"{gameObject.name} 恢復中... 目前: {_currentStock}");
+            UpdateStockVisual();
         }
     }
 
@@ -103,7 +106,16 @@ public class ResourceNode : MonoBehaviour
 
         // 採集時重置計時器
         _regenTimer = 0;
+        UpdateStockVisual();
 
         return actualYield;
+    }
+
+    private void UpdateStockVisual()
+    {
+        if (stockVisual == null)
+            return;
+
+        stockVisual.SetActive(_currentStock > 0);
     }
 }

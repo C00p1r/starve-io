@@ -38,6 +38,8 @@ public class InventoryManager : MonoBehaviour
         slots.Clear();
         for (int i = 0; i < maxSlots; i++)
             slots.Add(new InventorySlot(null, 0));
+
+        TryCachePlayerStats();
     }
 
     public void UpdateInventoryUI() { OnInventoryChanged?.Invoke(); }
@@ -216,6 +218,12 @@ public class InventoryManager : MonoBehaviour
             return;
         }
 
+        if (!TryCachePlayerStats())
+        {
+            Debug.LogWarning("PlayerStats reference not set on InventoryManager.");
+            return;
+        }
+
         if (selectedItem.itemName == "Meet")
         {
             if (TryRemoveItem(selectedItem, 1))
@@ -258,5 +266,14 @@ public class InventoryManager : MonoBehaviour
         {
             Debug.Log("Selected item cannot be used.");
         }
+    }
+
+    private bool TryCachePlayerStats()
+    {
+        if (playerStats != null)
+            return true;
+
+        playerStats = FindObjectOfType<PlayerStats>();
+        return playerStats != null;
     }
 }
