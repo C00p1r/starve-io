@@ -4,8 +4,8 @@ using UnityEngine.Rendering.Universal;
 public class TimeManager : MonoBehaviour
 {
     [Header("Cycle Settings")]
-    [SerializeField] private float dayDurationSeconds = 300f;
-    [SerializeField] private float nightDurationSeconds = 300f;
+    [SerializeField] private float dayDurationSeconds = 60f;
+    [SerializeField] private float nightDurationSeconds = 60f;
     [SerializeField] private float transitionSeconds = 10f;
     [SerializeField] private bool startAtDay = true;
 

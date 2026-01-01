@@ -273,13 +273,23 @@
     margin-top: 20px;
 }
 
+.craft-header {
+    font-size: 28px;
+    color: rgb(66, 50, 32);
+    -unity-font-style: bold;
+    margin-bottom: 10px;
+}
+
 .craft-button {
     font-size: 25px;
-    width: 320px;
-    height: 40px;
+    width: 100px;
+    height: 100px;
     margin-bottom: 8px;
-    background-color: rgb(65, 96, 58);
-    color: rgb(255, 255, 255);
+    background-color: rgb(245, 222, 179);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: rgb(66, 50, 32);
     -unity-font-style: bold;
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
@@ -289,8 +299,8 @@
     border-right-width: 2px;
     border-bottom-width: 2px;
     border-left-width: 2px;
-    border-top-color: rgb(119, 176, 85);
-    border-right-color: rgb(119, 176, 85);
-    border-bottom-color: rgb(119, 176, 85);
-    border-left-color: rgb(119, 176, 85);
+    border-top-color: rgb(199, 167, 117);
+    border-right-color: rgb(199, 167, 117);
+    border-bottom-color: rgb(199, 167, 117);
+    border-left-color: rgb(199, 167, 117);
 }

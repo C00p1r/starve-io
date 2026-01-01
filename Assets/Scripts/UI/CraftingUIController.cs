@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UIElements;
+using StarveIO.Data;
 
 public class CraftingUIController : MonoBehaviour
 {
@@ -84,6 +85,7 @@ public class CraftingUIController : MonoBehaviour
         _diamondSwordCraftButton.clicked += HandleDiamondSwordCraftClicked;
         TryHookInventory();
 
+        ApplyButtonIcons();
         UpdateButtonVisibility();
     }
 
@@ -220,6 +222,30 @@ public class CraftingUIController : MonoBehaviour
         _stoneSwordCraftButton.style.display = canCraftStoneSword ? DisplayStyle.Flex : DisplayStyle.None;
         _goldSwordCraftButton.style.display = canCraftGoldSword ? DisplayStyle.Flex : DisplayStyle.None;
         _diamondSwordCraftButton.style.display = canCraftDiamondSword ? DisplayStyle.Flex : DisplayStyle.None;
+    }
+
+    private void ApplyButtonIcons()
+    {
+        if (craftingManager == null)
+            return;
+
+        SetButtonIcon(_craftButton, craftingManager.WoodenPickaxeItem);
+        SetButtonIcon(_stoneCraftButton, craftingManager.StonePickaxeItem);
+        SetButtonIcon(_goldCraftButton, craftingManager.GoldenPickaxeItem);
+        SetButtonIcon(_diamondCraftButton, craftingManager.DiamondPickaxeItem);
+        SetButtonIcon(_woodSwordCraftButton, craftingManager.WoodenSwordItem);
+        SetButtonIcon(_stoneSwordCraftButton, craftingManager.StoneSwordItem);
+        SetButtonIcon(_goldSwordCraftButton, craftingManager.GoldenSwordItem);
+        SetButtonIcon(_diamondSwordCraftButton, craftingManager.DiamondSwordItem);
+    }
+
+    private static void SetButtonIcon(Button button, ItemData item)
+    {
+        if (button == null || item == null || item.icon == null)
+            return;
+
+        button.style.backgroundImage = new StyleBackground(item.icon);
+        button.text = string.Empty;
     }
 
     private void Update()
