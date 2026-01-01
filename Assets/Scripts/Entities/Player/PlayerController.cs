@@ -1,4 +1,4 @@
-//using StarveIO.Input;
+﻿//using StarveIO.Input;
 //using StarveIO.Data;
 //using UnityEngine;
 //using System;
@@ -455,7 +455,14 @@ public class PlayerController : MonoBehaviour
                     if (!success) UIEventManager.TriggerNotify("The Inventory is Full!");
                 }
             }
+            if (hit.TryGetComponent<MonsterBehavior>(out MonsterBehavior monster))
+            {
+                ItemData selectedItem = _inventoryManager.GetSelectedItem();
+                int damage = selectedItem != null ? selectedItem.damage : _handDamage; // Use item damage or hand damage
+                monster.TakeDamage(damage); // Apply damage to the monster
+            }
         }
+
     }
 
     // --- 採集邏輯檢查 ---
