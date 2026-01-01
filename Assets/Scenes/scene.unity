@@ -1152,12 +1152,25 @@ MonoBehaviour:
   capsuleSize: {x: 1, y: 0.5}
   capsuleOffset: 0.3
   capsuleDirection: 0
-  bonfirePrefab: {fileID: 600000000, guid: 9c95714247964082a39bb58c999cd758, type: 3}
+  bonfirePrefab: {fileID: 0}
   bonfirePlaceOffset: 0.6
   bonfirePlaceRadius: 0.2
   bonfireBlockerLayers:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 0
+  bonfirePreviewValidColor: {r: 0.2, g: 1, b: 0.2, a: 0.55}
+  bonfirePreviewInvalidColor: {r: 1, g: 0.2, b: 0.2, a: 0.55}
+  die_effect: {fileID: 0}
+  eat_berry: {fileID: 0}
+  eat_meat: {fileID: 0}
+  get_hit: {fileID: 0}
+  hit_sound_diamond: {fileID: 0}
+  hit_sound_gold: {fileID: 0}
+  hit_sound_stone: {fileID: 0}
+  hit_sound_tree: {fileID: 0}
+  mine_berry: {fileID: 0}
+  mine_fail: {fileID: 0}
+  use_bandage: {fileID: 0}
 --- !u!50 &1867235790
 Rigidbody2D:
   serializedVersion: 5
@@ -1244,6 +1257,25 @@ MonoBehaviour:
   hungerDecayRate: 0.7
   thirstDecayRate: 0.5
   starvationDamage: 10
+  dayTempDecayRate: 0.5
+  nightTempDecayRate: 1
+  heatDamagePerSecond: 2
+  heatDamageInterval: 1
+  hotThresholdPercent: 0.95
+  heatNotifyInterval: 2.5
+  heatFlashColor: {r: 1, g: 0.3, b: 0.3, a: 1}
+  heatFlashDuration: 0.2
+  heatFlashCooldown: 1
+  playerFeedback: {fileID: 0}
+  coldDamagePerSecond: 2
+  coldDamageInterval: 1
+  coldThresholdPercent: 0.05
+  coldNotifyInterval: 2.5
+  coldFlashColor: {r: 0.5, g: 0.75, b: 1, a: 1}
+  coldFlashDuration: 0.2
+  coldFlashCooldown: 1
+  get_hurt: {fileID: 0}
+  dead: {fileID: 0}
 --- !u!114 &1867235795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1331,7 +1363,7 @@ MonoBehaviour:
   diamondSwordItem: {fileID: 11400000, guid: 642dd0c4c3544d2d8f498df15d13707a, type: 2}
   diamondSwordCost: 5
   diamondSwordAmount: 1
-  bonfireItem: {fileID: 11400000, guid: 4f216b83f2144312a7fe02cd68637473, type: 2}
+  bonfireItem: {fileID: 0}
   bonfireWoodCost: 10
   bonfireAmount: 1
 --- !u!4 &1907333767
@@ -1725,9 +1757,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HUDUIHandler
   statsSource: {fileID: 1867235794}
-  coldTempSprite: {fileID: -8567186622430992613, guid: 445833905cbc9844ea815d266ee49a93, type: 3}
-  goodTempSprite: {fileID: -3777184159844669818, guid: d6333636da6a54d399ab400a44853204, type: 3}
-  hotTempSprite: {fileID: 6489471546171652785, guid: fc3d6ed9aab92405e901fdae0be8f405, type: 3}
+  coldTempSprite: {fileID: 0}
+  goodTempSprite: {fileID: 0}
+  hotTempSprite: {fileID: 0}
 --- !u!114 &2074712203 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2032022551611859474, guid: 11ed74cb95f60df488ef9516e4a7113a, type: 3}
@@ -1759,6 +1791,10 @@ PrefabInstance:
       propertyPath: m_SortingLayerID
       value: 45658621
       objectReference: {fileID: 0}
+    - target: {fileID: 2183397889789257835, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: 3cbcfafcc2fc9c14280d20cd3b46565f, type: 3}
     - target: {fileID: 4374673874190237044, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
       propertyPath: m_SortingLayer
       value: 2
