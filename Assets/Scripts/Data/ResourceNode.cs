@@ -92,7 +92,7 @@ public class ResourceNode : MonoBehaviour
         }
     }
 
-    public int GatherResource()
+    public int GatherResource(int multiplier = 1)
     {
         if (_currentStock <= 0)
         {
@@ -101,7 +101,10 @@ public class ResourceNode : MonoBehaviour
             return 0;
         }
 
-        int actualYield = Mathf.Min(data.yieldPerHit, _currentStock);
+        if (multiplier < 1) multiplier = 1;
+
+        int targetYield = data.yieldPerHit * multiplier;
+        int actualYield = Mathf.Min(targetYield, _currentStock);
         _currentStock -= actualYield;
 
         // 採集時重置計時器
