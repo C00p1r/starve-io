@@ -1016,7 +1016,7 @@ Transform:
   m_GameObject: {fileID: 1555489546}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.471, y: 0, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1209,6 +1209,45 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.17
+--- !u!114 &1867235794
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1867235780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2ec98db6a929ff4fb70329ce635014d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
+  maxHealth: 100
+  maxHunger: 100
+  maxThirst: 100
+  maxTemperature: 100
+  currentHealth: 100
+  currentHunger: 100
+  currentThirst: 100
+  currentTemperature: 100
+  hungerDecayRate: 0.7
+  thirstDecayRate: 0.5
+  starvationDamage: 10
+--- !u!114 &1867235795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1867235780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24992ab24ffe1164d8e214bc7e79cff7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeathHandler
+  playerStats: {fileID: 1867235794}
+  uiDocument: {fileID: 2036016170}
+  fadeDuration: 2
+  fontSize: 150
 --- !u!1 &1907333765
 GameObject:
   m_ObjectHideFlags: 0
@@ -1400,6 +1439,7 @@ GameObject:
   - component: {fileID: 2036016175}
   - component: {fileID: 2036016176}
   - component: {fileID: 2036016177}
+  - component: {fileID: 2036016178}
   m_Layer: 5
   m_Name: InGameUI
   m_TagString: Untagged
@@ -1524,6 +1564,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InventoryDragController
   _inventoryManager: {fileID: 2074712203}
   _longPressThreshold: 0.1
+--- !u!114 &2036016178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2036016169}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ef765dc2d8917d44886035b2efcdd48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HUDUIHandler
+  statsSource: {fileID: 1867235794}
 --- !u!114 &2074712203 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2032022551611859474, guid: 11ed74cb95f60df488ef9516e4a7113a, type: 3}
@@ -1577,7 +1630,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7946767548086606159, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.471
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7946767548086606159, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1635,13 +1688,19 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8116643681556721975, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1867235788}
-    - targetCorrespondingSourceObject: {fileID: 8116643681556721975, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 1867235790}
     - targetCorrespondingSourceObject: {fileID: 8116643681556721975, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1867235791}
+    - targetCorrespondingSourceObject: {fileID: 8116643681556721975, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1867235788}
+    - targetCorrespondingSourceObject: {fileID: 8116643681556721975, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1867235794}
+    - targetCorrespondingSourceObject: {fileID: 8116643681556721975, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1867235795}
   m_SourcePrefab: {fileID: 100100000, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

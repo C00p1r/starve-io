@@ -1,0 +1,14 @@
+root = true
+
+[*]
+indent_style = space
+indent_size = 4
+# 強制所有檔案在儲存時使用 LF
+end_of_line = lf
+charset = utf-8-bom
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.cs]
+# 針對 C# 檔案的特定設定
+quote_type = double

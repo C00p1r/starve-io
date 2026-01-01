@@ -1,2 +1,16 @@
-# Auto detect text files and perform LF normalization
+# 自動偵測文字檔案，並在提交時統一轉為 LF
 * text=auto
+
+# 強制指定的檔案類型永遠使用 LF (適合 C#, UXML, Shader 等)
+*.cs text eol=lf
+*.uxml text eol=lf
+*.uss text eol=lf
+*.shader text eol=lf
+*.json text eol=lf
+
+# 確保二進位檔案（圖片、模型）不會被亂動
+*.jpg binary
+*.png binary
+*.fbx binary
+*.asset binary
+*.unity binary
