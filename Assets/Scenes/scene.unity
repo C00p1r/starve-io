@@ -1221,7 +1221,7 @@ MonoBehaviour:
   mapWidth: 50
   mapHeight: 50
   frontZPosition: 0
-  spawnOnlyAtNight: 0
+  spawnOnlyAtNight: 1
   despawnAtDay: 0
 --- !u!82 &1743672297 stripped
 AudioSource:
@@ -5032,7 +5032,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 0.17
+  m_Radius: 0.2
 --- !u!114 &1867235794
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5075,8 +5075,8 @@ MonoBehaviour:
   coldFlashCooldown: 1
   isStandingInWater: 0
   isInSnow: 0
-  get_hurt: {fileID: 0}
-  dead: {fileID: 0}
+  get_hurt: {fileID: 123973016}
+  dead: {fileID: 676273077}
 --- !u!114 &1867235795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5573,9 +5573,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HUDUIHandler
   statsSource: {fileID: 1867235794}
-  coldTempSprite: {fileID: 0}
-  goodTempSprite: {fileID: 0}
-  hotTempSprite: {fileID: 0}
+  coldTempSprite: {fileID: -8567186622430992613, guid: 445833905cbc9844ea815d266ee49a93, type: 3}
+  goodTempSprite: {fileID: -3777184159844669818, guid: d6333636da6a54d399ab400a44853204, type: 3}
+  hotTempSprite: {fileID: 6489471546171652785, guid: fc3d6ed9aab92405e901fdae0be8f405, type: 3}
 --- !u!114 &2074712203 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2032022551611859474, guid: 11ed74cb95f60df488ef9516e4a7113a, type: 3}
@@ -5619,6 +5619,10 @@ PrefabInstance:
       propertyPath: m_SortingLayerID
       value: 45658621
       objectReference: {fileID: 0}
+    - target: {fileID: 5161322094461607778, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: 853dbf5cb91d46c4794482415e353941, type: 3}
     - target: {fileID: 5815396289603200664, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.4
@@ -5627,6 +5631,10 @@ PrefabInstance:
       propertyPath: m_SortingOrder
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7323981207908534459, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: eee07546c9146774dbebdcba000ced47, type: 3}
     - target: {fileID: 7946767548086606159, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
