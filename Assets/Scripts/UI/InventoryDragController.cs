@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -95,7 +95,7 @@ public class InventoryDragController: MonoBehaviour
 
                 if (targetIndex == _dragStartIndex)
                 {
-                    //_inventoryManager.UseItem(_dragStartIndex);
+                    //_inventoryManager.UseSelectedItem();
                     Debug.Log($"全域判定：使用物品 {_dragStartIndex}");
                 }
 

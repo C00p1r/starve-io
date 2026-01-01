@@ -1,7 +1,12 @@
-using UnityEngine;
-using System.Collections.Generic;
+﻿// 2026/1/1 AI-Tag
+// This was created with the help of Assistant, a Unity Artificial Intelligence product.
+
 using StarveIO.Data;
+using StarveIO.Input;
 using System;
+using System.Collections.Generic;
+using UnityEditor;
+using UnityEngine;
 
 public class InventoryManager : MonoBehaviour
 {
@@ -12,11 +17,14 @@ public class InventoryManager : MonoBehaviour
     [SerializeField] private List<InventorySlot> slots = new List<InventorySlot>();
     [SerializeField] private int selectedIndex = 0;
 
+    [Header("Player Reference")]
+    [SerializeField] private PlayerStats playerStats; // Reference to PlayerStats
+
     // 當背包變動時，通知 UI 更新
     public event Action OnInventoryChanged;
     public event Action OnInventoryExtended; // 合成出大背包
     public event Action<int> OnSelectedIndexChanged;
-    //private event Action OnInventoryFull;
+
     private void Awake()
     {
         if (Instance == null)
@@ -32,7 +40,8 @@ public class InventoryManager : MonoBehaviour
             slots.Add(new InventorySlot(null, 0));
     }
 
-    public void UpdateInventoryUI() {  OnInventoryChanged?.Invoke(); }
+    public void UpdateInventoryUI() { OnInventoryChanged?.Invoke(); }
+
     // 核心功能：增加物品
     public bool AddItem(ItemData item, int amount)
     {
@@ -59,11 +68,10 @@ public class InventoryManager : MonoBehaviour
         // 2. 如果還有剩餘數量，嘗試找尋空格
         for (int i = 0; i < slots.Count && amount > 0; i++)
         {
-            Debug.Log("trying to find empty slot...");
             var slot = slots[i];
             if (slot.item != null && slot.count > 0)
                 continue;
-            Debug.Log("trying to find empty slot...Found!");
+
             int amountToAdd = Mathf.Min(amount, item.maxStack);
             slot.item = item;
             slot.count = amountToAdd;
@@ -78,9 +86,8 @@ public class InventoryManager : MonoBehaviour
             UIEventManager.TriggerNotify("The Inventory is Full!");
             return false;
         }
-        
+
         return true;
-    
     }
 
     public List<InventorySlot> GetSlots() => slots;
@@ -187,11 +194,11 @@ public class InventoryManager : MonoBehaviour
         OnInventoryChanged?.Invoke();
         return true;
     }
+
     public void SwapItems(int fromIndex, int toIndex)
     {
         if (fromIndex == toIndex || fromIndex >= slots.Count || toIndex >= slots.Count) return;
 
-        // 交換 List 中的元素
         var temp = slots[fromIndex];
         slots[fromIndex] = slots[toIndex];
         slots[toIndex] = temp;
@@ -199,4 +206,57 @@ public class InventoryManager : MonoBehaviour
         OnInventoryChanged?.Invoke();
     }
 
+    // New method: Use selected item
+    public void UseSelectedItem()
+    {
+        ItemData selectedItem = GetSelectedItem();
+        if (selectedItem == null)
+        {
+            Debug.Log("No item selected to use.");
+            return;
+        }
+
+        if (selectedItem.itemName == "Meet")
+        {
+            if (TryRemoveItem(selectedItem, 1))
+            {
+                playerStats.RestoreHunger(20); // Restore 20 hunger points
+                Debug.Log("used item");
+
+            }
+            else
+            {
+                Debug.Log("No meet left to use!");
+            }
+        }
+        else if (selectedItem.itemName == "Thread")
+        {
+            if (TryRemoveItem(selectedItem, 1))
+            {
+                playerStats.currentHealth = Mathf.Min(playerStats.maxHealth, playerStats.currentHealth + 10); // Restore 10 health points
+                playerStats.RestoreHealth(5);
+                Debug.Log("Used 1 thread. Health restored by 10 points.");
+            }
+            else
+            {
+                Debug.Log("No thread left to use!");
+            }
+        }
+        else if (selectedItem.itemName == "Fruit")
+        {
+            if (TryRemoveItem(selectedItem, 1))
+            {
+                playerStats.RestoreHunger(10);
+                Debug.Log("Used 1 fruit. Health restored by 15 points.");
+            }
+            else
+            {
+                Debug.Log("No fruit left to use!");
+            }
+        }
+        else
+        {
+            Debug.Log("Selected item cannot be used.");
+        }
+    }
 }

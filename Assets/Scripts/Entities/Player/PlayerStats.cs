@@ -1,28 +1,28 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System;
 
 public class PlayerStats : MonoBehaviour
 {
-    [Header("³Ì¤j­È")]
+    [Header("æœ€å¤§å€¼")]
     public float maxHealth = 100f;
     public float maxHunger = 100f;
     public float maxThirst = 100f;
     public float maxTemperature = 100f;
 
-    [Header("·í«e¼Æ­È")]
+    [Header("ç•¶å‰æ•¸å€¼")]
     public float currentHealth;
     public float currentHunger;
     public float currentThirst;
     public float currentTemperature;
 
-    [Header("¨C¬í¦©°£²v")]
+    [Header("æ¯ç§’æ‰£é™¤ç‡")]
     [SerializeField] private float hungerDecayRate = 0.3f;
     [SerializeField] private float thirstDecayRate = 0.5f;
     [SerializeField] private float starvationDamage = 1.0f;
 
-    // ©w¸q¤@­Ó¨Æ¥ó¡A·í¼Æ­È§ó·s®É³qª¾ UI
+    // å®šç¾©ä¸€å€‹äº‹ä»¶ï¼Œç•¶æ•¸å€¼æ›´æ–°æ™‚é€šçŸ¥ UI
     public event Action OnStatsUpdated;
-    public event Action OnPlayerDeath; // ¦º¤`¨Æ¥ó
+    public event Action OnPlayerDeath; // æ­»äº¡äº‹ä»¶
     private bool _isDead = false;
 
     void Awake()
@@ -30,26 +30,26 @@ public class PlayerStats : MonoBehaviour
         currentHealth = maxHealth;
         currentHunger = maxHunger;
         currentThirst = maxThirst;
-        currentTemperature = 50f; // ªì©lÅé·Å
+        currentTemperature = 50f; // åˆå§‹é«”æº«
     }
 
     void Update()
     {
-        // 1. ÀH®É¶¡ºCºC¦©°§¾j­È»P¤f´÷­È
+        // 1. éš¨æ™‚é–“æ…¢æ…¢æ‰£é£¢é¤“å€¼èˆ‡å£æ¸´å€¼
         currentHunger = Mathf.Max(0, currentHunger - hungerDecayRate * Time.deltaTime);
         currentThirst = Mathf.Max(0, currentThirst - thirstDecayRate * Time.deltaTime);
 
-        // 2. °§¾j©Î¤f´÷Âk¹s®É¡Aª±®a·|¶}©l¦©¦å
+        // 2. é£¢é¤“æˆ–å£æ¸´æ­¸é›¶æ™‚ï¼Œç©å®¶æœƒé–‹å§‹æ‰£è¡€
         if (currentHunger <= 0 || currentThirst <= 0)
         {
             TakeDamage(starvationDamage * Time.deltaTime);
         }
 
-        // 3. ³qª¾©Ò¦³­q¾\ªÌ¡]¦p StatsUIHandler¡^§ó·sµe­±
+        // 3. é€šçŸ¥æ‰€æœ‰è¨‚é–±è€…ï¼ˆå¦‚ StatsUIHandlerï¼‰æ›´æ–°ç•«é¢
         OnStatsUpdated?.Invoke();
     }
 
-    // ³Q©Çª«§ğÀ»¥i©I¥s
+    // è¢«æ€ªç‰©æ”»æ“Šå¯å‘¼å«
     public void TakeDamage(float amount)
     {
         if (_isDead) return;
@@ -60,12 +60,17 @@ public class PlayerStats : MonoBehaviour
         if (currentHealth <= 0)
         {
             _isDead = true;
-            OnPlayerDeath?.Invoke(); // Ä²µo¦º¤`
-            Debug.Log("ª±®a¤w¦º¤`");
+            OnPlayerDeath?.Invoke(); // è§¸ç™¼æ­»äº¡
+            Debug.Log("ç©å®¶å·²æ­»äº¡");
         }
     }
 
-    // ¥¼¨Ó¥i¥Hµ¹­¹ª«©Î¤ô©I¥s
+    // æœªä¾†å¯ä»¥çµ¦é£Ÿç‰©æˆ–æ°´å‘¼å«
+    public void RestoreHealth(float amount)
+    {
+        currentHealth = Mathf.Min(maxHealth, currentHealth + amount);
+        OnStatsUpdated?.Invoke();
+    }
     public void RestoreHunger(float amount)
     {
         currentHunger = Mathf.Min(maxHunger, currentHunger + amount);
