@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4886068276767085289}
   - component: {fileID: 8479886221297003789}
   - component: {fileID: 8001676043194575454}
+  - component: {fileID: -4701217075441980612}
   m_Layer: 0
   m_Name: thread
   m_TagString: Leaves
@@ -137,3 +138,17 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.9, y: 0.9}
   m_EdgeRadius: 0
+--- !u!114 &-4701217075441980612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6615762040543448315}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 401a945c34e813c44af049b4928ddd39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MeetPickup
+  itemData: {fileID: 11400000, guid: e3b3781157a4e23449f8a53e9ed50f60, type: 2}
+  itemAmount: 1
