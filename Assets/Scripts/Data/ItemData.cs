@@ -20,5 +20,6 @@ namespace StarveIO.Data
         [Header("Tool Settings")]
         public ToolType toolType = ToolType.None;
         public int toolTier = 0;
+        public int damage = 0;
     }
 }

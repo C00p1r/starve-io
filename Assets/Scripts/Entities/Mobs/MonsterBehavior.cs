@@ -20,10 +20,26 @@ public class MonsterBehavior : MonoBehaviour
     private Vector3 randomTarget;
     private float randomMoveTimer;
     private BoxCollider2D hitbox;
+    private Rigidbody2D rb;
+    private Collider2D monsterCollider;
+    private Collider2D playerCollider;
+    private Vector2 moveDirection;
 
     void Awake()
     {
+        rb = GetComponent<Rigidbody2D>();
+        if (rb == null)
+            rb = gameObject.AddComponent<Rigidbody2D>();
+
+        rb.gravityScale = 0f;
+        rb.freezeRotation = true;
+        rb.interpolation = RigidbodyInterpolation2D.Interpolate;
+        rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+
+        monsterCollider = GetComponent<Collider2D>();
         hitbox = GetComponent<BoxCollider2D>();
+        if (monsterCollider != null)
+            monsterCollider.isTrigger = false;
         if (hitbox != null && hitboxScale > 0f && !Mathf.Approximately(hitboxScale, 1f))
         {
             hitbox.size = hitbox.size * hitboxScale;
@@ -37,6 +53,11 @@ public class MonsterBehavior : MonoBehaviour
         if (playerObject != null)
         {
             player = playerObject.transform;
+            playerCollider = playerObject.GetComponent<Collider2D>();
+            if (monsterCollider != null && playerCollider != null)
+            {
+                Physics2D.IgnoreCollision(monsterCollider, playerCollider, true);
+            }
         }
         else
         {
@@ -49,41 +70,51 @@ public class MonsterBehavior : MonoBehaviour
 
     void Update()
     {
-        if (player == null) return;
-
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-
-        if (distanceToPlayer <= followDistance)
+        if (player == null)
         {
-            FollowPlayer();
-        }
-        else
-        {
-            RandomMove();
-        }
-    }
-
-    void FollowPlayer()
-    {
-        Vector3 toPlayer = player.position - transform.position;
-        float distanceToPlayer = toPlayer.magnitude;
-        if (distanceToPlayer <= 0.001f)
-        {
+            moveDirection = Vector2.zero;
             return;
         }
 
-        Vector3 direction = toPlayer / distanceToPlayer;
-        if (distanceToPlayer > stopDistance)
-        {
-            float step = moveSpeed * Time.deltaTime;
-            float maxStep = distanceToPlayer - stopDistance;
-            transform.position += direction * Mathf.Min(step, maxStep);
-        }
+        float distanceToPlayer = Vector2.Distance(rb.position, player.position);
 
-        FaceDirection(direction);
+        if (distanceToPlayer <= followDistance)
+        {
+            moveDirection = GetFollowDirection(distanceToPlayer);
+        }
+        else
+        {
+            moveDirection = GetRandomDirection();
+        }
     }
 
-    void RandomMove()
+    void FixedUpdate()
+    {
+        if (rb == null)
+            return;
+
+        if (moveDirection.sqrMagnitude > 0.0001f)
+        {
+            Vector2 step = moveDirection * moveSpeed * Time.fixedDeltaTime;
+            rb.MovePosition(rb.position + step);
+        }
+        else
+        {
+            rb.linearVelocity = Vector2.zero;
+        }
+    }
+
+    Vector2 GetFollowDirection(float distanceToPlayer)
+    {
+        if (distanceToPlayer <= stopDistance)
+            return Vector2.zero;
+
+        Vector2 direction = ((Vector2)player.position - rb.position).normalized;
+        FaceDirection(direction);
+        return direction;
+    }
+
+    Vector2 GetRandomDirection()
     {
         randomMoveTimer -= Time.deltaTime;
 
@@ -93,24 +124,27 @@ public class MonsterBehavior : MonoBehaviour
             randomMoveTimer = randomMoveInterval;
         }
 
-        Vector3 direction = (randomTarget - transform.position).normalized;
-        transform.position += direction * moveSpeed * Time.deltaTime;
-        FaceDirection(direction);
-
-        if (Vector3.Distance(transform.position, randomTarget) < 0.1f)
+        Vector2 toTarget = (Vector2)randomTarget - rb.position;
+        if (toTarget.sqrMagnitude < 0.01f)
         {
             SetRandomTarget();
+            toTarget = (Vector2)randomTarget - rb.position;
         }
+
+        Vector2 direction = toTarget.normalized;
+        FaceDirection(direction);
+        return direction;
     }
 
     void SetRandomTarget()
     {
         float randomX = Random.Range(-randomMoveDistance, randomMoveDistance);
         float randomY = Random.Range(-randomMoveDistance, randomMoveDistance);
-        randomTarget = transform.position + new Vector3(randomX, randomY, 0);
+        Vector2 origin = rb != null ? rb.position : (Vector2)transform.position;
+        randomTarget = origin + new Vector2(randomX, randomY);
     }
 
-    void FaceDirection(Vector3 direction)
+    void FaceDirection(Vector2 direction)
     {
         if (direction.sqrMagnitude <= 0.0001f)
         {
@@ -118,7 +152,10 @@ public class MonsterBehavior : MonoBehaviour
         }
 
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f + facingOffsetDegrees;
-        transform.rotation = Quaternion.Euler(0f, 0f, angle);
+        if (rb != null)
+            rb.MoveRotation(angle);
+        else
+            transform.rotation = Quaternion.Euler(0f, 0f, angle);
     }
 
     void OnDestroy()

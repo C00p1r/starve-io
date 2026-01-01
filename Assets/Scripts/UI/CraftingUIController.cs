@@ -9,6 +9,10 @@ public class CraftingUIController : MonoBehaviour
     private Button _stoneCraftButton;
     private Button _goldCraftButton;
     private Button _diamondCraftButton;
+    private Button _woodSwordCraftButton;
+    private Button _stoneSwordCraftButton;
+    private Button _goldSwordCraftButton;
+    private Button _diamondSwordCraftButton;
     private InventoryManager _inventoryManager;
     private bool _subscribed;
 
@@ -25,6 +29,10 @@ public class CraftingUIController : MonoBehaviour
         _stoneCraftButton = uiDocument.rootVisualElement.Q<Button>("CraftStonePickaxeButton");
         _goldCraftButton = uiDocument.rootVisualElement.Q<Button>("CraftGoldenPickaxeButton");
         _diamondCraftButton = uiDocument.rootVisualElement.Q<Button>("CraftDiamondPickaxeButton");
+        _woodSwordCraftButton = uiDocument.rootVisualElement.Q<Button>("CraftWoodenSwordButton");
+        _stoneSwordCraftButton = uiDocument.rootVisualElement.Q<Button>("CraftStoneSwordButton");
+        _goldSwordCraftButton = uiDocument.rootVisualElement.Q<Button>("CraftGoldenSwordButton");
+        _diamondSwordCraftButton = uiDocument.rootVisualElement.Q<Button>("CraftDiamondSwordButton");
         if (_craftButton == null)
         {
             Debug.LogWarning("CraftPickaxeButton not found in UI.");
@@ -45,11 +53,35 @@ public class CraftingUIController : MonoBehaviour
             Debug.LogWarning("CraftDiamondPickaxeButton not found in UI.");
             return;
         }
+        if (_woodSwordCraftButton == null)
+        {
+            Debug.LogWarning("CraftWoodenSwordButton not found in UI.");
+            return;
+        }
+        if (_stoneSwordCraftButton == null)
+        {
+            Debug.LogWarning("CraftStoneSwordButton not found in UI.");
+            return;
+        }
+        if (_goldSwordCraftButton == null)
+        {
+            Debug.LogWarning("CraftGoldenSwordButton not found in UI.");
+            return;
+        }
+        if (_diamondSwordCraftButton == null)
+        {
+            Debug.LogWarning("CraftDiamondSwordButton not found in UI.");
+            return;
+        }
 
         _craftButton.clicked += HandleCraftClicked;
         _stoneCraftButton.clicked += HandleStoneCraftClicked;
         _goldCraftButton.clicked += HandleGoldCraftClicked;
         _diamondCraftButton.clicked += HandleDiamondCraftClicked;
+        _woodSwordCraftButton.clicked += HandleWoodSwordCraftClicked;
+        _stoneSwordCraftButton.clicked += HandleStoneSwordCraftClicked;
+        _goldSwordCraftButton.clicked += HandleGoldSwordCraftClicked;
+        _diamondSwordCraftButton.clicked += HandleDiamondSwordCraftClicked;
         TryHookInventory();
 
         UpdateButtonVisibility();
@@ -65,6 +97,14 @@ public class CraftingUIController : MonoBehaviour
             _goldCraftButton.clicked -= HandleGoldCraftClicked;
         if (_diamondCraftButton != null)
             _diamondCraftButton.clicked -= HandleDiamondCraftClicked;
+        if (_woodSwordCraftButton != null)
+            _woodSwordCraftButton.clicked -= HandleWoodSwordCraftClicked;
+        if (_stoneSwordCraftButton != null)
+            _stoneSwordCraftButton.clicked -= HandleStoneSwordCraftClicked;
+        if (_goldSwordCraftButton != null)
+            _goldSwordCraftButton.clicked -= HandleGoldSwordCraftClicked;
+        if (_diamondSwordCraftButton != null)
+            _diamondSwordCraftButton.clicked -= HandleDiamondSwordCraftClicked;
         UnhookInventory();
     }
 
@@ -112,21 +152,74 @@ public class CraftingUIController : MonoBehaviour
         craftingManager.CraftDiamondPickaxe();
     }
 
+    private void HandleWoodSwordCraftClicked()
+    {
+        if (craftingManager == null)
+        {
+            Debug.LogWarning("CraftingManager reference not set.");
+            return;
+        }
+
+        craftingManager.CraftWoodenSword();
+    }
+
+    private void HandleStoneSwordCraftClicked()
+    {
+        if (craftingManager == null)
+        {
+            Debug.LogWarning("CraftingManager reference not set.");
+            return;
+        }
+
+        craftingManager.CraftStoneSword();
+    }
+
+    private void HandleGoldSwordCraftClicked()
+    {
+        if (craftingManager == null)
+        {
+            Debug.LogWarning("CraftingManager reference not set.");
+            return;
+        }
+
+        craftingManager.CraftGoldenSword();
+    }
+
+    private void HandleDiamondSwordCraftClicked()
+    {
+        if (craftingManager == null)
+        {
+            Debug.LogWarning("CraftingManager reference not set.");
+            return;
+        }
+
+        craftingManager.CraftDiamondSword();
+    }
+
     private void UpdateButtonVisibility()
     {
         if (_craftButton == null || _stoneCraftButton == null || _goldCraftButton == null ||
-            _diamondCraftButton == null || craftingManager == null)
+            _diamondCraftButton == null || _woodSwordCraftButton == null || _stoneSwordCraftButton == null ||
+            _goldSwordCraftButton == null || _diamondSwordCraftButton == null || craftingManager == null)
             return;
 
         bool canCraftWood = craftingManager.CanCraftPickaxe();
         bool canCraftStone = craftingManager.CanCraftStonePickaxe();
         bool canCraftGold = craftingManager.CanCraftGoldenPickaxe();
         bool canCraftDiamond = craftingManager.CanCraftDiamondPickaxe();
+        bool canCraftWoodSword = craftingManager.CanCraftWoodenSword();
+        bool canCraftStoneSword = craftingManager.CanCraftStoneSword();
+        bool canCraftGoldSword = craftingManager.CanCraftGoldenSword();
+        bool canCraftDiamondSword = craftingManager.CanCraftDiamondSword();
 
         _craftButton.style.display = canCraftWood ? DisplayStyle.Flex : DisplayStyle.None;
         _stoneCraftButton.style.display = canCraftStone ? DisplayStyle.Flex : DisplayStyle.None;
         _goldCraftButton.style.display = canCraftGold ? DisplayStyle.Flex : DisplayStyle.None;
         _diamondCraftButton.style.display = canCraftDiamond ? DisplayStyle.Flex : DisplayStyle.None;
+        _woodSwordCraftButton.style.display = canCraftWoodSword ? DisplayStyle.Flex : DisplayStyle.None;
+        _stoneSwordCraftButton.style.display = canCraftStoneSword ? DisplayStyle.Flex : DisplayStyle.None;
+        _goldSwordCraftButton.style.display = canCraftGoldSword ? DisplayStyle.Flex : DisplayStyle.None;
+        _diamondSwordCraftButton.style.display = canCraftDiamondSword ? DisplayStyle.Flex : DisplayStyle.None;
     }
 
     private void Update()
