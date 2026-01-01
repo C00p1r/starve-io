@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 54b0951bc5da7be438e747b6c61e2f6e, type: 3}
-  m_Name: Meet
+  m_Name: Meat
   m_EditorClassIdentifier: Assembly-CSharp::StarveIO.Data.ItemData
-  itemName: Meet
+  itemName: Meat
   icon: {fileID: -2844531463381759980, guid: e32fb998e07736d4494a71c734ba555d, type: 3}
   description: 
   maxStack: 99

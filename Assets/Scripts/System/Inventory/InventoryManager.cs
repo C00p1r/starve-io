@@ -25,9 +25,10 @@ public class InventoryManager : MonoBehaviour
     public event Action OnInventoryExtended; // 合成出大背包
     public event Action<int> OnSelectedIndexChanged;
     [Header("音效")]
-    [SerializeField] private AudioSource eat_meet;
+    [SerializeField] private AudioSource eat_meat;
     [SerializeField] private AudioSource eat_berry;
     [SerializeField] private AudioSource use_bandage;
+    private bool _audioCached;
     private void Awake()
     {
         if (Instance == null)
@@ -43,6 +44,7 @@ public class InventoryManager : MonoBehaviour
             slots.Add(new InventorySlot(null, 0));
 
         TryCachePlayerStats();
+        CacheAudioSources();
     }
 
     public void UpdateInventoryUI() { OnInventoryChanged?.Invoke(); }
@@ -238,12 +240,11 @@ public class InventoryManager : MonoBehaviour
             return;
         }
 
-        if (selectedItem.itemName == "Meet")
+        if (selectedItem.itemName == "Meat")
         {
             if (TryRemoveItem(selectedItem, 1))
             {
-                eat_meet.time = 0;
-                eat_meet.Play();
+                PlayAudioOnce(eat_meat);
                 playerStats.RestoreHunger(20); // Restore 20 hunger points
                 Debug.Log("used item");
 
@@ -257,8 +258,7 @@ public class InventoryManager : MonoBehaviour
         {
             if (TryRemoveItem(selectedItem, 1))
             {
-                use_bandage.time = 0;
-                use_bandage.Play();
+                PlayAudioOnce(use_bandage);
                 playerStats.currentHealth = Mathf.Min(playerStats.maxHealth, playerStats.currentHealth + 10); // Restore 10 health points
                 playerStats.RestoreHealth(5);
                 Debug.Log("Used 1 thread. Health restored by 10 points.");
@@ -272,8 +272,7 @@ public class InventoryManager : MonoBehaviour
         {
             if (TryRemoveItem(selectedItem, 1))
             {
-                eat_berry.time = 0;
-                eat_berry.Play();
+                PlayAudioOnce(eat_berry);
                 playerStats.RestoreHunger(10);
                 Debug.Log("Used 1 fruit. (Hunger +10)");
             }
@@ -295,5 +294,43 @@ public class InventoryManager : MonoBehaviour
 
         playerStats = FindObjectOfType<PlayerStats>();
         return playerStats != null;
+    }
+
+    private void CacheAudioSources()
+    {
+        if (_audioCached)
+            return;
+
+        var sources = FindObjectsOfType<AudioSource>(true);
+        foreach (var source in sources)
+        {
+            if (source == null)
+                continue;
+
+            string name = source.gameObject.name;
+            switch (name)
+            {
+                case "eat_meat":
+                    if (eat_meat == null) eat_meat = source;
+                    break;
+                case "eat_berry":
+                    if (eat_berry == null) eat_berry = source;
+                    break;
+                case "use_thread//bandage":
+                    if (use_bandage == null) use_bandage = source;
+                    break;
+            }
+        }
+
+        _audioCached = true;
+    }
+
+    private void PlayAudioOnce(AudioSource source)
+    {
+        if (source == null)
+            return;
+
+        source.time = 0f;
+        source.Play();
     }
 }
