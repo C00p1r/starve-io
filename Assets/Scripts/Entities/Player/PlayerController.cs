@@ -330,7 +330,17 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private Vector2 _moveInput;
     private float targetRotation;
-
+    [Header("Sound Effect Settings")]
+    [SerializeField] private AudioSource die_effect;
+    [SerializeField] private AudioSource eat_berry;
+    [SerializeField] private AudioSource eat_meat;
+    [SerializeField] private AudioSource get_hit;
+    [SerializeField] private AudioSource hit_sound_diamond;
+    [SerializeField] private AudioSource hit_sound_gold; 
+    [SerializeField] private AudioSource hit_sound_stone;
+    [SerializeField] private AudioSource hit_sound_tree;
+    [SerializeField] private AudioSource use_bandage;
+    [SerializeField] private AudioSource mine_fail;
     private void OnEnable()
     {
         _inputReader.MoveEvent += OnMove;
@@ -436,12 +446,35 @@ public class PlayerController : MonoBehaviour
                 {
                     if (!notifiedMissingTool)
                     {
+                        mine_fail.time = 0;
+                        mine_fail.Play();
                         UIEventManager.TriggerNotify(denyMessage);
                         notifiedMissingTool = true;
                     }
                     continue;
                 }
-
+                switch(resourceData.name)
+                {
+                    case "Diamond":
+                        hit_sound_diamond.time = 0;
+                        hit_sound_diamond.Play();
+                        break;
+                    case "Stone":
+                        hit_sound_stone.time = 0;
+                        hit_sound_stone.Play();
+                        break;
+                    case "Gold":
+                        hit_sound_gold.time = 0;
+                        hit_sound_gold.Play();
+                        break;
+                    case "Wood":
+                        hit_sound_tree.time = 0;
+                        hit_sound_tree.Play();
+                        break;
+                    default:
+                        Debug.LogWarning("未找到相符物件/莓果音效尚未設定");
+                        break;
+                }
                 // --- 新增：計算攻擊方向並觸發震動 ---
                 // 方向 = 資源位置 - 玩家位置
                 Vector2 hitDirection = (hit.transform.position - this.transform.position).normalized;
