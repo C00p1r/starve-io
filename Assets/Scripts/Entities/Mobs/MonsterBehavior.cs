@@ -31,12 +31,9 @@ public class MonsterBehavior : MonoBehaviour
     private float randomMoveTimer;
     private BoxCollider2D hitbox;
     private Rigidbody2D rb;
-<<<<<<< HEAD
     private Collider2D monsterCollider;
     private Collider2D playerCollider;
     private Vector2 moveDirection;
-=======
->>>>>>> main
 
     void Awake()
     {
@@ -51,13 +48,9 @@ public class MonsterBehavior : MonoBehaviour
 
         monsterCollider = GetComponent<Collider2D>();
         hitbox = GetComponent<BoxCollider2D>();
-<<<<<<< HEAD
         if (monsterCollider != null)
             monsterCollider.isTrigger = false;
-=======
-        rb = GetComponent<Rigidbody2D>(); // 確保抓到 Rigidbody
 
->>>>>>> main
         if (hitbox != null && hitboxScale > 0f && !Mathf.Approximately(hitboxScale, 1f))
         {
             hitbox.size = hitbox.size * hitboxScale;
@@ -83,7 +76,6 @@ public class MonsterBehavior : MonoBehaviour
 
     void Update()
     {
-<<<<<<< HEAD
         if (player == null)
         {
             moveDirection = Vector2.zero;
@@ -91,46 +83,9 @@ public class MonsterBehavior : MonoBehaviour
         }
 
         float distanceToPlayer = Vector2.Distance(rb.position, player.position);
-=======
-        if (player == null) return;
-
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-
-        if (distanceToPlayer <= followDistance)
-        {
-            FollowPlayer();
-        }
-        else
-        {
-            RandomMove();
-        }
-    }
-
-    // --- 修改：使用 rb.MovePosition 以支援物理碰撞 ---
-    void FollowPlayer()
-    {
-        Vector2 direction = (player.position - transform.position).normalized;
-        float distance = Vector2.Distance(transform.position, player.position);
-
-        if (distance > stopDistance)
-        {
-            // 推薦做法：直接給予速度，物理引擎會自動處理碰撞阻擋
-            rb.linearVelocity = direction * moveSpeed;
-        }
-        else
-        {
-            rb.linearVelocity = Vector2.zero; // 停下
-        }
->>>>>>> main
-
-        if (distanceToPlayer <= followDistance)
-        {
-            moveDirection = GetFollowDirection(distanceToPlayer);
-        }
-        else
-        {
-            moveDirection = GetRandomDirection();
-        }
+        moveDirection = distanceToPlayer <= followDistance
+            ? GetFollowDirection(distanceToPlayer)
+            : GetRandomDirection();
     }
 
     void FixedUpdate()
@@ -169,16 +124,8 @@ public class MonsterBehavior : MonoBehaviour
             randomMoveTimer = randomMoveInterval;
         }
 
-<<<<<<< HEAD
         Vector2 toTarget = (Vector2)randomTarget - rb.position;
         if (toTarget.sqrMagnitude < 0.01f)
-=======
-        Vector3 direction = (randomTarget - transform.position).normalized;
-        rb.MovePosition(rb.position + (Vector2)direction * moveSpeed * Time.deltaTime);
-        FaceDirection(direction);
-
-        if (Vector3.Distance(transform.position, randomTarget) < 0.1f)
->>>>>>> main
         {
             SetRandomTarget();
             toTarget = (Vector2)randomTarget - rb.position;
