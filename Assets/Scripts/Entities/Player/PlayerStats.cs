@@ -37,6 +37,10 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] private float coldFlashDuration = 0.2f;
     [SerializeField] private float coldFlashCooldown = 1.0f;
 
+    // --- 新增狀態標記 (隱藏在 Inspector，避免弄亂介面) ---
+    [HideInInspector] public bool isStandingInWater = false;
+    [HideInInspector] public bool isInSnow = false;
+
     // 定義一個事件，當數值更新時通知 UI
     public event Action OnStatsUpdated;
     public event Action OnPlayerDeath; // 死亡事件
@@ -51,6 +55,7 @@ public class PlayerStats : MonoBehaviour
     [Header("受傷與死亡音效")]
     [SerializeField] private AudioSource get_hurt;
     [SerializeField] private AudioSource dead;
+
     void Awake()
     {
         currentHealth = maxHealth;
@@ -64,9 +69,21 @@ public class PlayerStats : MonoBehaviour
 
     void Update()
     {
-        // 1. 隨時間慢慢扣飢餓值與口渴值
+        if (_isDead) return;
+
+        // 1. 隨時間慢慢扣飢餓值
         currentHunger = Mathf.Max(0, currentHunger - hungerDecayRate * Time.deltaTime);
-        currentThirst = Mathf.Max(0, currentThirst - thirstDecayRate * Time.deltaTime);
+
+        // --- 核心修改：湖泊恢復口渴邏輯 ---
+        if (isStandingInWater)
+        {
+            // 在水裡時快速恢復 (使用 thirstDecayRate 的 30 倍作為強度，這樣不需新增變數)
+            currentThirst = Mathf.Min(maxThirst, currentThirst + (thirstDecayRate * 30f) * Time.deltaTime);
+        }
+        else
+        {
+            currentThirst = Mathf.Max(0, currentThirst - thirstDecayRate * Time.deltaTime);
+        }
 
         // 2. 飢餓或口渴歸零時，玩家會開始扣血
         if (currentHunger <= 0 || currentThirst <= 0)
@@ -74,12 +91,16 @@ public class PlayerStats : MonoBehaviour
             TakeDamage(starvationDamage * Time.deltaTime);
         }
 
+        // --- 核心修改：體溫邏輯整合環境加成 ---
         float tempDecay = GetTemperatureDecayRate();
         if (tempDecay > 0f)
             currentTemperature = Mathf.Max(0f, currentTemperature - tempDecay * Time.deltaTime);
 
+        // 以下處理高低溫計時器與閃爍 (保持你原本的代碼邏輯)
         _heatFlashTimer = Mathf.Max(0f, _heatFlashTimer - Time.deltaTime);
         _coldFlashTimer = Mathf.Max(0f, _coldFlashTimer - Time.deltaTime);
+
+        // --- 高溫判定 ---
         float hotThreshold = maxTemperature * hotThresholdPercent;
         if (currentTemperature >= hotThreshold)
         {
@@ -88,14 +109,12 @@ public class PlayerStats : MonoBehaviour
             {
                 TakeDamage(heatDamagePerSecond * heatDamageInterval);
                 _heatDamageTimer = 0f;
-
                 if (playerFeedback != null && _heatFlashTimer <= 0f)
                 {
                     playerFeedback.TriggerDamageFlash(heatFlashColor, heatFlashDuration);
                     _heatFlashTimer = heatFlashCooldown;
                 }
             }
-
             _heatNotifyTimer += Time.deltaTime;
             if (_heatNotifyTimer >= heatNotifyInterval)
             {
@@ -103,13 +122,9 @@ public class PlayerStats : MonoBehaviour
                 _heatNotifyTimer = 0f;
             }
         }
-        else
-        {
-            _heatNotifyTimer = 0f;
-            _heatDamageTimer = 0f;
-            _heatFlashTimer = 0f;
-        }
+        else { _heatNotifyTimer = 0f; _heatDamageTimer = 0f; }
 
+        // --- 低溫判定 ---
         float coldThreshold = maxTemperature * coldThresholdPercent;
         if (currentTemperature <= coldThreshold)
         {
@@ -118,14 +133,12 @@ public class PlayerStats : MonoBehaviour
             {
                 TakeDamage(coldDamagePerSecond * coldDamageInterval);
                 _coldDamageTimer = 0f;
-
                 if (playerFeedback != null && _coldFlashTimer <= 0f)
                 {
                     playerFeedback.TriggerDamageFlash(coldFlashColor, coldFlashDuration);
                     _coldFlashTimer = coldFlashCooldown;
                 }
             }
-
             _coldNotifyTimer += Time.deltaTime;
             if (_coldNotifyTimer >= coldNotifyInterval)
             {
@@ -133,29 +146,19 @@ public class PlayerStats : MonoBehaviour
                 _coldNotifyTimer = 0f;
             }
         }
-        else
-        {
-            _coldNotifyTimer = 0f;
-            _coldDamageTimer = 0f;
-            _coldFlashTimer = 0f;
-        }
+        else { _coldNotifyTimer = 0f; _coldDamageTimer = 0f; }
 
-        // 3. 通知所有訂閱者（如 StatsUIHandler）更新畫面
         OnStatsUpdated?.Invoke();
     }
 
-    // 被怪物攻擊可呼叫
     public void TakeDamage(float amount)
     {
         if (_isDead)
         {
-            if (dead != null && dead.isPlaying == false)
-            {
-                dead.Play();
-            }
+            if (dead != null && !dead.isPlaying) dead.Play();
             return;
         }
-        if (get_hurt != null)
+        if (get_hurt != null && !get_hurt.isPlaying)
         {
             get_hurt.time = 0;
             get_hurt.Play();
@@ -166,27 +169,15 @@ public class PlayerStats : MonoBehaviour
         if (currentHealth <= 0)
         {
             _isDead = true;
-            OnPlayerDeath?.Invoke(); // 觸發死亡
+            if (dead != null) dead.Play();
+            OnPlayerDeath?.Invoke();
             Debug.Log("玩家已死亡");
         }
     }
 
-    // 未來可以給食物或水呼叫
-    public void RestoreHealth(float amount)
-    {
-        currentHealth = Mathf.Min(maxHealth, currentHealth + amount);
-        OnStatsUpdated?.Invoke();
-    }
-    public void RestoreHunger(float amount)
-    {
-        currentHunger = Mathf.Min(maxHunger, currentHunger + amount);
-        OnStatsUpdated?.Invoke();
-    }
-    public void RestoreThirst(float amount)
-    {
-        currentThirst = Mathf.Min(maxThirst, currentThirst + amount);
-        OnStatsUpdated?.Invoke();
-    }
+    public void RestoreHealth(float amount) { currentHealth = Mathf.Min(maxHealth, currentHealth + amount); OnStatsUpdated?.Invoke(); }
+    public void RestoreHunger(float amount) { currentHunger = Mathf.Min(maxHunger, currentHunger + amount); OnStatsUpdated?.Invoke(); }
+    public void RestoreThirst(float amount) { currentThirst = Mathf.Min(maxThirst, currentThirst + amount); OnStatsUpdated?.Invoke(); }
 
     public void ModifyTemperature(float amount)
     {
@@ -201,8 +192,21 @@ public class PlayerStats : MonoBehaviour
 
         bool isNight = _timeManager != null && _timeManager.IsNight;
         float rate = isNight ? nightTempDecayRate : dayTempDecayRate;
+
+        // --- 核心修改：環境對體溫的影響 ---
+        if (isStandingInWater)
+        {
+            rate += 5.0f; // 站在水裡體溫掉超快
+        }
+        else if (isInSnow)
+        {
+            rate += 1.5f; // 雪地體溫掉較快
+        }
+
+        // 保留你原本的特殊過熱判定邏輯
         if (currentTemperature >= 95)
             rate = 2f;
+
         return rate;
     }
 }
