@@ -5,6 +5,8 @@ using System.Collections;
 public class DeathHandler : MonoBehaviour
 {
     [SerializeField] private PlayerStats playerStats;
+    [SerializeField] private PlayerController playerController;
+    [SerializeField] private Rigidbody2D playerRigidbody;
     [SerializeField] private UIDocument uiDocument;
     [SerializeField] private float fadeDuration = 2.0f; // 變暗的時間
     [SerializeField] private float fontSize = 40f;
@@ -14,6 +16,10 @@ public class DeathHandler : MonoBehaviour
     {
         if (playerStats != null)
             playerStats.OnPlayerDeath += StartDeathSequence;
+        if (playerController == null)
+            playerController = GetComponent<PlayerController>();
+        if (playerRigidbody == null)
+            playerRigidbody = GetComponent<Rigidbody2D>();
 
         if (uiDocument != null)
         {
@@ -31,6 +37,7 @@ public class DeathHandler : MonoBehaviour
 
     private void StartDeathSequence()
     {
+        DisablePlayerControl();
         // 1. 觸發 UI 通知 (使用你現有的 UI 系統)
         UIEventManager.TriggerNotify("YOU DIED", 150);
 
@@ -40,6 +47,9 @@ public class DeathHandler : MonoBehaviour
 
     private IEnumerator DeathRoutine()
     {
+        // Disable player movement
+        DisablePlayerControl();
+
         // 禁止玩家移動 (如果需要，可以在這裡把 PlayerController 的 enabled 設為 false)
 
         float elapsed = 0f;
@@ -65,5 +75,13 @@ public class DeathHandler : MonoBehaviour
 #else
             Application.Quit(); // 在打包後的遊戲中退出
 #endif
+    }
+
+    private void DisablePlayerControl()
+    {
+        if (playerController != null)
+            playerController.enabled = false;
+        if (playerRigidbody != null)
+            playerRigidbody.linearVelocity = Vector2.zero;
     }
 }

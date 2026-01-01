@@ -15,6 +15,7 @@ public class MonsterBehavior : MonoBehaviour
 
     [Header("攻擊與變色設定 (新增)")]
     public float damagePerHit = 10f;
+    public float attackRange = 1.2f;
     public float attackCoolDown = 1f; // 攻擊冷卻時間
     public Color alertColor = new Color(1f, 0f, 0f, 1f); // 受傷閃紅
     public float alertDuration = 0.3f;
@@ -38,6 +39,8 @@ public class MonsterBehavior : MonoBehaviour
     private Collider2D monsterCollider;
     private Collider2D playerCollider;
     private Vector2 moveDirection;
+    private PlayerStats playerStats;
+    private PlayerFeedback playerFeedback;
 
     void Awake()
     {
@@ -70,6 +73,8 @@ public class MonsterBehavior : MonoBehaviour
         {
             player = playerObject.transform;
             playerCollider = playerObject.GetComponent<Collider2D>();
+            playerStats = playerObject.GetComponent<PlayerStats>();
+            playerFeedback = playerObject.GetComponent<PlayerFeedback>();
             if (monsterCollider != null && playerCollider != null)
             {
                 Physics2D.IgnoreCollision(monsterCollider, playerCollider, true);
@@ -92,6 +97,8 @@ public class MonsterBehavior : MonoBehaviour
         moveDirection = distanceToPlayer <= followDistance
             ? GetFollowDirection(distanceToPlayer)
             : GetRandomDirection();
+
+        HandleAttack(distanceToPlayer);
     }
 
     void FixedUpdate()
@@ -142,33 +149,25 @@ public class MonsterBehavior : MonoBehaviour
         return direction;
     }
 
-    // --- 新增：處理與玩家的碰撞傷害 ---
-    // 在 MonsterBehavior.cs 裡的 OnTriggerStay2D 中修改
-    void OnTriggerStay2D(Collider2D collision)
+    void HandleAttack(float distanceToPlayer)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (distanceToPlayer > attackRange)
         {
-            contactTimer -= Time.deltaTime;
-
-            if (contactTimer <= 0)
-            {
-                // 1. 呼叫玩家的變色回饋
-                PlayerFeedback feedback = collision.GetComponent<PlayerFeedback>();
-                if (feedback != null)
-                {
-                    feedback.TriggerDamageFlash(alertColor, alertDuration);
-                }
-
-                // 2. 扣血邏輯
-                PlayerStats stats = collision.GetComponent<PlayerStats>();
-                if (stats != null)
-                {
-                    stats.TakeDamage(damagePerHit);
-                }
-
-                contactTimer = attackCoolDown;
-            }
+            contactTimer = 0f;
+            return;
         }
+
+        contactTimer -= Time.deltaTime;
+        if (contactTimer > 0f)
+            return;
+
+        if (playerFeedback != null)
+            playerFeedback.TriggerDamageFlash(alertColor, alertDuration);
+
+        if (playerStats != null)
+            playerStats.TakeDamage(damagePerHit);
+
+        contactTimer = attackCoolDown;
     }
     void SetRandomTarget()
     {
