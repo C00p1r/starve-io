@@ -180,6 +180,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 11ed74cb95f60df488ef9516e4a7113a, type: 3}
+--- !u!82 &95286568 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 1338951050768536072, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
+  m_PrefabInstance: {fileID: 8599733783439269296}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &96111471
 GameObject:
   m_ObjectHideFlags: 0
@@ -285,6 +290,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ToolVisualHandler
   _inventoryManager: {fileID: 2074712203}
   _itemScale: 0.8
+--- !u!82 &123973016 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 249563521441816330, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
+  m_PrefabInstance: {fileID: 8599733783439269296}
+  m_PrefabAsset: {fileID: 0}
+--- !u!82 &168105757 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 7675781950766400559, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
+  m_PrefabInstance: {fileID: 8599733783439269296}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &288129399
 GameObject:
   m_ObjectHideFlags: 0
@@ -360,6 +375,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1724466422}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &351985319 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 1881584588167725939, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
+  m_PrefabInstance: {fileID: 8599733783439269296}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &403201887
 GameObject:
   m_ObjectHideFlags: 0
@@ -798,6 +818,16 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!82 &657625878 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 1250553673539584434, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
+  m_PrefabInstance: {fileID: 8599733783439269296}
+  m_PrefabAsset: {fileID: 0}
+--- !u!82 &676273077 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 7971596279421963164, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
+  m_PrefabInstance: {fileID: 8599733783439269296}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &828065967
 GameObject:
   m_ObjectHideFlags: 0
@@ -843,6 +873,21 @@ Transform:
   - {fileID: 1862671697}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &853151589 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 3814512666592271732, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
+  m_PrefabInstance: {fileID: 8599733783439269296}
+  m_PrefabAsset: {fileID: 0}
+--- !u!82 &915525320 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 8724913505137857821, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
+  m_PrefabInstance: {fileID: 8599733783439269296}
+  m_PrefabAsset: {fileID: 0}
+--- !u!82 &934039084 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 2183397889789257835, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
+  m_PrefabInstance: {fileID: 8599733783439269296}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1084969428 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8267579544304041693, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
@@ -879,6 +924,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1724466422}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &1212737347 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 5161322094461607778, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
+  m_PrefabInstance: {fileID: 8599733783439269296}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1409205216
 GameObject:
   m_ObjectHideFlags: 0
@@ -1170,6 +1220,11 @@ MonoBehaviour:
   frontZPosition: 0
   spawnOnlyAtNight: 0
   despawnAtDay: 0
+--- !u!82 &1743672297 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 7323981207908534459, guid: f3c30c5398bfe3c45989bf85680774e9, type: 3}
+  m_PrefabInstance: {fileID: 8599733783439269296}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1862671696
 GameObject:
   m_ObjectHideFlags: 0
@@ -4125,6 +4180,25 @@ MonoBehaviour:
   capsuleSize: {x: 1, y: 0.5}
   capsuleOffset: 0.3
   capsuleDirection: 0
+  bonfirePrefab: {fileID: 600000000, guid: 9c95714247964082a39bb58c999cd758, type: 3}
+  bonfirePlaceOffset: 0.6
+  bonfirePlaceRadius: 0.2
+  bonfireBlockerLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  bonfirePreviewValidColor: {r: 0.2, g: 1, b: 0.2, a: 0.55}
+  bonfirePreviewInvalidColor: {r: 1, g: 0.2, b: 0.2, a: 0.55}
+  die_effect: {fileID: 676273077}
+  eat_berry: {fileID: 168105757}
+  eat_meat: {fileID: 853151589}
+  get_hit: {fileID: 123973016}
+  hit_sound_diamond: {fileID: 657625878}
+  hit_sound_gold: {fileID: 95286568}
+  hit_sound_stone: {fileID: 1743672297}
+  hit_sound_tree: {fileID: 934039084}
+  mine_berry: {fileID: 351985319}
+  mine_fail: {fileID: 915525320}
+  use_bandage: {fileID: 1212737347}
 --- !u!50 &1867235790
 Rigidbody2D:
   serializedVersion: 5
@@ -4209,15 +4283,29 @@ MonoBehaviour:
   currentThirst: 100
   currentTemperature: 100
   hungerDecayRate: 0.7
-  starvationDamage: 10
   thirstDecayRate: 1
-  thirstRegenRate: 5
-  ambientTempLoss: 0.2
-  snowTempLoss: 1.5
-  waterTempLoss: 1
-  freezingDamage: 2
+  starvationDamage: 10
+  dayTempDecayRate: 0.5
+  nightTempDecayRate: 1
+  heatDamagePerSecond: 2
+  heatDamageInterval: 1
+  hotThresholdPercent: 0.95
+  heatNotifyInterval: 2.5
+  heatFlashColor: {r: 1, g: 0.3, b: 0.3, a: 1}
+  heatFlashDuration: 0.2
+  heatFlashCooldown: 1
+  playerFeedback: {fileID: 0}
+  coldDamagePerSecond: 2
+  coldDamageInterval: 1
+  coldThresholdPercent: 0.05
+  coldNotifyInterval: 2.5
+  coldFlashColor: {r: 0.5, g: 0.75, b: 1, a: 1}
+  coldFlashDuration: 0.2
+  coldFlashCooldown: 1
   isStandingInWater: 0
   isInSnow: 0
+  get_hurt: {fileID: 0}
+  dead: {fileID: 0}
 --- !u!114 &1867235795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4320,6 +4408,9 @@ MonoBehaviour:
   diamondSwordItem: {fileID: 11400000, guid: 642dd0c4c3544d2d8f498df15d13707a, type: 2}
   diamondSwordCost: 5
   diamondSwordAmount: 1
+  bonfireItem: {fileID: 11400000, guid: 4f216b83f2144312a7fe02cd68637473, type: 2}
+  bonfireWoodCost: 10
+  bonfireAmount: 1
 --- !u!4 &1907333767
 Transform:
   m_ObjectHideFlags: 0
@@ -4711,6 +4802,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HUDUIHandler
   statsSource: {fileID: 1867235794}
+  coldTempSprite: {fileID: 0}
+  goodTempSprite: {fileID: 0}
+  hotTempSprite: {fileID: 0}
 --- !u!114 &2074712203 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2032022551611859474, guid: 11ed74cb95f60df488ef9516e4a7113a, type: 3}

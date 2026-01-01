@@ -37,6 +37,10 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] private float coldFlashDuration = 0.2f;
     [SerializeField] private float coldFlashCooldown = 1.0f;
 
+    // --- 新增狀態標記 (不影響 Inspector 的變數) ---
+    [HideInInspector] public bool isStandingInWater = false;
+    [HideInInspector] public bool isInSnow = false;
+
     // 定義一個事件，當數值更新時通知 UI
     public event Action OnStatsUpdated;
     public event Action OnPlayerDeath; // 死亡事件
@@ -51,6 +55,7 @@ public class PlayerStats : MonoBehaviour
     [Header("受傷與死亡音效")]
     [SerializeField] private AudioSource get_hurt;
     [SerializeField] private AudioSource dead;
+
     void Awake()
     {
         currentHealth = maxHealth;
@@ -64,9 +69,21 @@ public class PlayerStats : MonoBehaviour
 
     void Update()
     {
-        // 1. 隨時間慢慢扣飢餓值與口渴值
+        if (_isDead) return;
+
+        // 1. 飢餓值隨時間扣除
         currentHunger = Mathf.Max(0, currentHunger - hungerDecayRate * Time.deltaTime);
-        currentThirst = Mathf.Max(0, currentThirst - thirstDecayRate * Time.deltaTime);
+
+        // --- 修改後的口渴邏輯：水中恢復，陸地扣除 ---
+        if (isStandingInWater)
+        {
+            // 在水裡時，以自然消耗的 10 倍速恢復水分 (可自行調整係數)
+            currentThirst = Mathf.Min(maxThirst, currentThirst + (thirstDecayRate * 15f) * Time.deltaTime);
+        }
+        else
+        {
+            currentThirst = Mathf.Max(0, currentThirst - thirstDecayRate * Time.deltaTime);
+        }
 
         // 2. 飢餓或口渴歸零時，玩家會開始扣血
         if (currentHunger <= 0 || currentThirst <= 0)
@@ -74,132 +91,122 @@ public class PlayerStats : MonoBehaviour
             TakeDamage(starvationDamage * Time.deltaTime);
         }
 
+        // --- 體溫邏輯：整合環境因素 ---
         float tempDecay = GetTemperatureDecayRate();
         if (tempDecay > 0f)
             currentTemperature = Mathf.Max(0f, currentTemperature - tempDecay * Time.deltaTime);
 
+        // 閃爍計時器
         _heatFlashTimer = Mathf.Max(0f, _heatFlashTimer - Time.deltaTime);
         _coldFlashTimer = Mathf.Max(0f, _coldFlashTimer - Time.deltaTime);
+
+        // 3. 高溫傷害判定
         float hotThreshold = maxTemperature * hotThresholdPercent;
         if (currentTemperature >= hotThreshold)
         {
-            _heatDamageTimer += Time.deltaTime;
-            if (_heatDamageTimer >= heatDamageInterval)
-            {
-                TakeDamage(heatDamagePerSecond * heatDamageInterval);
-                _heatDamageTimer = 0f;
-
-                if (playerFeedback != null && _heatFlashTimer <= 0f)
-                {
-                    playerFeedback.TriggerDamageFlash(heatFlashColor, heatFlashDuration);
-                    _heatFlashTimer = heatFlashCooldown;
-                }
-            }
-
-            _heatNotifyTimer += Time.deltaTime;
-            if (_heatNotifyTimer >= heatNotifyInterval)
-            {
-                UIEventManager.TriggerNotify("Scorching heat!");
-                _heatNotifyTimer = 0f;
-            }
+            HandleExtremeTempEffect(ref _heatDamageTimer, ref _heatNotifyTimer, ref _heatFlashTimer,
+                                    heatDamageInterval, heatDamagePerSecond, heatNotifyInterval,
+                                    "Scorching heat!", heatFlashColor, heatFlashDuration, heatFlashCooldown);
         }
         else
         {
-            _heatNotifyTimer = 0f;
-            _heatDamageTimer = 0f;
-            _heatFlashTimer = 0f;
+            ResetHeatTimers();
         }
 
+        // 4. 低溫傷害判定
         float coldThreshold = maxTemperature * coldThresholdPercent;
         if (currentTemperature <= coldThreshold)
         {
-            _coldDamageTimer += Time.deltaTime;
-            if (_coldDamageTimer >= coldDamageInterval)
-            {
-                TakeDamage(coldDamagePerSecond * coldDamageInterval);
-                _coldDamageTimer = 0f;
-
-                if (playerFeedback != null && _coldFlashTimer <= 0f)
-                {
-                    playerFeedback.TriggerDamageFlash(coldFlashColor, coldFlashDuration);
-                    _coldFlashTimer = coldFlashCooldown;
-                }
-            }
-
-            _coldNotifyTimer += Time.deltaTime;
-            if (_coldNotifyTimer >= coldNotifyInterval)
-            {
-                UIEventManager.TriggerNotify("Freezing cold!");
-                _coldNotifyTimer = 0f;
-            }
+            HandleExtremeTempEffect(ref _coldDamageTimer, ref _coldNotifyTimer, ref _coldFlashTimer,
+                                    coldDamageInterval, coldDamagePerSecond, coldNotifyInterval,
+                                    "Freezing cold!", coldFlashColor, coldFlashDuration, coldFlashCooldown);
         }
         else
         {
-            _coldNotifyTimer = 0f;
-            _coldDamageTimer = 0f;
-            _coldFlashTimer = 0f;
+            ResetColdTimers();
         }
 
-        // 3. 通知所有訂閱者（如 StatsUIHandler）更新畫面
+        // 5. 通知 UI 更新
         OnStatsUpdated?.Invoke();
     }
 
-    // 被怪物攻擊可呼叫
+    // --- 封裝重複的傷害邏輯以簡化 Update ---
+    private void HandleExtremeTempEffect(ref float dmgTimer, ref float notifyTimer, ref float flashTimer,
+                                         float interval, float dmgPerSec, float notifyInt,
+                                         string msg, Color flashCol, float duration, float cooldown)
+    {
+        dmgTimer += Time.deltaTime;
+        if (dmgTimer >= interval)
+        {
+            TakeDamage(dmgPerSec * interval);
+            dmgTimer = 0f;
+
+            if (playerFeedback != null && flashTimer <= 0f)
+            {
+                playerFeedback.TriggerDamageFlash(flashCol, duration);
+                flashTimer = cooldown;
+            }
+        }
+
+        notifyTimer += Time.deltaTime;
+        if (notifyTimer >= notifyInt)
+        {
+            UIEventManager.TriggerNotify(msg);
+            notifyTimer = 0f;
+        }
+    }
+
+    private void ResetHeatTimers() { _heatNotifyTimer = 0f; _heatDamageTimer = 0f; _heatFlashTimer = 0f; }
+    private void ResetColdTimers() { _coldNotifyTimer = 0f; _coldDamageTimer = 0f; _coldFlashTimer = 0f; }
+
     public void TakeDamage(float amount)
     {
-        if (_isDead)
-        {
-            if (dead != null && dead.isPlaying == false)
-            {
-                dead.Play();
-            }
-            return;
-        }
-        if (get_hurt != null)
+        if (_isDead) return;
+
+        currentHealth = Mathf.Max(0, currentHealth - amount);
+
+        // 播放受傷音效
+        if (get_hurt != null && !get_hurt.isPlaying)
         {
             get_hurt.time = 0;
             get_hurt.Play();
         }
-        currentHealth = Mathf.Max(0, currentHealth - amount);
-        OnStatsUpdated?.Invoke();
 
         if (currentHealth <= 0)
         {
             _isDead = true;
-            OnPlayerDeath?.Invoke(); // 觸發死亡
+            if (dead != null) dead.Play();
+            OnPlayerDeath?.Invoke();
             Debug.Log("玩家已死亡");
         }
-    }
-
-    // 未來可以給食物或水呼叫
-    public void RestoreHealth(float amount)
-    {
-        currentHealth = Mathf.Min(maxHealth, currentHealth + amount);
-        OnStatsUpdated?.Invoke();
-    }
-    public void RestoreHunger(float amount)
-    {
-        currentHunger = Mathf.Min(maxHunger, currentHunger + amount);
-        OnStatsUpdated?.Invoke();
-    }
-    public void RestoreThirst(float amount)
-    {
-        currentThirst = Mathf.Min(maxThirst, currentThirst + amount);
         OnStatsUpdated?.Invoke();
     }
 
-    public void ModifyTemperature(float amount)
-    {
-        currentTemperature = Mathf.Clamp(currentTemperature + amount, 0f, maxTemperature);
-        OnStatsUpdated?.Invoke();
-    }
+    // 恢復方法保持不變...
+    public void RestoreHealth(float amount) { currentHealth = Mathf.Min(maxHealth, currentHealth + amount); OnStatsUpdated?.Invoke(); }
+    public void RestoreHunger(float amount) { currentHunger = Mathf.Min(maxHunger, currentHunger + amount); OnStatsUpdated?.Invoke(); }
+    public void RestoreThirst(float amount) { currentThirst = Mathf.Min(maxThirst, currentThirst + amount); OnStatsUpdated?.Invoke(); }
+    public void ModifyTemperature(float amount) { currentTemperature = Mathf.Clamp(currentTemperature + amount, 0f, maxTemperature); OnStatsUpdated?.Invoke(); }
 
     private float GetTemperatureDecayRate()
     {
         if (_timeManager == null)
             _timeManager = FindObjectOfType<TimeManager>();
 
+        // 基礎日夜下降率
         bool isNight = _timeManager != null && _timeManager.IsNight;
-        return isNight ? nightTempDecayRate : dayTempDecayRate;
+        float baseRate = isNight ? nightTempDecayRate : dayTempDecayRate;
+
+        // --- 根據環境加成下降率 ---
+        if (isStandingInWater)
+        {
+            return baseRate + 5.0f; // 在水裡體溫掉最快
+        }
+        if (isInSnow)
+        {
+            return baseRate + 1.5f; // 在雪地體溫掉稍快
+        }
+
+        return baseRate;
     }
 }
