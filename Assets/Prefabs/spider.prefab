@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: -7712231288025433826}
   - component: {fileID: 8003496057664319488}
   - component: {fileID: 5181246101160404457}
+  - component: {fileID: -1806695383500125214}
   m_Layer: 0
   m_Name: spider
   m_TagString: Untagged
@@ -156,14 +157,14 @@ MonoBehaviour:
   followDistance: 5
   stopDistance: 1
   meetPrefab: {fileID: 6615762040543448315, guid: 7f03ad03f9a335442b002e36fc888eba, type: 3}
-  threadPrefab: {fileID: 6615762040543448315, guid: 4260ec9f0e13d4847914ee3070a9f59d, type: 3}
+  threadPrefab: {fileID: 0}
   damagePerHit: 10
-  colorChangeInterval: 1.5
+  attackCoolDown: 0.7
   alertColor: {r: 1, g: 0, b: 0, a: 1}
   alertDuration: 0.3
   randomMoveInterval: 2
   randomMoveDistance: 1
-  hitboxScale: 1.4
+  hitboxScale: 1
   facingOffsetDegrees: 0
 --- !u!50 &5181246101160404457
 Rigidbody2D:
@@ -192,3 +193,39 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!58 &-1806695383500125214
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7597778176648832391}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0.8}
+  m_Radius: 0.8

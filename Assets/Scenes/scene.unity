@@ -1326,14 +1326,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1867235780}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9302da5157728cb408ea15c34fc2733e, type: 3}
+  m_Script: {fileID: 11500000, guid: 28aea765d40242e45b30213251e28cbb, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HazardHandler
-  player: {fileID: 1867235780}
-  damageAmount: 10
-  colorChangeInterval: 0.5
-  alertColor: {r: 1, g: 0, b: 0, a: 1}
-  alertDuration: 0.3
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerFeedback
 --- !u!1 &1907333765
 GameObject:
   m_ObjectHideFlags: 0
