@@ -126,68 +126,6 @@ public class PlayerStats : MonoBehaviour
             ResetColdTimers();
         }
 
-        // 5. 通知 UI 更新
-        _heatFlashTimer = Mathf.Max(0f, _heatFlashTimer - Time.deltaTime);
-        _coldFlashTimer = Mathf.Max(0f, _coldFlashTimer - Time.deltaTime);
-        float hotThreshold = maxTemperature * hotThresholdPercent;
-        if (currentTemperature >= hotThreshold)
-        {
-            _heatDamageTimer += Time.deltaTime;
-            if (_heatDamageTimer >= heatDamageInterval)
-            {
-                TakeDamage(heatDamagePerSecond * heatDamageInterval);
-                _heatDamageTimer = 0f;
-
-                if (playerFeedback != null && _heatFlashTimer <= 0f)
-                {
-                    playerFeedback.TriggerDamageFlash(heatFlashColor, heatFlashDuration);
-                    _heatFlashTimer = heatFlashCooldown;
-                }
-            }
-
-            _heatNotifyTimer += Time.deltaTime;
-            if (_heatNotifyTimer >= heatNotifyInterval)
-            {
-                UIEventManager.TriggerNotify("Scorching heat!");
-                _heatNotifyTimer = 0f;
-            }
-        }
-        else
-        {
-            _heatNotifyTimer = 0f;
-            _heatDamageTimer = 0f;
-            _heatFlashTimer = 0f;
-        }
-
-        float coldThreshold = maxTemperature * coldThresholdPercent;
-        if (currentTemperature <= coldThreshold)
-        {
-            _coldDamageTimer += Time.deltaTime;
-            if (_coldDamageTimer >= coldDamageInterval)
-            {
-                TakeDamage(coldDamagePerSecond * coldDamageInterval);
-                _coldDamageTimer = 0f;
-
-                if (playerFeedback != null && _coldFlashTimer <= 0f)
-                {
-                    playerFeedback.TriggerDamageFlash(coldFlashColor, coldFlashDuration);
-                    _coldFlashTimer = coldFlashCooldown;
-                }
-            }
-
-            _coldNotifyTimer += Time.deltaTime;
-            if (_coldNotifyTimer >= coldNotifyInterval)
-            {
-                UIEventManager.TriggerNotify("Freezing cold!");
-                _coldNotifyTimer = 0f;
-            }
-        }
-        else
-        {
-            _coldNotifyTimer = 0f;
-            _coldDamageTimer = 0f;
-            _coldFlashTimer = 0f;
-        }
 
         // 3. 通知所有訂閱者（如 StatsUIHandler）更新畫面
         OnStatsUpdated?.Invoke();
@@ -284,18 +222,4 @@ public class PlayerStats : MonoBehaviour
         return baseRate;
     }
 
-    public void ModifyTemperature(float amount)
-    {
-        currentTemperature = Mathf.Clamp(currentTemperature + amount, 0f, maxTemperature);
-        OnStatsUpdated?.Invoke();
-    }
-
-    private float GetTemperatureDecayRate()
-    {
-        if (_timeManager == null)
-            _timeManager = FindObjectOfType<TimeManager>();
-
-        bool isNight = _timeManager != null && _timeManager.IsNight;
-        return isNight ? nightTempDecayRate : dayTempDecayRate;
-    }
 }
