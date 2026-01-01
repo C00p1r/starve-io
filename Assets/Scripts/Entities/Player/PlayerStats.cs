@@ -24,7 +24,9 @@ public class PlayerStats : MonoBehaviour
     public event Action OnStatsUpdated;
     public event Action OnPlayerDeath; // 死亡事件
     private bool _isDead = false;
-
+    [Header("受傷與死亡音效")]
+    [SerializeField] private AudioSource get_hurt;
+    [SerializeField] private AudioSource dead;
     void Awake()
     {
         currentHealth = maxHealth;
@@ -52,8 +54,16 @@ public class PlayerStats : MonoBehaviour
     // 被怪物攻擊可呼叫
     public void TakeDamage(float amount)
     {
-        if (_isDead) return;
-
+        if (_isDead)
+        {
+            if (dead.isPlaying == false)
+            {
+                dead.Play();
+            }
+            return;
+        }
+        get_hurt.time = 0;
+        get_hurt.Play();
         currentHealth = Mathf.Max(0, currentHealth - amount);
         OnStatsUpdated?.Invoke();
 

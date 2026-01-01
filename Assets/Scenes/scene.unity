@@ -1295,7 +1295,7 @@ MonoBehaviour:
   hit_sound_stone: {fileID: 8599733783439269299}
   hit_sound_tree: {fileID: 8599733783439269298}
   use_bandage: {fileID: 8599733783439269297}
-  mine_fail: {fileID: 0}
+  mine_fail: {fileID: 548920452}
 --- !u!50 &1867235790
 Rigidbody2D:
   serializedVersion: 5
@@ -1382,6 +1382,8 @@ MonoBehaviour:
   hungerDecayRate: 0.7
   thirstDecayRate: 0.5
   starvationDamage: 10
+  get_hurt: {fileID: 8599733783439269302}
+  dead: {fileID: 8599733783439269305}
 --- !u!114 &1867235795
 MonoBehaviour:
   m_ObjectHideFlags: 0
