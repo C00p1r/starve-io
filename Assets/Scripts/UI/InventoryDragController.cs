@@ -25,6 +25,18 @@ public class InventoryDragController: MonoBehaviour
         _root = GetComponent<UIDocument>().rootVisualElement;
         _slotElements = _root.Query<VisualElement>("Bar1").ToList();
         _dragGhost = _root.Q<VisualElement>("DragGhost");
+        if (_inventoryManager == null)
+            _inventoryManager = InventoryManager.Instance;
+        if (_inventoryManager == null)
+        {
+            Debug.LogWarning("InventoryManager instance not found for drag controller.");
+            return;
+        }
+        if (_dragGhost == null)
+        {
+            Debug.LogWarning("DragGhost element not found.");
+            return;
+        }
         //_dropWindow = _root.Q<VisualElement>("DropWindow");
 
         _dragGhost.style.display = DisplayStyle.None;
@@ -43,6 +55,7 @@ public class InventoryDragController: MonoBehaviour
     }
     private void OnPointerDown(PointerDownEvent evt, int index)
     {
+        if (_inventoryManager == null) return;
         if (index < 0 || index >= _inventoryManager.GetSlots().Count) return;
         if (evt.button == 0) // 左鍵
         {
@@ -136,8 +149,13 @@ public class InventoryDragController: MonoBehaviour
     {
         yield return new WaitForSeconds(_longPressThreshold);
 
+        if (_inventoryManager == null)
+            yield break;
+
         var slots = _inventoryManager.GetSlots();
         if (index >= slots.Count) yield break;
+        if (slots[index].item == null || slots[index].count <= 0)
+            yield break;
 
         _isDragging = true;
 

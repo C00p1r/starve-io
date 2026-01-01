@@ -48,6 +48,9 @@ public class MonsterBehavior : MonoBehaviour
     private PlayerStats playerStats;
     private PlayerFeedback playerFeedback;
 
+    [SerializeField] private AudioSource get_hit;
+
+
     void Awake()
     {
         // --- 新增：初始化顏色回饋 ---
@@ -205,6 +208,8 @@ public class MonsterBehavior : MonoBehaviour
     {
         currentHealth -= damage;
         Debug.Log($"{gameObject.name} took {damage} damage! HP: {currentHealth}");
+        get_hit.time = 0;
+        get_hit.Play();
 
         // 觸發閃紅光
         if (monsterSR != null)

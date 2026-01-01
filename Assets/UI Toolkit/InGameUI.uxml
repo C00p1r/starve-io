@@ -30,7 +30,7 @@
         </ui:ProgressBar>
         <ui:ProgressBar value="60" name="TempBar" class="temp-bar" style="height: 24px; width: 286px; font-size: 20px; background-color: rgba(0, 0, 0, 0); margin-right: 100px;">
             <ui:VisualElement name="icon" style="position: absolute; background-color: rgb(45, 55, 69); width: 60px; height: 60px; top: -15px; left: -50px; border-radius: 30px; border-width: 3px; border-color: rgb(102, 179, 210);" />
-            <ui:VisualElement name="VisualElement" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Sprites/tilesets/temp.png?fileID=2800000&amp;guid=445833905cbc9844ea815d266ee49a93&amp;type=3#temp&quot;); background-size: 200% 200%; background-position-x: left 0; background-position-y: top 0; -unity-background-scale-mode: stretch-to-fill; position: absolute; height: 60px; width: 60px; left: -49px; top: -15px;" />
+            <ui:VisualElement name="TempIcon" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Sprites/tilesets/temp.png?fileID=2800000&amp;guid=445833905cbc9844ea815d266ee49a93&amp;type=3#temp&quot;); background-size: 200% 200%; background-position-x: left 0; background-position-y: top 0; -unity-background-scale-mode: stretch-to-fill; position: absolute; height: 60px; width: 60px; left: -49px; top: -15px;" />
         </ui:ProgressBar>
         <ui:ProgressBar value="80" name="ThirstBar" class="thirst-bar" style="height: 24px; width: 286px; font-size: 20px; background-color: rgba(0, 0, 0, 0); margin-right: 100px;">
             <ui:VisualElement name="icon" style="position: absolute; background-color: rgb(45, 55, 69); width: 60px; height: 60px; top: -15px; left: -50px; border-radius: 30px; border-width: 3px; border-color: rgb(19, 117, 207);" />
@@ -53,6 +53,7 @@
         <ui:Button text="Craft Stone Sword" name="CraftStoneSwordButton" class="craft-button" />
         <ui:Button text="Craft Golden Sword" name="CraftGoldenSwordButton" class="craft-button" />
         <ui:Button text="Craft Diamond Sword" name="CraftDiamondSwordButton" class="craft-button" />
+        <ui:Button text="Craft Bonfire" name="CraftBonfireButton" class="craft-button" />
     </ui:VisualElement>
     <ui:Label text="Notify Label" name="NotifyLabel" style="position: absolute; top: 20%; font-size: 70px; -unity-text-align: upper-center; -unity-font-style: bold; color: rgb(255, 255, 255); -unity-text-outline-width: 2px; align-self: center; -unity-font-definition: url(&quot;project://database/Packages/com.unity.cinemachine/Runtime/Debug/CinemachineRuntimeTheme.tss?fileID=2230732570650464555&amp;guid=df9aec944f4474a04847b6d6375e4138&amp;type=3#NotInter-Regular&quot;); text-shadow: 1px 1px 10px rgba(0, 0, 0, 0); -unity-text-outline-color: rgb(0, 0, 0); transition-property: opacity; transition-duration: 0.5s; transition-timing-function: ease-out;" />
     <ui:VisualElement name="DragGhost" picking-mode="Ignore" style="position: absolute; top: 0; left: 0;" />

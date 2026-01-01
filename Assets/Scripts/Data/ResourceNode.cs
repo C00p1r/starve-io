@@ -97,7 +97,7 @@ public class ResourceNode : MonoBehaviour
         if (_currentStock <= 0)
         {
             OnResourceEmpty?.Invoke();
-            UIEventManager.TriggerNotify("The Resource is Empty!");
+            UIEventManager.TriggerNotify("No resources left. (Will regrow)");
             return 0;
         }
 

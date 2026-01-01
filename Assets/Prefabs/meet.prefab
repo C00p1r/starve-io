@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8001676043194575454}
   - component: {fileID: 3851490155403343033}
   m_Layer: 0
-  m_Name: meet
+  m_Name: meat
   m_TagString: Leaves
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
