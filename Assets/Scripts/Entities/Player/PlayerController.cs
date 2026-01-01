@@ -370,6 +370,7 @@ public class PlayerController : MonoBehaviour
         // 如果需要長按，建議在 InputReader 裡區分 Started 和 Canceled。
         // 暫時以單次點擊作為觸發，或使用 UnityEngine.InputSystem.Mouse.current.leftButton.isPressed
         _isAttackingHeld = true;
+
     }
 
     void Update()
@@ -408,6 +409,7 @@ public class PlayerController : MonoBehaviour
     // used by animation
     public void OnAttackHitFrame()
     {
+        
         Debug.Log("動畫偵測到打擊點！執行判定");
         if (_inventoryManager == null)
         {
@@ -462,7 +464,10 @@ public class PlayerController : MonoBehaviour
                 monster.TakeDamage(damage); // Apply damage to the monster
             }
         }
-
+        if (hitObjects.Length == 0)
+        {
+            _inventoryManager.UseSelectedItem();
+        }
     }
 
     // --- 採集邏輯檢查 ---
