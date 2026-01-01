@@ -15,12 +15,16 @@ public class MonsterBehavior : MonoBehaviour
 
     [Header("攻擊與變色設定 (新增)")]
     public float damagePerHit = 10f;
-    public float colorChangeInterval = 1.5f; // 攻擊冷卻時間
+    public float attackCoolDown = 1f; // 攻擊冷卻時間
     public Color alertColor = new Color(1f, 0f, 0f, 1f); // 受傷閃紅
     public float alertDuration = 0.3f;
     private Color originalColor = Color.white;
     private float contactTimer = 0f;
 
+    [Header("Health Settings")]
+    public int maxHealth = 100; // Maximum health of the wolves
+    private int currentHealth; // Current health of the wolves
+    
     [Header("移動與旋轉")]
     public float randomMoveInterval = 2f;
     public float randomMoveDistance = 1f;
@@ -55,6 +59,8 @@ public class MonsterBehavior : MonoBehaviour
         {
             hitbox.size = hitbox.size * hitboxScale;
         }
+
+        currentHealth = maxHealth;
     }
 
     void Start()
@@ -137,6 +143,7 @@ public class MonsterBehavior : MonoBehaviour
     }
 
     // --- 新增：處理與玩家的碰撞傷害 ---
+    // 在 MonsterBehavior.cs 裡的 OnTriggerStay2D 中修改
     void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
@@ -145,33 +152,24 @@ public class MonsterBehavior : MonoBehaviour
 
             if (contactTimer <= 0)
             {
-                // 1. 取得玩家的 Sprite 並變色
-                SpriteRenderer playerSR = collision.GetComponent<SpriteRenderer>();
-                if (playerSR != null)
+                // 1. 呼叫玩家的變色回饋
+                PlayerFeedback feedback = collision.GetComponent<PlayerFeedback>();
+                if (feedback != null)
                 {
-                    StartCoroutine(ChangeColorCoroutine(playerSR));
+                    feedback.TriggerDamageFlash(alertColor, alertDuration);
                 }
 
-                // 2. 核心：讓玩家扣血
+                // 2. 扣血邏輯
                 PlayerStats stats = collision.GetComponent<PlayerStats>();
                 if (stats != null)
                 {
                     stats.TakeDamage(damagePerHit);
                 }
 
-                contactTimer = colorChangeInterval; // 進入攻擊冷卻
+                contactTimer = attackCoolDown;
             }
         }
     }
-
-    IEnumerator ChangeColorCoroutine(SpriteRenderer sr)
-    {
-        Color oldColor = sr.color; // 存下原本顏色
-        sr.color = alertColor;
-        yield return new WaitForSeconds(alertDuration);
-        sr.color = oldColor; // 變回原本顏色
-    }
-
     void SetRandomTarget()
     {
         float randomX = Random.Range(-randomMoveDistance, randomMoveDistance);
@@ -190,18 +188,28 @@ public class MonsterBehavior : MonoBehaviour
             transform.rotation = Quaternion.Euler(0f, 0f, angle);
     }
 
-    void OnDestroy()
+    public void TakeDamage(int damage)
     {
-        // 只有在遊戲運行中且物件被摧毀（死亡）時才掉落
-        if (!gameObject.scene.isLoaded) return;
+        currentHealth -= damage;
+        Debug.Log($"Wolves took {damage} damage! Current health: {currentHealth}");
 
-        if (gameObject.name.Contains("wolves") && meetPrefab != null)
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+    }
+
+    void Die()
+    {
+        Debug.Log("Wolves have died!");
+        if (meetPrefab != null)
         {
             Instantiate(meetPrefab, transform.position, Quaternion.identity);
         }
-        else if (gameObject.name.Contains("spider") && threadPrefab != null)
+        if (threadPrefab != null)
         {
             Instantiate(threadPrefab, transform.position, Quaternion.identity);
         }
+        Destroy(gameObject);
     }
 }
