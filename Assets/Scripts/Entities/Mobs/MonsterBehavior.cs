@@ -38,6 +38,14 @@ public class MonsterBehavior : MonoBehaviour
     private Collider2D monsterCollider;
     private Collider2D playerCollider;
     private Vector2 moveDirection;
+<<<<<<< Updated upstream
+=======
+    private PlayerStats playerStats;
+    private PlayerFeedback playerFeedback;
+
+
+    [SerializeField] private AudioSource get_hit;
+>>>>>>> Stashed changes
 
     void Awake()
     {
@@ -191,7 +199,19 @@ public class MonsterBehavior : MonoBehaviour
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
+<<<<<<< Updated upstream
         Debug.Log($"Wolves took {damage} damage! Current health: {currentHealth}");
+=======
+        Debug.Log($"{gameObject.name} took {damage} damage! HP: {currentHealth}");
+        get_hit.time = 0;
+        get_hit.Play();
+        // 觸發閃紅光
+        if (monsterSR != null)
+        {
+            if (flashCoroutine != null) StopCoroutine(flashCoroutine); // 如果還在閃，先停止舊的
+            flashCoroutine = StartCoroutine(MonsterFlashRoutine());
+        }
+>>>>>>> Stashed changes
 
         if (currentHealth <= 0)
         {
