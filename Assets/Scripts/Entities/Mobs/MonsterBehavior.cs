@@ -47,9 +47,8 @@ public class MonsterBehavior : MonoBehaviour
     private Vector2 moveDirection;
     private PlayerStats playerStats;
     private PlayerFeedback playerFeedback;
-    [Header("音效")]
-    [SerializeField] AudioSource wolves_hit;
-    [SerializeField] AudioSource spider_hit;
+
+    
 
 
     void Awake()
@@ -211,13 +210,13 @@ public class MonsterBehavior : MonoBehaviour
         Debug.Log($"{gameObject.name} took {damage} damage! HP: {currentHealth}");
         if (gameObject.name.Contains("wolves"))
         {
-            wolves_hit.time = 0;
-            wolves_hit.Play();
+            //wolves_hit.time = 0;
+            //wolves_hit.Play();
         }
         else if (gameObject.name.Contains("spider"))
         {
-            spider_hit.time = 0;
-            spider_hit.Play();
+            //spider_hit.time = 0;
+            //spider_hit.Play();
         }
         // 觸發閃紅光
         if (monsterSR != null)
