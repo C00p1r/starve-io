@@ -481,6 +481,7 @@ public class PlayerController : MonoBehaviour
                     }
                     continue;
                 }
+                int gatherMultiplier = GetGatherMultiplier(resourceData, selectedItem);
                 switch(resourceData.name)
                 {
                     case "Diamond":
@@ -509,7 +510,7 @@ public class PlayerController : MonoBehaviour
                 node.TriggerHitEffect(hitDirection);
 
                 ItemData gatheredItem = node.GetItemData();
-                int gatheredAmount = node.GatherResource();
+                int gatheredAmount = node.GatherResource(gatherMultiplier);
 
                 if (gatheredAmount > 0)
                 {
@@ -587,6 +588,42 @@ public class PlayerController : MonoBehaviour
                 return true;
         }
         return false;
+    }
+
+    private int GetGatherMultiplier(ResourceData resourceData, ItemData selectedItem)
+    {
+        if (resourceData == null || selectedItem == null)
+            return 1;
+
+        int resourceTier = GetResourceTier(resourceData);
+        if (resourceTier <= 0)
+            return 1;
+
+        if (selectedItem.toolType != ToolType.Pickaxe)
+            return 1;
+
+        int toolTier = selectedItem.toolTier;
+        if (toolTier < resourceTier)
+            return 1;
+        if (toolTier == resourceTier)
+            return 2;
+        return 3;
+    }
+
+    private int GetResourceTier(ResourceData resourceData)
+    {
+        if (resourceData == null)
+            return 0;
+
+        if (string.Equals(resourceData.name, "Wood", StringComparison.OrdinalIgnoreCase))
+            return 1;
+        if (string.Equals(resourceData.name, "Stone", StringComparison.OrdinalIgnoreCase))
+            return 2;
+        if (string.Equals(resourceData.name, "Gold", StringComparison.OrdinalIgnoreCase))
+            return 3;
+        if (string.Equals(resourceData.name, "Diamond", StringComparison.OrdinalIgnoreCase))
+            return 4;
+        return 0;
     }
 
     private void PlayAudioOnce(AudioSource source)
