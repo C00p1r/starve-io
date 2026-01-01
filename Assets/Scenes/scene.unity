@@ -171,6 +171,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2032022551611859474, guid: 11ed74cb95f60df488ef9516e4a7113a, type: 3}
+      propertyPath: playerStats
+      value: 
+      objectReference: {fileID: 1867235794}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1182,7 +1186,7 @@ MonoBehaviour:
   mapWidth: 50
   mapHeight: 50
   frontZPosition: 0
-  spawnOnlyAtNight: 0
+  spawnOnlyAtNight: 1
   despawnAtDay: 0
 --- !u!1 &1867235780 stripped
 GameObject:
