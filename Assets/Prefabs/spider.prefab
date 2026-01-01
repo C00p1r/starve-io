@@ -32,8 +32,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.3, y: -2.15, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -139,7 +139,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.2287295, y: 1.6484793}
+  m_Size: {x: 1.767242, y: 2.388363}
   m_EdgeRadius: 0
 --- !u!114 &8003496057664319488
 MonoBehaviour:
@@ -154,12 +154,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterBehavior
   player: {fileID: 0}
-  moveSpeed: 1
+  moveSpeed: 1.3
   followDistance: 5
   stopDistance: 1
   meetPrefab: {fileID: 0}
   threadPrefab: {fileID: 6615762040543448315, guid: 4260ec9f0e13d4847914ee3070a9f59d, type: 3}
-  damagePerHit: 10
+  damagePerHit: 3
   attackRange: 1
   attackCoolDown: 0.7
   alertColor: {r: 1, g: 0.16662484, b: 0, a: 1}

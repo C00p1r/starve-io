@@ -518,18 +518,23 @@ public class PlayerController : MonoBehaviour
                     if (!success) UIEventManager.TriggerNotify("The Inventory is Full!");
                 }
             }
-            if (hit.TryGetComponent<MonsterBehavior>(out MonsterBehavior monster))
-            {
-                ItemData selectedItem = _inventoryManager.GetSelectedItem();
-                int damage = selectedItem != null ? selectedItem.damage : _handDamage; // Use item damage or hand damage
-                monster.TakeDamage(damage); // Apply damage to the monster
-            }
             if (hit.TryGetComponent<BonfireInteractable>(out BonfireInteractable bonfire))
             {
                 Debug.Log("Bonfire hit.");
                 bonfire.RequestDestroy();
                 return;
             }
+            if (hit.TryGetComponent<MonsterBehavior>(out MonsterBehavior monster))
+            {
+                if (!(hit is CircleCollider2D))
+                {
+                    continue;
+                }
+                ItemData selectedItem = _inventoryManager.GetSelectedItem();
+                int damage = selectedItem != null ? selectedItem.damage : _handDamage; // Use item damage or hand damage
+                monster.TakeDamage(damage); // Apply damage to the monster
+            }
+            
         }
         if (hitObjects.Length == 0)
         {
