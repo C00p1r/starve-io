@@ -85,7 +85,7 @@ public class InventoryManager : MonoBehaviour
         // 如果 amount 還有剩，代表背包滿了放不下
         if (amount > 0)
         {
-            UIEventManager.TriggerNotify("The Inventory is Full!");
+            UIEventManager.TriggerNotify("Inventory is full.");
             return false;
         }
 
@@ -234,7 +234,7 @@ public class InventoryManager : MonoBehaviour
             }
             else
             {
-                Debug.Log("No meet left to use!");
+                Debug.Log("No meat left to use!");
             }
         }
         else if (selectedItem.itemName == "Thread")
@@ -255,7 +255,7 @@ public class InventoryManager : MonoBehaviour
             if (TryRemoveItem(selectedItem, 1))
             {
                 playerStats.RestoreHunger(10);
-                Debug.Log("Used 1 fruit. Health restored by 15 points.");
+                Debug.Log("Used 1 fruit. (Hunger +10)");
             }
             else
             {

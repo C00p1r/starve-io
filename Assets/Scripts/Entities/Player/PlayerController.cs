@@ -323,6 +323,17 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float capsuleOffset = 1.0f;
     [SerializeField] private CapsuleDirection2D capsuleDirection = CapsuleDirection2D.Vertical;
 
+    [Header("Placement")]
+    [SerializeField] private GameObject bonfirePrefab;
+    [SerializeField] private float bonfirePlaceOffset = 0.6f;
+    [SerializeField] private float bonfirePlaceRadius = 0.2f;
+    [SerializeField] private LayerMask bonfireBlockerLayers;
+    [SerializeField] private Color bonfirePreviewValidColor = new Color(0.2f, 1f, 0.2f, 0.55f);
+    [SerializeField] private Color bonfirePreviewInvalidColor = new Color(1f, 0.2f, 0.2f, 0.55f);
+    private GameObject _bonfirePreview;
+    private SpriteRenderer _bonfirePreviewRenderer;
+    private bool _skipNextAttackHit;
+
     [Header("狀態監控")]
     private bool _isAttacking = false; // 新增：用來鎖定攻擊狀態
     private bool _isAttackingHeld = false;
@@ -351,6 +362,8 @@ public class PlayerController : MonoBehaviour
     {
         _animator = GetComponent<Animator>();
         _mainCamera = Camera.main;
+        if (_inventoryManager == null)
+            _inventoryManager = InventoryManager.Instance;
 
         rb = GetComponent<Rigidbody2D>();
         currentSpeed = baseSpeed;
@@ -369,6 +382,12 @@ public class PlayerController : MonoBehaviour
         // 這裡如果是單次點擊事件，可以直接執行。
         // 如果需要長按，建議在 InputReader 裡區分 Started 和 Canceled。
         // 暫時以單次點擊作為觸發，或使用 UnityEngine.InputSystem.Mouse.current.leftButton.isPressed
+        if (TryPlaceBonfire())
+        {
+            _skipNextAttackHit = true;
+            return;
+        }
+
         _isAttackingHeld = true;
 
     }
@@ -403,13 +422,20 @@ public class PlayerController : MonoBehaviour
             _animator.SetBool("isMoving", moving);
             _animator.SetBool("holdingTool", holdingTool);
         }
+
+        UpdateBonfirePreview();
     }
 
 
     // used by animation
     public void OnAttackHitFrame()
     {
-        
+        if (_skipNextAttackHit)
+        {
+            _skipNextAttackHit = false;
+            return;
+        }
+
         Debug.Log("動畫偵測到打擊點！執行判定");
         if (_inventoryManager == null)
         {
@@ -463,10 +489,17 @@ public class PlayerController : MonoBehaviour
                 int damage = selectedItem != null ? selectedItem.damage : _handDamage; // Use item damage or hand damage
                 monster.TakeDamage(damage); // Apply damage to the monster
             }
+            if (hit.TryGetComponent<BonfireInteractable>(out BonfireInteractable bonfire))
+            {
+                Debug.Log("Bonfire hit.");
+                bonfire.RequestDestroy();
+                return;
+            }
         }
         if (hitObjects.Length == 0)
         {
-            _inventoryManager.UseSelectedItem();
+            if (!TryPlaceBonfire())
+                _inventoryManager.UseSelectedItem();
         }
     }
 
@@ -520,6 +553,103 @@ public class PlayerController : MonoBehaviour
                 return true;
         }
         return false;
+    }
+
+    private bool TryPlaceBonfire()
+    {
+        if (_inventoryManager == null)
+            return false;
+
+        var selectedItem = _inventoryManager.GetSelectedItem();
+        if (selectedItem == null || !string.Equals(selectedItem.itemName, "Bonfire", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        if (bonfirePrefab == null)
+        {
+            Debug.LogWarning("Bonfire prefab not assigned on PlayerController.");
+            return true;
+        }
+
+        Vector3 placePosition = transform.position + (Vector3)(Vector2)transform.up * bonfirePlaceOffset;
+        placePosition.z = 0f;
+
+        if (!IsBonfirePlacementValid(placePosition))
+        {
+            UIEventManager.TriggerNotify("Can't place bonfire here.");
+            return true;
+        }
+
+        if (!_inventoryManager.TryRemoveItem(selectedItem, 1))
+            return true;
+
+        Instantiate(bonfirePrefab, placePosition, Quaternion.identity);
+        return true;
+    }
+
+    private void UpdateBonfirePreview()
+    {
+        if (_inventoryManager == null)
+        {
+            SetBonfirePreviewVisible(false);
+            return;
+        }
+
+        var selectedItem = _inventoryManager.GetSelectedItem();
+        bool shouldShow = selectedItem != null &&
+            string.Equals(selectedItem.itemName, "Bonfire", StringComparison.OrdinalIgnoreCase);
+        if (!shouldShow)
+        {
+            SetBonfirePreviewVisible(false);
+            return;
+        }
+
+        EnsureBonfirePreview(selectedItem);
+        Vector3 placePosition = transform.position + (Vector3)(Vector2)transform.up * bonfirePlaceOffset;
+        placePosition.z = 0f;
+        _bonfirePreview.transform.position = placePosition;
+
+        bool isValid = IsBonfirePlacementValid(placePosition);
+        if (_bonfirePreviewRenderer != null)
+            _bonfirePreviewRenderer.color = isValid ? bonfirePreviewValidColor : bonfirePreviewInvalidColor;
+
+        SetBonfirePreviewVisible(true);
+    }
+
+    private void EnsureBonfirePreview(ItemData selectedItem)
+    {
+        if (_bonfirePreview != null)
+            return;
+
+        _bonfirePreview = new GameObject("BonfirePreview");
+        _bonfirePreviewRenderer = _bonfirePreview.AddComponent<SpriteRenderer>();
+
+        SpriteRenderer sourceRenderer = bonfirePrefab != null ? bonfirePrefab.GetComponent<SpriteRenderer>() : null;
+        if (sourceRenderer != null)
+        {
+            _bonfirePreviewRenderer.sprite = sourceRenderer.sprite;
+            _bonfirePreviewRenderer.sortingLayerID = sourceRenderer.sortingLayerID;
+            _bonfirePreviewRenderer.sortingOrder = sourceRenderer.sortingOrder;
+        }
+        else if (selectedItem != null && selectedItem.icon != null)
+        {
+            _bonfirePreviewRenderer.sprite = selectedItem.icon;
+        }
+
+        _bonfirePreview.transform.localScale = Vector3.one * 2f;
+    }
+
+    private void SetBonfirePreviewVisible(bool visible)
+    {
+        if (_bonfirePreview != null && _bonfirePreview.activeSelf != visible)
+            _bonfirePreview.SetActive(visible);
+    }
+
+    private bool IsBonfirePlacementValid(Vector3 position)
+    {
+        if (bonfireBlockerLayers.value == 0)
+            return true;
+
+        return Physics2D.OverlapCircle(position, bonfirePlaceRadius, bonfireBlockerLayers) == null;
     }
 
     // --- 移動與基礎邏輯 ---

@@ -19,18 +19,45 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] private float hungerDecayRate = 0.3f;
     [SerializeField] private float thirstDecayRate = 0.5f;
     [SerializeField] private float starvationDamage = 1.0f;
+    [SerializeField] private float dayTempDecayRate = 0.5f;
+    [SerializeField] private float nightTempDecayRate = 1.0f;
+    [SerializeField] private float heatDamagePerSecond = 2.0f;
+    [SerializeField] private float heatDamageInterval = 1.0f;
+    [SerializeField] private float hotThresholdPercent = 0.95f;
+    [SerializeField] private float heatNotifyInterval = 2.5f;
+    [SerializeField] private Color heatFlashColor = new Color(1f, 0.3f, 0.3f, 1f);
+    [SerializeField] private float heatFlashDuration = 0.2f;
+    [SerializeField] private float heatFlashCooldown = 1.0f;
+    [SerializeField] private PlayerFeedback playerFeedback;
+    [SerializeField] private float coldDamagePerSecond = 2.0f;
+    [SerializeField] private float coldDamageInterval = 1.0f;
+    [SerializeField] private float coldThresholdPercent = 0.05f;
+    [SerializeField] private float coldNotifyInterval = 2.5f;
+    [SerializeField] private Color coldFlashColor = new Color(0.5f, 0.75f, 1f, 1f);
+    [SerializeField] private float coldFlashDuration = 0.2f;
+    [SerializeField] private float coldFlashCooldown = 1.0f;
 
     // 定義一個事件，當數值更新時通知 UI
     public event Action OnStatsUpdated;
     public event Action OnPlayerDeath; // 死亡事件
     private bool _isDead = false;
+    private float _heatNotifyTimer = 0f;
+    private float _heatDamageTimer = 0f;
+    private float _heatFlashTimer = 0f;
+    private float _coldNotifyTimer = 0f;
+    private float _coldDamageTimer = 0f;
+    private float _coldFlashTimer = 0f;
+    private TimeManager _timeManager;
 
     void Awake()
     {
         currentHealth = maxHealth;
         currentHunger = maxHunger;
         currentThirst = maxThirst;
-        currentTemperature = 50f; // 初始體溫
+        currentTemperature = 60f; // 初始體溫
+        if (playerFeedback == null)
+            playerFeedback = GetComponent<PlayerFeedback>();
+        _timeManager = FindObjectOfType<TimeManager>();
     }
 
     void Update()
@@ -43,6 +70,72 @@ public class PlayerStats : MonoBehaviour
         if (currentHunger <= 0 || currentThirst <= 0)
         {
             TakeDamage(starvationDamage * Time.deltaTime);
+        }
+
+        float tempDecay = GetTemperatureDecayRate();
+        if (tempDecay > 0f)
+            currentTemperature = Mathf.Max(0f, currentTemperature - tempDecay * Time.deltaTime);
+
+        _heatFlashTimer = Mathf.Max(0f, _heatFlashTimer - Time.deltaTime);
+        _coldFlashTimer = Mathf.Max(0f, _coldFlashTimer - Time.deltaTime);
+        float hotThreshold = maxTemperature * hotThresholdPercent;
+        if (currentTemperature >= hotThreshold)
+        {
+            _heatDamageTimer += Time.deltaTime;
+            if (_heatDamageTimer >= heatDamageInterval)
+            {
+                TakeDamage(heatDamagePerSecond * heatDamageInterval);
+                _heatDamageTimer = 0f;
+
+                if (playerFeedback != null && _heatFlashTimer <= 0f)
+                {
+                    playerFeedback.TriggerDamageFlash(heatFlashColor, heatFlashDuration);
+                    _heatFlashTimer = heatFlashCooldown;
+                }
+            }
+
+            _heatNotifyTimer += Time.deltaTime;
+            if (_heatNotifyTimer >= heatNotifyInterval)
+            {
+                UIEventManager.TriggerNotify("Scorching heat!");
+                _heatNotifyTimer = 0f;
+            }
+        }
+        else
+        {
+            _heatNotifyTimer = 0f;
+            _heatDamageTimer = 0f;
+            _heatFlashTimer = 0f;
+        }
+
+        float coldThreshold = maxTemperature * coldThresholdPercent;
+        if (currentTemperature <= coldThreshold)
+        {
+            _coldDamageTimer += Time.deltaTime;
+            if (_coldDamageTimer >= coldDamageInterval)
+            {
+                TakeDamage(coldDamagePerSecond * coldDamageInterval);
+                _coldDamageTimer = 0f;
+
+                if (playerFeedback != null && _coldFlashTimer <= 0f)
+                {
+                    playerFeedback.TriggerDamageFlash(coldFlashColor, coldFlashDuration);
+                    _coldFlashTimer = coldFlashCooldown;
+                }
+            }
+
+            _coldNotifyTimer += Time.deltaTime;
+            if (_coldNotifyTimer >= coldNotifyInterval)
+            {
+                UIEventManager.TriggerNotify("Freezing cold!");
+                _coldNotifyTimer = 0f;
+            }
+        }
+        else
+        {
+            _coldNotifyTimer = 0f;
+            _coldDamageTimer = 0f;
+            _coldFlashTimer = 0f;
         }
 
         // 3. 通知所有訂閱者（如 StatsUIHandler）更新畫面
@@ -80,5 +173,20 @@ public class PlayerStats : MonoBehaviour
     {
         currentThirst = Mathf.Min(maxThirst, currentThirst + amount);
         OnStatsUpdated?.Invoke();
+    }
+
+    public void ModifyTemperature(float amount)
+    {
+        currentTemperature = Mathf.Clamp(currentTemperature + amount, 0f, maxTemperature);
+        OnStatsUpdated?.Invoke();
+    }
+
+    private float GetTemperatureDecayRate()
+    {
+        if (_timeManager == null)
+            _timeManager = FindObjectOfType<TimeManager>();
+
+        bool isNight = _timeManager != null && _timeManager.IsNight;
+        return isNight ? nightTempDecayRate : dayTempDecayRate;
     }
 }

@@ -1152,6 +1152,12 @@ MonoBehaviour:
   capsuleSize: {x: 1, y: 0.5}
   capsuleOffset: 0.3
   capsuleDirection: 0
+  bonfirePrefab: {fileID: 600000000, guid: 9c95714247964082a39bb58c999cd758, type: 3}
+  bonfirePlaceOffset: 0.6
+  bonfirePlaceRadius: 0.2
+  bonfireBlockerLayers:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!50 &1867235790
 Rigidbody2D:
   serializedVersion: 5
@@ -1325,6 +1331,9 @@ MonoBehaviour:
   diamondSwordItem: {fileID: 11400000, guid: 642dd0c4c3544d2d8f498df15d13707a, type: 2}
   diamondSwordCost: 5
   diamondSwordAmount: 1
+  bonfireItem: {fileID: 11400000, guid: 4f216b83f2144312a7fe02cd68637473, type: 2}
+  bonfireWoodCost: 10
+  bonfireAmount: 1
 --- !u!4 &1907333767
 Transform:
   m_ObjectHideFlags: 0
@@ -1716,6 +1725,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HUDUIHandler
   statsSource: {fileID: 1867235794}
+  coldTempSprite: {fileID: -8567186622430992613, guid: 445833905cbc9844ea815d266ee49a93, type: 3}
+  goodTempSprite: {fileID: -3777184159844669818, guid: d6333636da6a54d399ab400a44853204, type: 3}
+  hotTempSprite: {fileID: 6489471546171652785, guid: fc3d6ed9aab92405e901fdae0be8f405, type: 3}
 --- !u!114 &2074712203 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2032022551611859474, guid: 11ed74cb95f60df488ef9516e4a7113a, type: 3}

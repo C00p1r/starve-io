@@ -35,6 +35,11 @@ public class CraftingManager : MonoBehaviour
     [SerializeField] private int diamondSwordCost = 5;
     [SerializeField] private int diamondSwordAmount = 1;
 
+    [Header("Bonfire Recipe")]
+    [SerializeField] private ItemData bonfireItem;
+    [SerializeField] private int bonfireWoodCost = 10;
+    [SerializeField] private int bonfireAmount = 1;
+
     public bool CraftPickaxe()
     {
         var inventory = InventoryManager.Instance;
@@ -379,6 +384,49 @@ public class CraftingManager : MonoBehaviour
         return inventory.GetItemCount(diamondItem) >= diamondSwordCost;
     }
 
+    public bool CraftBonfire()
+    {
+        var inventory = InventoryManager.Instance;
+        if (inventory == null)
+        {
+            Debug.LogWarning("InventoryManager instance not found.");
+            return false;
+        }
+
+        if (woodItem == null || bonfireItem == null)
+        {
+            Debug.LogWarning("CraftingManager missing bonfire item references.");
+            return false;
+        }
+
+        if (inventory.GetItemCount(woodItem) < bonfireWoodCost)
+        {
+            UIEventManager.TriggerNotify("Not enough wood to craft a bonfire.");
+            return false;
+        }
+
+        if (!inventory.TryRemoveItem(woodItem, bonfireWoodCost))
+            return false;
+
+        if (!inventory.AddItem(bonfireItem, bonfireAmount))
+        {
+            inventory.AddItem(woodItem, bonfireWoodCost);
+            return false;
+        }
+
+        UIEventManager.TriggerNotify("Crafted a bonfire.");
+        return true;
+    }
+
+    public bool CanCraftBonfire()
+    {
+        var inventory = InventoryManager.Instance;
+        if (inventory == null || woodItem == null)
+            return false;
+
+        return inventory.GetItemCount(woodItem) >= bonfireWoodCost;
+    }
+
     public ItemData WoodenPickaxeItem => woodenPickaxeItem;
     public ItemData StonePickaxeItem => stonePickaxeItem;
     public ItemData GoldenPickaxeItem => goldenPickaxeItem;
@@ -387,4 +435,5 @@ public class CraftingManager : MonoBehaviour
     public ItemData StoneSwordItem => stoneSwordItem;
     public ItemData GoldenSwordItem => goldenSwordItem;
     public ItemData DiamondSwordItem => diamondSwordItem;
+    public ItemData BonfireItem => bonfireItem;
 }
