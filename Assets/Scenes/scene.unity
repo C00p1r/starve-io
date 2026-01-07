@@ -172,9 +172,21 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2032022551611859474, guid: 11ed74cb95f60df488ef9516e4a7113a, type: 3}
+      propertyPath: eat_meat
+      value: 
+      objectReference: {fileID: 853151589}
+    - target: {fileID: 2032022551611859474, guid: 11ed74cb95f60df488ef9516e4a7113a, type: 3}
+      propertyPath: eat_berry
+      value: 
+      objectReference: {fileID: 168105757}
+    - target: {fileID: 2032022551611859474, guid: 11ed74cb95f60df488ef9516e4a7113a, type: 3}
       propertyPath: playerStats
       value: 
       objectReference: {fileID: 1867235794}
+    - target: {fileID: 2032022551611859474, guid: 11ed74cb95f60df488ef9516e4a7113a, type: 3}
+      propertyPath: use_bandage
+      value: 
+      objectReference: {fileID: 1212737347}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

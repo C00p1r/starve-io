@@ -292,7 +292,7 @@ public class InventoryManager : MonoBehaviour
         if (playerStats != null)
             return true;
 
-        playerStats = FindObjectOfType<PlayerStats>();
+        playerStats = FindFirstObjectByType<PlayerStats>();
         return playerStats != null;
     }
 
@@ -301,7 +301,7 @@ public class InventoryManager : MonoBehaviour
         if (_audioCached)
             return;
 
-        var sources = FindObjectsOfType<AudioSource>(true);
+        var sources = FindObjectsByType<AudioSource>(FindObjectsSortMode.None);
         foreach (var source in sources)
         {
             if (source == null)

@@ -1,6 +1,6 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using StarveIO.Data;
-using UnityEditor.UI; // ½T«O»P§Aªº ItemData ©R¦WªÅ¶¡¤@­P
+//using UnityEditor.UI; // ç¢ºä¿èˆ‡ä½ çš„ ItemData å‘½åç©ºé–“ä¸€è‡´
 
 public class ToolVisualHandler : MonoBehaviour
 {
@@ -11,7 +11,7 @@ public class ToolVisualHandler : MonoBehaviour
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
 
-        // ­q¾\­I¥]ÅÜ§ó¨Æ¥ó¡A³o¼Ë¤Á´«®æ¤l®É·|¥ß¨è§ó·s¥~Æ[
+        // è¨‚é–±èƒŒåŒ…è®Šæ›´äº‹ä»¶ï¼Œé€™æ¨£åˆ‡æ›æ ¼å­æ™‚æœƒç«‹åˆ»æ›´æ–°å¤–è§€
         if (_inventoryManager != null)
         {
             _inventoryManager.OnInventoryChanged += UpdateToolVisual;
@@ -28,19 +28,19 @@ public class ToolVisualHandler : MonoBehaviour
     {
         ItemData selectedItem = _inventoryManager.GetSelectedItem();
 
-        // 1. ÀË¬d¬O§_¿ï¤¤¤FªF¦è¡A¥B¸ÓªF¦è¦³¤u¨ã¹Ï¤ù
+        // 1. æª¢æŸ¥æ˜¯å¦é¸ä¸­äº†æ±è¥¿ï¼Œä¸”è©²æ±è¥¿æœ‰å·¥å…·åœ–ç‰‡
         if (selectedItem != null && selectedItem.toolType > 0 && selectedItem.icon != null)
         {
             _spriteRenderer.enabled = true;
             _spriteRenderer.sprite = selectedItem.icon;
             this.transform.localScale = new Vector3(_itemScale, _itemScale, _itemScale);
 
-            // ¦pªG§Aªº¤u¨ã¹Ï¤ù¬O¾îªº¡A³o¸Ì¥i¥H·L½Õ±ÛÂà¨¤«×
+            // å¦‚æœä½ çš„å·¥å…·åœ–ç‰‡æ˜¯æ©«çš„ï¼Œé€™è£¡å¯ä»¥å¾®èª¿æ—‹è½‰è§’åº¦
              //transform.localRotation = Quaternion.Euler(0, 0, -45);
         }
         else
         {
-            // 2. ¦pªG¤â¸Ì¨S®³ªF¦è¡]©Î¬O¤£¥i¸Ë³ÆªºªF¦è¡^¡A´N§â¹Ï¤ùÁôÂÃ
+            // 2. å¦‚æœæ‰‹è£¡æ²’æ‹¿æ±è¥¿ï¼ˆæˆ–æ˜¯ä¸å¯è£å‚™çš„æ±è¥¿ï¼‰ï¼Œå°±æŠŠåœ–ç‰‡éš±è—
             _spriteRenderer.enabled = false;
         }
     }

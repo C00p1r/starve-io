@@ -33,7 +33,7 @@ public class StatsUIHandler : MonoBehaviour
             _tempIcon = _tempBar.Q<VisualElement>("TempIcon");
 
         if (statsSource == null)
-            statsSource = FindObjectOfType<PlayerStats>();
+            statsSource = FindFirstObjectByType<PlayerStats>();
 
         if (statsSource != null)
         {

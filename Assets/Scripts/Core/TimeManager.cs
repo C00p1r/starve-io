@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
 public class TimeManager : MonoBehaviour
@@ -28,7 +28,7 @@ public class TimeManager : MonoBehaviour
         if (globalLight == null)
             globalLight = GetComponent<Light2D>();
         if (globalLight == null)
-            globalLight = FindObjectOfType<Light2D>();
+            globalLight = FindFirstObjectByType<Light2D>();
 
         ApplySortingLayers();
         isDay = startAtDay;

@@ -1,4 +1,4 @@
-﻿<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/UI%20Toolkit/GameHUD.uss?fileID=7433441132597879392&amp;guid=290b25ea552ea2e469d129e77391696d&amp;type=3#GameHUD" />
     <ui:VisualElement name="DeleteConfirmPanel" class="confirm-panel">
         <ui:Label text="Delete selected item?" name="DeleteConfirmLabel" class="confirm-text" />
@@ -55,7 +55,7 @@
         <ui:Button text="Craft Diamond Sword" name="CraftDiamondSwordButton" class="craft-button" />
         <ui:Button text="Craft Bonfire" name="CraftBonfireButton" class="craft-button" />
     </ui:VisualElement>
-    <ui:Label text="Notify Label" name="NotifyLabel" style="position: absolute; top: 20%; font-size: 70px; -unity-text-align: upper-center; -unity-font-style: bold; color: rgb(255, 255, 255); -unity-text-outline-width: 2px; align-self: center; -unity-font-definition: url(&quot;project://database/Packages/com.unity.cinemachine/Runtime/Debug/CinemachineRuntimeTheme.tss?fileID=2230732570650464555&amp;guid=df9aec944f4474a04847b6d6375e4138&amp;type=3#NotInter-Regular&quot;); text-shadow: 1px 1px 10px rgba(0, 0, 0, 0); -unity-text-outline-color: rgb(0, 0, 0); transition-property: opacity; transition-duration: 0.5s; transition-timing-function: ease-out;" />
+    <ui:Label text="Notify Label" name="NotifyLabel" picking-mode="Ignore" style="position: absolute; top: 20%; font-size: 70px; -unity-text-align: upper-center; -unity-font-style: bold; color: rgb(255, 255, 255); -unity-text-outline-width: 2px; align-self: center; -unity-font-definition: url(&quot;project://database/Packages/com.unity.cinemachine/Runtime/Debug/CinemachineRuntimeTheme.tss?fileID=2230732570650464555&amp;guid=df9aec944f4474a04847b6d6375e4138&amp;type=3#NotInter-Regular&quot;); text-shadow: 1px 1px 10px rgba(0, 0, 0, 0); -unity-text-outline-color: rgb(0, 0, 0); transition-property: opacity; transition-duration: 0.5s; transition-timing-function: ease-out;" />
     <ui:VisualElement name="DragGhost" picking-mode="Ignore" style="position: absolute; top: 0; left: 0;" />
     <ui:VisualElement name="DarkScreen" picking-mode="Ignore" style="flex-grow: 1; opacity: 0; background-color: rgb(0, 0, 0); position: relative; height: 977px; width: 2718px; flex-direction: row; align-items: auto;" />
 </ui:UXML>

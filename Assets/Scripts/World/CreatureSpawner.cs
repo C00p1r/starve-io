@@ -27,7 +27,7 @@ public class CreatureSpawner : MonoBehaviour
 
     void Start()
     {
-        timeManager = FindObjectOfType<TimeManager>();
+        timeManager = FindFirstObjectByType<TimeManager>();
         wasNight = IsNight();
         if (!spawnOnlyAtNight || wasNight)
             SpawnInitialCreatures();
@@ -62,7 +62,7 @@ public class CreatureSpawner : MonoBehaviour
 
     void CheckAndSpawnCreatures()
     {
-        currentCreatureCount = GameObject.FindObjectsOfType<MonsterBehavior>().Length;
+        currentCreatureCount = GameObject.FindObjectsByType<MonsterBehavior>(FindObjectsSortMode.None).Length;
 
         if (currentCreatureCount < maxCreatures)
         {
@@ -89,7 +89,7 @@ public class CreatureSpawner : MonoBehaviour
 
     private void DespawnAllCreatures()
     {
-        foreach (var monster in FindObjectsOfType<MonsterBehavior>())
+        foreach (var monster in FindObjectsByType<MonsterBehavior>(FindObjectsSortMode.None))
         {
             Destroy(monster.gameObject);
         }

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class BonfireHeatSource : MonoBehaviour
 {
@@ -22,7 +22,7 @@ public class BonfireHeatSource : MonoBehaviour
         if (_playerStats != null)
             return true;
 
-        _playerStats = FindObjectOfType<PlayerStats>();
+        _playerStats = FindFirstObjectByType<PlayerStats>();
         return _playerStats != null;
     }
 

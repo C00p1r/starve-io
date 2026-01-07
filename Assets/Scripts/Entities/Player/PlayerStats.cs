@@ -64,8 +64,8 @@ public class PlayerStats : MonoBehaviour
         currentTemperature = 60f; // 初始體溫
         if (playerFeedback == null)
             playerFeedback = GetComponent<PlayerFeedback>();
-        _timeManager = FindObjectOfType<TimeManager>();
-    }
+        _timeManager = FindFirstObjectByType<TimeManager>();
+    }   
 
     void Update()
     {
@@ -188,7 +188,7 @@ public class PlayerStats : MonoBehaviour
     private float GetTemperatureDecayRate()
     {
         if (_timeManager == null)
-            _timeManager = FindObjectOfType<TimeManager>();
+            _timeManager = FindFirstObjectByType<TimeManager>();
 
         bool isNight = _timeManager != null && _timeManager.IsNight;
         float rate = isNight ? nightTempDecayRate : dayTempDecayRate;
