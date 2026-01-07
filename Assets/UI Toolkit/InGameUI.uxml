@@ -7,7 +7,7 @@
             <ui:Button text="Cancel" name="ConfirmDeleteNo" class="confirm-button confirm-no" />
         </ui:VisualElement>
     </ui:VisualElement>
-    <ui:VisualElement name="HotbarContainer" style="flex-grow: 1; top: 967px; position: absolute; width: 1437px; height: 99px; transform-origin: left top; left: 270px; flex-direction: row; flex-shrink: 1; overflow: visible; justify-content: center;">
+    <ui:VisualElement name="HotbarContainer" style="flex-grow: 1; top: auto; position: absolute; width: 1437px; height: 99px; transform-origin: left top; left: 270px; flex-direction: row; flex-shrink: 1; overflow: visible; justify-content: center; bottom: 10px;">
         <ui:VisualElement name="Bar1" style="flex-grow: 1; width: 75px; height: 75px; background-color: rgba(152, 228, 255, 0.5); margin: 10px; max-width: 75px; max-height: 75px; flex-shrink: 1; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px;" />
         <ui:VisualElement name="Bar1" style="flex-grow: 1; width: 75px; height: 75px; background-color: rgba(152, 228, 255, 0.5); margin: 10px; max-width: 75px; max-height: 75px; flex-shrink: 1; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px;" />
         <ui:VisualElement name="Bar1" style="flex-grow: 1; width: 75px; height: 75px; background-color: rgba(152, 228, 255, 0.5); margin: 10px; max-width: 75px; max-height: 75px; flex-shrink: 1; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px;" />
@@ -19,7 +19,7 @@
         <ui:VisualElement name="Bar1" style="flex-grow: 1; width: 75px; height: 75px; background-color: rgba(152, 228, 255, 0.5); margin: 10px; max-width: 75px; max-height: 75px; flex-shrink: 1; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px;" />
         <ui:VisualElement name="Bar1" style="flex-grow: 1; width: 75px; height: 75px; background-color: rgba(152, 228, 255, 0.5); margin: 10px; max-width: 75px; max-height: 75px; flex-shrink: 1; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px;" />
     </ui:VisualElement>
-    <ui:VisualElement name="GameHUD" style="flex-grow: 1; position: absolute; top: 901px; left: 253px; height: 52px; width: 1492px; flex-direction: row;">
+    <ui:VisualElement name="GameHUD" style="flex-grow: 1; position: absolute; top: auto; left: 253px; height: 52px; width: 1492px; flex-direction: row; bottom: 120px;">
         <ui:ProgressBar value="20" name="HealthBar" class="health-bar" style="height: 24px; width: 286px; font-size: 20px; background-color: rgba(0, 0, 0, 0); margin-right: 100px; margin-left: 50px;">
             <ui:VisualElement name="icon" style="position: absolute; background-color: rgb(45, 55, 69); width: 60px; height: 60px; top: -15px; left: -50px; border-radius: 30px; border-width: 3px; border-color: rgb(119, 176, 85); background-image: none; background-size: 100% 100%; -unity-background-scale-mode: stretch-to-fill; background-position-x: center;" />
             <ui:VisualElement name="VisualElement" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Sprites/tilesets/health.png?fileID=2800000&amp;guid=361e30f8c7637534f9ea4aa25080b1fb&amp;type=3#health&quot;); background-size: 90% 90%; position: absolute; width: 60px; height: 60px; top: -12px; left: -51px;" />
